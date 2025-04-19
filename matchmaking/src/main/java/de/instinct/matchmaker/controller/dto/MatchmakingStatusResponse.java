@@ -7,9 +7,10 @@ import lombok.Data;
 @Builder
 public class MatchmakingStatusResponse {
 	
-	public int foundPlayers;
-	public int requiredPlayers;
-	public String gameserverAddress;
-	public int gameserverPort;
+	private MatchmakingStatusResponseCode code;
+	private int foundPlayers;
+	private int requiredPlayers;
+	private String gameserverAddress;
+	private int gameserverPort;
 
 }

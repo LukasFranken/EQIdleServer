@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseController;
@@ -46,9 +47,9 @@ public class PlayerMatchmakingController extends BaseController {
 		return ResponseEntity.ok(matchmakingService.register(authToken, request));
 	}
 	
-	@GetMapping("/status")
-	public ResponseEntity<MatchmakingStatusResponse> status(@RequestHeader("token") String authToken) {
-		return ResponseEntity.ok(matchmakingService.getStatus(authToken));
+	@GetMapping("/status/{lobbyUUID}")
+	public ResponseEntity<MatchmakingStatusResponse> status(@RequestParam("lobbyUUID") String lobbyUUID) {
+		return ResponseEntity.ok(matchmakingService.getStatus(lobbyUUID));
 	}
 
 }

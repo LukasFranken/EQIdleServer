@@ -1,5 +1,13 @@
 package de.instinct.matchmaker.controller.dto;
 
-public enum MatchmakingRegistrationResponse {
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class MatchmakingRegistrationResponse {
+	
+	private MatchmakingRegistrationResponseCode code;
+	private String lobbyUUID;
 
 }

@@ -8,6 +8,6 @@ public interface MatchmakingService {
 
 	MatchmakingRegistrationResponse register(String playerAuthToken, MatchmakingRegistrationRequest request);
 
-	MatchmakingStatusResponse getStatus(String playerAuthToken);
+	MatchmakingStatusResponse getStatus(String lobbyToken);
 
 }

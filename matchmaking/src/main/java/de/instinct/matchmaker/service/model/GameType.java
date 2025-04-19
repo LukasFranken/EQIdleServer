@@ -13,5 +13,12 @@ public class GameType {
 	public VersusMode versusMode;
 	public GameMode gameMode;
 	public FactionMode factionMode;
+	
+	public boolean matches(GameType otherGameType) {
+		if (versusMode != otherGameType.versusMode) return false;
+		if (gameMode != otherGameType.gameMode) return false;
+		if (factionMode != otherGameType.factionMode) return false;
+		return true;
+	}
 
 }
