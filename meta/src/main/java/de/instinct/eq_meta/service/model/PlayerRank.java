@@ -1,0 +1,97 @@
+package de.instinct.eq_meta.service.model;
+
+public enum PlayerRank {
+
+	RECRUIT(0L),
+	RECRUIT2(50L),
+	PRIVATE(100L),
+	PRIVATE2(200L),
+	PRIVATE3(300L),
+	PRIVATE4(400L),
+	SPECIALIST1(600L),
+	SPECIALIST2(800L),
+	SPECIALIST3(1000L),
+	SPECIALIST4(1200L),
+	CORPORAL1(1700L),
+	CORPORAL2(2200L),
+	CORPORAL3(2700L),
+	CORPORAL4(3200L),
+	CORPORAL5(3700L),
+	SEARGENT1(5000L),
+	SEARGENT2(6000L),
+	SEARGENT3(7000L),
+	SEARGENT4(8000L),
+	SEARGENT5(9000L),
+	OFFICER1(10000L),
+	OFFICER2(12000L),
+	OFFICER3(14000L),
+	OFFICER4(16000L),
+	OFFICER5(18000L),
+	LIEUTENNANT1(23000L),
+	LIEUTENNANT2(27000L),
+	LIEUTENNANT3(32000L),
+	LIEUTENNANT4(37000L),
+	LIEUTENNANT5(42000L),
+	COMMANDER1(50000L),
+	COMMANDER2(60000L),
+	COMMANDER3(70000L),
+	COMMANDER4(80000L),
+	COMMANDER5(90000L),
+	CAPTAIN1(100000L),
+	CAPTAIN2(120000L),
+	CAPTAIN3(140000L),
+	CAPTAIN4(160000L),
+	CAPTAIN5(180000L),
+	MAJOR1(200000L),
+	MAJOR2(250000L),
+	MAJOR3(300000L),
+	MAJOR4(350000L),
+	MAJOR5(400000L),
+	GENERAL1(500000L),
+	GENERAL2(600000L),
+	GENERAL3(700000L),
+	GENERAL4(800000L),
+	GENERAL5(900000L),
+	GRAND_GENERAL1(1000000L),
+	GRAND_GENERAL2(2000000L),
+	GRAND_GENERAL3(3000000L),
+	GRAND_GENERAL4(4000000L),
+	DIVINE_GENERAL1(5000000L),
+	DIVINE_GENERAL2(6000000L),
+	DIVINE_GENERAL3(7000000L),
+	DIVINE_GENERAL4(8000000L),
+	HERO(10000000L),
+	LEGEND(20000000L);
+	
+	private long requiredExp;
+	
+	PlayerRank(long requiredExp) {
+		this.requiredExp = requiredExp;
+	}
+	
+	public static PlayerRank getCurrent(long currentExp) {
+		PlayerRank current = RECRUIT;
+		for (PlayerRank rank : PlayerRank.values()) {
+			if (rank.requiredExp <= currentExp) {
+				current = rank;
+			} else {
+				break;
+			}
+		}
+		return current;
+	}
+	
+	public long getRequiredExp() {
+		return requiredExp;
+	}
+	
+	public long getNextRequiredExp() {
+		int ordinal = this.ordinal();
+		PlayerRank[] values = PlayerRank.values();
+		if (ordinal + 1 < values.length) {
+			return values[ordinal + 1].requiredExp;
+		}
+		return -1L;
+	}
+	
+}
