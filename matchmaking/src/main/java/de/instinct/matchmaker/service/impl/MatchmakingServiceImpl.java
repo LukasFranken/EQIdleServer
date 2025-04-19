@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.matchmaker.controller.dto.CallbackCode;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationRequest;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationResponse;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationResponseCode;
@@ -14,17 +15,21 @@ import de.instinct.matchmaker.controller.dto.MatchmakingStatusResponseCode;
 import de.instinct.matchmaker.service.MatchmakingMapper;
 import de.instinct.matchmaker.service.MatchmakingService;
 import de.instinct.matchmaker.service.model.GameType;
+import de.instinct.matchmaker.service.model.GameserverInfo;
 import de.instinct.matchmaker.service.model.Lobby;
+import de.instinct.matchmaker.service.model.enums.GameserverStatus;
 import de.instinct.matchmaker.service.model.enums.VersusMode;
 
 @Service
 public class MatchmakingServiceImpl implements MatchmakingService {
 	
 	private List<Lobby> lobbies;
+	private List<Lobby> disposedLobbies;
 	private final MatchmakingMapper mapper;
 	
 	public MatchmakingServiceImpl() {
 		lobbies = new ArrayList<>();
+		disposedLobbies = new ArrayList<>();
 		mapper = new MatchmakingMapperImpl();
 	}
 	
@@ -37,7 +42,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		//TODO disabled gametype check
 		//TODO invalid gametype check
 		//TODO invalid auth token check
-		Lobby existingLobby = getLobby(gameType);
+		Lobby existingLobby = getValidLobby(gameType);
 		if (existingLobby == null) {
 			existingLobby = createLobby(gameType);
 			lobbies.add(existingLobby);
@@ -52,21 +57,64 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	@Override
 	public MatchmakingStatusResponse getStatus(String lobbyToken) {
 		Lobby existingLobby = getLobby(lobbyToken);
-		if (existingLobby == null) return MatchmakingStatusResponse.builder()
-				.code(MatchmakingStatusResponseCode.LOBBY_DOESNT_EXIST)
-				.build();
-		
-		MatchmakingStatusResponse response =  MatchmakingStatusResponse.builder()
-				.foundPlayers(existingLobby.getPlayerUUIDs().size())
-				.requiredPlayers(calculateRequiredPlayers(existingLobby.getType()))
-				.build();
-		
-		if (response.getFoundPlayers() == response.getRequiredPlayers() && response.getCode() == MatchmakingStatusResponseCode.SUCCESS) {
-			response.setCode(MatchmakingStatusResponseCode.IN_CREATION);
-			//init gameserver and create callback request in matchmakign server controller
-			//create server base interceptor that blocks all non-localhost ips
+		if (existingLobby == null) {
+			Lobby disposedLobby = getDisposedLobby(lobbyToken);
+			if (disposedLobby == null) return MatchmakingStatusResponse.builder()
+					.code(MatchmakingStatusResponseCode.LOBBY_DOESNT_EXIST)
+					.build();
+			
+			return MatchmakingStatusResponse.builder()
+					.code(MatchmakingStatusResponseCode.LOBBY_DISPOSED)
+					.build();
 		}
-		return response;
+		
+		int foundPlayers = existingLobby.getPlayerUUIDs().size();
+		int requiredPlayers = calculateRequiredPlayers(existingLobby.getType());
+		
+		if (foundPlayers == requiredPlayers && existingLobby.getGameserverInfo().getStatus() == GameserverStatus.NOT_CREATED) {
+			existingLobby.getGameserverInfo().setStatus(GameserverStatus.IN_CREATION);
+			//TODO init gameserver
+		}
+		
+		MatchmakingStatusResponseCode responseCode = MatchmakingStatusResponseCode.MATCHING;
+		MatchmakingStatusResponse response =  MatchmakingStatusResponse.builder()
+				.foundPlayers(foundPlayers)
+				.requiredPlayers(requiredPlayers)
+				.code(responseCode)
+				.build();
+		
+		return mapper.mapGameserverInfo(response, existingLobby.getGameserverInfo());
+	}
+	
+	@Override
+	public void callback(String lobbyToken, CallbackCode code) {
+		Lobby existingLobby = getLobby(lobbyToken);
+		if (existingLobby == null) return;
+		
+		switch (code) {
+		case READY:
+			existingLobby.getGameserverInfo().setStatus(GameserverStatus.READY);
+			existingLobby.getGameserverInfo().setAddress("eqgame.dev");
+			existingLobby.getGameserverInfo().setPort(9005);
+			break;
+		case ERROR:
+			existingLobby.getGameserverInfo().setStatus(GameserverStatus.ERROR);
+			break;
+		case FULL:
+			//TODO recreation fallback
+			existingLobby.getGameserverInfo().setStatus(GameserverStatus.ERROR);
+			break;
+		}
+	}
+	
+	@Override
+	public void dispose(String lobbyToken) {
+		Lobby disposeLobby = getLobby(lobbyToken);
+		if (disposeLobby == null) return;
+		
+		disposeLobby.getGameserverInfo().setStatus(GameserverStatus.CLOSED);
+		lobbies.remove(disposeLobby);
+		disposedLobbies.add(disposeLobby);
 	}
 
 	private int calculateRequiredPlayers(GameType type) {
@@ -79,18 +127,28 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				.lobbyUUID(UUID.randomUUID().toString())
 				.type(gameType)
 				.playerUUIDs(new ArrayList<>())
+				.gameserverInfo(GameserverInfo.builder()
+						.status(GameserverStatus.NOT_CREATED)
+						.build())
 				.build();
 	}
 
-	public Lobby getLobby(GameType gameType) {
+	public Lobby getValidLobby(GameType gameType) {
 		return lobbies.stream()
 				.findFirst()
-				.filter(lobby -> lobby.getType().matches(gameType))
+				.filter(lobby -> lobby.getType().matches(gameType) && lobby.getGameserverInfo().getStatus() == GameserverStatus.NOT_CREATED)
 				.orElse(null);
 	}
 	
 	public Lobby getLobby(String lobbyToken) {
 		return lobbies.stream()
+				.findFirst()
+				.filter(lobby -> lobby.getLobbyUUID().contentEquals(lobbyToken))
+				.orElse(null);
+	}
+	
+	public Lobby getDisposedLobby(String lobbyToken) {
+		return disposedLobbies.stream()
 				.findFirst()
 				.filter(lobby -> lobby.getLobbyUUID().contentEquals(lobbyToken))
 				.orElse(null);

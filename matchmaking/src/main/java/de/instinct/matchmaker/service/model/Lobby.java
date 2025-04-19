@@ -12,5 +12,6 @@ public class Lobby {
 	private String lobbyUUID;
 	private GameType type;
 	private List<String> playerUUIDs;
+	private GameserverInfo gameserverInfo;
 
 }

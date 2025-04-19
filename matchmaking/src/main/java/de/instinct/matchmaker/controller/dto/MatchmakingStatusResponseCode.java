@@ -2,9 +2,11 @@ package de.instinct.matchmaker.controller.dto;
 
 public enum MatchmakingStatusResponseCode {
 	
-	SUCCESS,
-	IN_CREATION,
+	MATCHING,
+	IN_GAMESERVER_CREATION,
 	READY,
-	LOBBY_DOESNT_EXIST
+	LOBBY_DOESNT_EXIST,
+	LOBBY_DISPOSED,
+	ERROR
 
 }
