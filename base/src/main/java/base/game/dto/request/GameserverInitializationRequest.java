@@ -1,4 +1,4 @@
-package de.instinct.matchmaker.service.model;
+package base.game.dto.request;
 
 import java.util.List;
 
@@ -8,11 +8,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Lobby {
+public class GameserverInitializationRequest {
 	
 	private String lobbyUUID;
-	private GameType type;
 	private List<String> playerUUIDs;
-	private GameserverInfo gameserverInfo;
+	private GameType type;
 
 }

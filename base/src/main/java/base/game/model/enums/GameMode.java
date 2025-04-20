@@ -1,4 +1,4 @@
-package de.instinct.matchmaker.service.model.enums;
+package base.game.model.enums;
 
 public enum GameMode {
 

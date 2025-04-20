@@ -9,34 +9,21 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseController;
-import base.discovery.Discovery;
-import base.discovery.dto.ServiceRegistrationDTO;
-import base.discovery.impl.RESTDiscovery;
+import base.controller.BaseServiceController;
 import de.instinct.eq_meta.controller.dto.NameRegisterResponseCode;
 import de.instinct.eq_meta.service.UserService;
+import de.instinct.eq_meta.service.impl.UserServiceImpl;
 import de.instinct.eq_meta.service.model.ProfileData;
-import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/meta")
-public class PlayerMetaController extends BaseController {
+public class PlayerMetaController extends BaseServiceController {
 	
-	private Discovery discovery = new RESTDiscovery("localhost", 6000);
 	private final UserService userService;
 	
-	@Value("${application.version}")
-    private String version;
-	
-	@GetMapping("")
-	public ResponseEntity<String> registerService() {
-		return ResponseEntity.ok(discovery.register(ServiceRegistrationDTO.builder()
-				.serviceTag("meta")
-				.serviceName("Meta Module")
-				.serviceUrl("http://eqgame.dev:9008/meta")
-				.serviceVersion(version)
-				.build()).toString());
+	public PlayerMetaController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version) {
+		super("meta", serverPort, version);
+		userService = new UserServiceImpl();
 	}
 	
 	@PostMapping("/register/{username}")

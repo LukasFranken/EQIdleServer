@@ -1,8 +1,8 @@
-package de.instinct.matchmaker.service.model;
+package base.game.model;
 
-import de.instinct.matchmaker.service.model.enums.FactionMode;
-import de.instinct.matchmaker.service.model.enums.GameMode;
-import de.instinct.matchmaker.service.model.enums.VersusMode;
+import base.game.model.enums.FactionMode;
+import base.game.model.enums.GameMode;
+import base.game.model.enums.VersusMode;
 import lombok.Builder;
 import lombok.Data;
 

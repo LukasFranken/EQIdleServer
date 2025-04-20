@@ -32,7 +32,6 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 	public RegistrationResponseCode registerService(ServiceRegistrationDTO serviceRegistrationDTO) {
 		RegistrationResponseCode response = services.containsKey(serviceRegistrationDTO.getServiceTag()) ? RegistrationResponseCode.OVERRIDDEN : RegistrationResponseCode.CREATED;
 		services.put(serviceRegistrationDTO.getServiceTag(), ServiceInfo.builder()
-				.name(serviceRegistrationDTO.getServiceName())
 				.url(serviceRegistrationDTO.getServiceUrl())
 				.version(serviceRegistrationDTO.getServiceVersion())
 				.registrationTimestamp(System.currentTimeMillis())
@@ -60,7 +59,6 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 			ServiceInfo serviceInfo = services.get(serviceTag);
 			return ServiceInfoDTO.builder()
 					.serviceTag(serviceTag)
-					.serviceName(serviceInfo.getName())
 					.serviceUrl(serviceInfo.getUrl())
 					.serviceVersion(serviceInfo.getVersion())
 					.lastAlivePingAgoMS(System.currentTimeMillis() - serviceInfo.getLastAlivePing())

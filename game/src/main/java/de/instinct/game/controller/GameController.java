@@ -2,34 +2,31 @@ package de.instinct.game.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseController;
-import base.discovery.Discovery;
-import base.discovery.dto.ServiceRegistrationDTO;
-import base.discovery.impl.RESTDiscovery;
-import lombok.RequiredArgsConstructor;
+import base.controller.BaseServiceController;
+import base.game.dto.request.GameserverInitializationRequest;
+import de.instinct.game.service.GameserverManagerService;
+import de.instinct.game.service.impl.GameserverManagerServiceImpl;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/game")
-public class GameController extends BaseController {
+public class GameController extends BaseServiceController {
 	
-	private Discovery discovery = new RESTDiscovery("localhost", 6000);
+	private final GameserverManagerService service;
 	
-	@Value("${application.version}")
-    private String version;
+	public GameController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version) {
+		super("game", serverPort, version);
+		service = new GameserverManagerServiceImpl();
+	}
 	
-	@GetMapping("")
-	public ResponseEntity<String> registerService() {
-		return ResponseEntity.ok(discovery.register(ServiceRegistrationDTO.builder()
-				.serviceTag("game")
-				.serviceName("Game Manager Module")
-				.serviceUrl("http://eqgame.dev:9011/game")
-				.serviceVersion(version)
-				.build()).toString());
+	@PostMapping("/start")
+	public ResponseEntity<?> start(@RequestBody GameserverInitializationRequest request) {
+		service.start(request);
+		return ResponseEntity.ok().build();
 	}
 
 }

@@ -2,11 +2,11 @@ package de.instinct.matchmaker.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import base.game.model.GameType;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationRequest;
 import de.instinct.matchmaker.controller.dto.MatchmakingStatusResponse;
 import de.instinct.matchmaker.controller.dto.MatchmakingStatusResponseCode;
 import de.instinct.matchmaker.service.MatchmakingMapper;
-import de.instinct.matchmaker.service.model.GameType;
 import de.instinct.matchmaker.service.model.GameserverInfo;
 
 @Service

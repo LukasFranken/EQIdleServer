@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import base.game.model.GameType;
+import base.game.model.enums.VersusMode;
 import de.instinct.matchmaker.controller.dto.CallbackCode;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationRequest;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationResponse;
@@ -14,11 +16,9 @@ import de.instinct.matchmaker.controller.dto.MatchmakingStatusResponse;
 import de.instinct.matchmaker.controller.dto.MatchmakingStatusResponseCode;
 import de.instinct.matchmaker.service.MatchmakingMapper;
 import de.instinct.matchmaker.service.MatchmakingService;
-import de.instinct.matchmaker.service.model.GameType;
 import de.instinct.matchmaker.service.model.GameserverInfo;
 import de.instinct.matchmaker.service.model.Lobby;
 import de.instinct.matchmaker.service.model.enums.GameserverStatus;
-import de.instinct.matchmaker.service.model.enums.VersusMode;
 
 @Service
 public class MatchmakingServiceImpl implements MatchmakingService {

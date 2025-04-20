@@ -10,36 +10,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseController;
-import base.discovery.Discovery;
-import base.discovery.dto.ServiceRegistrationDTO;
-import base.discovery.impl.RESTDiscovery;
+import base.controller.BaseServiceController;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationRequest;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationResponse;
 import de.instinct.matchmaker.controller.dto.MatchmakingStatusResponse;
 import de.instinct.matchmaker.service.MatchmakingService;
-import lombok.RequiredArgsConstructor;
+import de.instinct.matchmaker.service.impl.MatchmakingServiceImpl;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/matchmaking")
-public class PlayerMatchmakingController extends BaseController {
-	
-	private Discovery discovery = new RESTDiscovery("localhost", 6000);
+public class PlayerMatchmakingController extends BaseServiceController {
 	
 	private final MatchmakingService matchmakingService;
 	
-	@Value("${application.version}")
-    private String version;
-	
-	@GetMapping("")
-	public ResponseEntity<String> registerService() {
-		return ResponseEntity.ok(discovery.register(ServiceRegistrationDTO.builder()
-				.serviceTag("matchmaking")
-				.serviceName("Matchmaking Module")
-				.serviceUrl("http://eqgame.dev:9010/matchamking")
-				.serviceVersion(version)
-				.build()).toString());
+	public PlayerMatchmakingController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version) {
+		super("matchmaking", serverPort, version);
+		matchmakingService = new MatchmakingServiceImpl();
 	}
 	
 	@PostMapping("/register")

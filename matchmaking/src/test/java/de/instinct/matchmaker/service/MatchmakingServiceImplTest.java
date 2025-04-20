@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import base.game.model.enums.FactionMode;
+import base.game.model.enums.GameMode;
+import base.game.model.enums.VersusMode;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationRequest;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationResponse;
 import de.instinct.matchmaker.controller.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.matchmaker.service.impl.MatchmakingServiceImpl;
-import de.instinct.matchmaker.service.model.enums.FactionMode;
-import de.instinct.matchmaker.service.model.enums.GameMode;
-import de.instinct.matchmaker.service.model.enums.VersusMode;
 
 class MatchmakingServiceImplTest {
 	

@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class ServiceInfoDTO {
 	
 	private String serviceTag;
-	private String serviceName;
     private String serviceUrl;
     private String serviceVersion;
     private long lastAlivePingAgoMS;
