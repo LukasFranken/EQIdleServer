@@ -11,7 +11,8 @@ import de.instinct.api.discovery.service.impl.DiscoveryInterface;
 public class Discovery extends BaseService implements DiscoveryInterface {
 	
 	public Discovery() {
-		super.url = "http://eqgame.dev:6000/discovery";
+		super("discovery");
+		super.baseUrl = "http://eqgame.dev:6000/discovery";
 		connect();
 	}
 

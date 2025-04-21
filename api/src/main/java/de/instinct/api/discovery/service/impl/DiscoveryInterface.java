@@ -11,5 +11,4 @@ public interface DiscoveryInterface extends BaseServiceInterface {
 
 	ServiceInfoDTO discover(String tag);
 	
-
 }
