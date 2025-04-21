@@ -1,4 +1,4 @@
-package de.instinct.api.discovery.service.impl;
+package de.instinct.api.discovery.service;
 
 import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.discovery.dto.RegistrationResponseCode;

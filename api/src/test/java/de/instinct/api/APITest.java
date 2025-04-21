@@ -18,6 +18,10 @@ class APITest {
 	@Test
 	void test() {
 		API.discovery().connect();
+		API.authentication().connect();
+		String token = API.authentication().register();
+		System.out.println("token " + token);
+		System.out.println(API.authentication().verify(token));
 		API.printAPIStatus();
 		assertEquals(true, true);
 	}

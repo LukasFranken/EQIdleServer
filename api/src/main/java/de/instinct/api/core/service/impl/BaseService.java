@@ -29,8 +29,12 @@ public class BaseService implements BaseServiceInterface {
 	
 	@Override
 	public void connect() {
-		if (baseUrl == null ) {
+		if (baseUrl == null) {
 			System.out.println("Can't connect: Missing baseUrl for " + tag);
+			return;
+		}
+		if (connected) {
+			System.out.println("Already connected: " + tag);
 			return;
 		}
 		webClient = WebClientFactory.build(baseUrl);
@@ -45,6 +49,12 @@ public class BaseService implements BaseServiceInterface {
 		} catch (Exception e) {
 			System.out.println("Error connecting to URL: " + baseUrl);
 		}
+	}
+	
+	@Override
+	public void disconnect() {
+		webClient = null;
+		connected = false;
 	}
 	
 	@Override

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
-import de.instinct.eq_auth.controller.dto.TokenVerificationResponse;
+import de.instinct.api.auth.dto.TokenVerificationResponse;
 import de.instinct.eq_auth.service.AuthenticationService;
 import de.instinct.eq_auth.service.impl.AuthenticationServiceImpl;
 

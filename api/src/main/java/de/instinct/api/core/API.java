@@ -3,12 +3,13 @@ package de.instinct.api.core;
 import de.instinct.api.auth.service.AuthenticationInterface;
 import de.instinct.api.auth.service.impl.Authentication;
 import de.instinct.api.core.config.APIConfiguration;
-import de.instinct.api.discovery.service.Discovery;
-import de.instinct.api.discovery.service.impl.DiscoveryInterface;
+import de.instinct.api.discovery.service.DiscoveryInterface;
+import de.instinct.api.discovery.service.impl.Discovery;
 
 public class API {
 	
 	public static APIConfiguration configuration;
+	public static String authKey;
 	
 	private static Discovery discovery;
 	private static Authentication authentication;

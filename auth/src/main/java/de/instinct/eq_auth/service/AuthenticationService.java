@@ -1,6 +1,6 @@
 package de.instinct.eq_auth.service;
 
-import de.instinct.eq_auth.controller.dto.TokenVerificationResponse;
+import de.instinct.api.auth.dto.TokenVerificationResponse;
 
 public interface AuthenticationService {
 

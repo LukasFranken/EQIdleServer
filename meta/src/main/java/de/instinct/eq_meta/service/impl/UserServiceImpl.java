@@ -1,19 +1,17 @@
 package de.instinct.eq_meta.service.impl;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import de.instinct.eq_meta.controller.dto.NameRegisterResponseCode;
-import de.instinct.eq_meta.controller.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.NameRegisterResponseCode;
+import de.instinct.api.meta.dto.PlayerRank;
+import de.instinct.api.meta.dto.ProfileData;
+import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.UserRank;
 import de.instinct.eq_meta.service.UserService;
-import de.instinct.eq_meta.service.model.PlayerRank;
-import de.instinct.eq_meta.service.model.ProfileData;
-import de.instinct.eq_meta.service.model.TokenVerificationResponse;
-import de.instinct.eq_meta.service.model.UserRank;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,21 +34,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public RegisterResponseCode register(String token) {
-		TokenVerificationResponse response = authServiceClient.get()
-				.uri("/verify/" + token)
-				.retrieve()
-				.bodyToMono(TokenVerificationResponse.class)
-				.timeout(Duration.ofMillis(2000))
-				.block();
-		if (response == TokenVerificationResponse.VERIFIED) {
-			users.put(token, ProfileData.builder()
-					.rank(PlayerRank.RECRUIT)
-					.userRank(UserRank.REGISTERED)
-					.build());
-			return RegisterResponseCode.SUCCESS;
-		}
-		return RegisterResponseCode.BAD_TOKEN;
+	public RegisterResponseCode initialize(String token) {
+		if (token == null || token.contentEquals("")) return RegisterResponseCode.BAD_TOKEN;
+		users.put(token, ProfileData.builder()
+				.rank(PlayerRank.RECRUIT)
+				.userRank(UserRank.REGISTERED)
+				.build());
+		return RegisterResponseCode.SUCCESS;
 	}
 
 	@Override

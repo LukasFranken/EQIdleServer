@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import de.instinct.eq_auth.controller.dto.RegisterResponseCode;
-import de.instinct.eq_auth.controller.dto.TokenVerificationResponse;
+import de.instinct.api.auth.dto.RegisterResponseCode;
+import de.instinct.api.auth.dto.TokenVerificationResponse;
 import de.instinct.eq_auth.service.AuthenticationService;
 
 @Service

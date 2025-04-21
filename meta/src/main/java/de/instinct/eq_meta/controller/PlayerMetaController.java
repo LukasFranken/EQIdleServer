@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
-import de.instinct.eq_meta.controller.dto.NameRegisterResponseCode;
+import de.instinct.api.meta.dto.NameRegisterResponseCode;
+import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.eq_meta.service.UserService;
 import de.instinct.eq_meta.service.impl.UserServiceImpl;
-import de.instinct.eq_meta.service.model.ProfileData;
 
 @RestController
 @RequestMapping("/meta")

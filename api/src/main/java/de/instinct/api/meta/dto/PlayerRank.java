@@ -1,4 +1,4 @@
-package de.instinct.eq_meta.service.model;
+package de.instinct.api.meta.dto;
 
 public enum PlayerRank {
 

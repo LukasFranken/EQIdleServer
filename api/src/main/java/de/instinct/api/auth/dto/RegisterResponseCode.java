@@ -1,4 +1,4 @@
-package de.instinct.eq_auth.controller.dto;
+package de.instinct.api.auth.dto;
 
 public enum RegisterResponseCode {
 	

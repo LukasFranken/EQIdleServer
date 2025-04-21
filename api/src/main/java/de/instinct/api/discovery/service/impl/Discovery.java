@@ -1,4 +1,4 @@
-package de.instinct.api.discovery.service;
+package de.instinct.api.discovery.service.impl;
 
 import org.springframework.http.MediaType;
 
@@ -7,7 +7,7 @@ import de.instinct.api.core.service.impl.URLBuilder;
 import de.instinct.api.discovery.dto.RegistrationResponseCode;
 import de.instinct.api.discovery.dto.ServiceInfoDTO;
 import de.instinct.api.discovery.dto.ServiceRegistrationDTO;
-import de.instinct.api.discovery.service.impl.DiscoveryInterface;
+import de.instinct.api.discovery.service.DiscoveryInterface;
 
 public class Discovery extends BaseService implements DiscoveryInterface {
 	

@@ -1,4 +1,4 @@
-package de.instinct.eq_meta.controller.dto;
+package de.instinct.api.meta.dto;
 
 public enum RegisterResponseCode {
 

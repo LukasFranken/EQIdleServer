@@ -4,6 +4,8 @@ public interface BaseServiceInterface {
 	
 	void connect();
 	
+	void disconnect();
+	
 	boolean isConnected();
 
 }
