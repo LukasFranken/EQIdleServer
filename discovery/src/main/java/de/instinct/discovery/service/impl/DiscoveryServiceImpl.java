@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import base.discovery.dto.RegistrationResponseCode;
-import base.discovery.dto.ServiceInfoDTO;
-import base.discovery.dto.ServiceRegistrationDTO;
+import de.instinct.api.discovery.dto.RegistrationResponseCode;
+import de.instinct.api.discovery.dto.ServiceInfoDTO;
+import de.instinct.api.discovery.dto.ServiceRegistrationDTO;
 import de.instinct.discovery.service.DiscoveryService;
 import de.instinct.discovery.service.model.ServiceInfo;
 

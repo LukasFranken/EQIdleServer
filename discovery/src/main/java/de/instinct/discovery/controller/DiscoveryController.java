@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseController;
-import base.discovery.dto.ServiceInfoDTO;
+import de.instinct.api.discovery.dto.ServiceInfoDTO;
 import de.instinct.discovery.service.DiscoveryService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/discover")
+@RequestMapping("/discovery")
 public class DiscoveryController extends BaseController {
 	
 	private final DiscoveryService discoverySerivce;

@@ -2,9 +2,9 @@ package de.instinct.discovery.service;
 
 import java.util.List;
 
-import base.discovery.dto.RegistrationResponseCode;
-import base.discovery.dto.ServiceInfoDTO;
-import base.discovery.dto.ServiceRegistrationDTO;
+import de.instinct.api.discovery.dto.RegistrationResponseCode;
+import de.instinct.api.discovery.dto.ServiceInfoDTO;
+import de.instinct.api.discovery.dto.ServiceRegistrationDTO;
 
 public interface DiscoveryService {
 
