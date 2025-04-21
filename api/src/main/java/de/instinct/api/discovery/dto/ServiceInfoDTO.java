@@ -12,7 +12,10 @@ import lombok.NoArgsConstructor;
 public class ServiceInfoDTO {
 	
 	private String serviceTag;
-    private String serviceUrl;
+	private String serviceProtocol;
+	private String serviceAddress;
+	private int servicePort;
+	private String serviceEndpoint;
     private String serviceVersion;
     private long lastAlivePingAgoMS;
 

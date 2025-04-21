@@ -7,6 +7,11 @@ public class Authentication extends BaseService implements AuthenticationInterfa
 	
 	public Authentication() {
 		super("auth");
+		
+	}
+	
+	@Override
+	public void connect() {
 		super.loadURL();
 		super.connect();
 	}

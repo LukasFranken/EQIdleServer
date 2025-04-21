@@ -4,6 +4,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import de.instinct.api.core.API;
 import de.instinct.api.core.service.BaseServiceInterface;
+import de.instinct.api.discovery.dto.ServiceInfoDTO;
 
 public class BaseService implements BaseServiceInterface {
 	
@@ -18,8 +19,12 @@ public class BaseService implements BaseServiceInterface {
 	}
 	
 	public void loadURL() {
-		baseUrl = API.discovery().discover(tag).getServiceUrl();
-		if (baseUrl == null) System.out.println("Error loading baseUrl for " + tag);
+		ServiceInfoDTO serviceInfo = API.discovery().discover(tag);
+		if (serviceInfo == null) {
+			System.out.println("Error loading baseUrl for " + tag);
+			return;
+		}
+		baseUrl = URLBuilder.build(serviceInfo);
 	}
 	
 	@Override
@@ -28,10 +33,7 @@ public class BaseService implements BaseServiceInterface {
 			System.out.println("Can't connect: Missing baseUrl for " + tag);
 			return;
 		}
-		webClient = WebClient.builder()
-				.codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(1 * 1024 * 1024))
-				.baseUrl(baseUrl)
-			    .build();
+		webClient = WebClientFactory.build(baseUrl);
 		try {
 			webClient.get()
 				.uri("/ping")
@@ -39,6 +41,7 @@ public class BaseService implements BaseServiceInterface {
 				.bodyToMono(String.class)
 				.block();
 			connected = true;
+			System.out.println("Connected to " + tag + " via URL: " + baseUrl);
 		} catch (Exception e) {
 			System.out.println("Error connecting to URL: " + baseUrl);
 		}

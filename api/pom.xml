@@ -21,6 +21,12 @@
 			<artifactId>spring-webflux</artifactId>
 			<version>6.2.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.10.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -34,6 +40,7 @@
 					<target>17</target>
 				</configuration>
 			</plugin>
+			
 		</plugins>
 	</build>
 

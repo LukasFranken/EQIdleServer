@@ -8,7 +8,10 @@ import lombok.Data;
 public class ServiceInfo {
 	
 	private String name;
-	private String url;
+	private String protocol;
+	private String address;
+	private int port;
+	private String endpoint;
 	private String version;
 	private long registrationTimestamp;
 	private long lastAlivePing;

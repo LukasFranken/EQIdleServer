@@ -2,38 +2,45 @@ package de.instinct.api.core;
 
 import de.instinct.api.auth.service.AuthenticationInterface;
 import de.instinct.api.auth.service.impl.Authentication;
-import de.instinct.api.core.service.impl.WebClientFactory;
+import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.discovery.service.Discovery;
 import de.instinct.api.discovery.service.impl.DiscoveryInterface;
 
 public class API {
 	
-	private static WebClientFactory webClientFactory;
+	public static APIConfiguration configuration;
+	
 	private static Discovery discovery;
 	private static Authentication authentication;
 	
-	public static void initialize() {
-		webClientFactory = new WebClientFactory();
-		
+	public static void initialize(APIConfiguration newConfiguration) {
+		configuration = newConfiguration;
 		discovery = new Discovery();
 		authentication = new Authentication();
-		
 	}
 	
 	public static DiscoveryInterface discovery() {
 		if (!isInitialized()) return null;
-		if (!discovery.isConnected()) return null;
 		return discovery;
 	}
 	
 	public static AuthenticationInterface authentication() {
 		if (!isInitialized()) return null;
-		if (!authentication.isConnected()) return null;
 		return authentication;
+	}
+	
+	public static void printAPIStatus() {
+		System.out.println("---------API STATUS---------");
+		System.out.println("Initialized: " + isInitialized());
+		System.out.println("----------SERVICES----------");
+		System.out.println("Discovery: " + discovery.isConnected());
+		System.out.println("----------------------------");
+		System.out.println("Authentication: " + authentication.isConnected());
+		System.out.println("----------------------------");
 	}
 
 	private static boolean isInitialized() {
-		if (webClientFactory == null) {
+		if (discovery == null) {
 			System.out.println("API not connected. Connect first via API.initialize()!");
 			return false;
 		}

@@ -3,20 +3,22 @@ package base.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import de.instinct.api.core.API;
+import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.discovery.dto.ServiceRegistrationDTO;
 
 @RequestMapping
 public class BaseServiceController extends BaseController {
 	
-	public BaseServiceController() {
-		API.discovery().connect();
-	}
-	
 	public BaseServiceController(String tag, int port, String version) {
+		API.initialize(APIConfiguration.SERVER);
+		API.discovery().connect();
 		try {
 			API.discovery().register(ServiceRegistrationDTO.builder()
 					.serviceTag(tag)
-					.serviceUrl("http://eqgame.dev:" + port + "/" + tag)
+					.serviceProtocol("http")
+					.serviceAddress("eqgame.dev")
+					.servicePort(port)
+					.serviceEndpoint(tag)
 					.serviceVersion(version)
 					.build());
 		} catch (Exception e) {

@@ -12,11 +12,18 @@ import de.instinct.api.discovery.dto.ServiceInfoDTO;
 import de.instinct.api.discovery.dto.ServiceRegistrationDTO;
 import de.instinct.discovery.service.DiscoveryService;
 import de.instinct.discovery.service.model.ServiceInfo;
+import de.instinct.discovery.service.model.ServiceInfoMapper;
 
 @Service
 public class DiscoveryServiceImpl implements DiscoveryService {
 	
-	private Map<String, ServiceInfo> services = new HashMap<>();
+	private Map<String, ServiceInfo> services;
+	private ServiceInfoMapper mapper;
+	
+	public DiscoveryServiceImpl() {
+		services = new HashMap<>();
+		mapper = new ServiceInfoMapperImpl();
+	}
 
 	@Override
 	public String pingalive(String serviceTag) {
@@ -31,12 +38,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 	@Override
 	public RegistrationResponseCode registerService(ServiceRegistrationDTO serviceRegistrationDTO) {
 		RegistrationResponseCode response = services.containsKey(serviceRegistrationDTO.getServiceTag()) ? RegistrationResponseCode.OVERRIDDEN : RegistrationResponseCode.CREATED;
-		services.put(serviceRegistrationDTO.getServiceTag(), ServiceInfo.builder()
-				.url(serviceRegistrationDTO.getServiceUrl())
-				.version(serviceRegistrationDTO.getServiceVersion())
-				.registrationTimestamp(System.currentTimeMillis())
-				.lastAlivePing(System.currentTimeMillis())
-				.build());
+		services.put(serviceRegistrationDTO.getServiceTag(), mapper.map(serviceRegistrationDTO));
 		return response;
 	}
 
@@ -57,12 +59,7 @@ public class DiscoveryServiceImpl implements DiscoveryService {
 	private ServiceInfoDTO getServiceInfoDTO(String serviceTag) {
 		if (services.containsKey(serviceTag)) {
 			ServiceInfo serviceInfo = services.get(serviceTag);
-			return ServiceInfoDTO.builder()
-					.serviceTag(serviceTag)
-					.serviceUrl(serviceInfo.getUrl())
-					.serviceVersion(serviceInfo.getVersion())
-					.lastAlivePingAgoMS(System.currentTimeMillis() - serviceInfo.getLastAlivePing())
-					.build();
+			return mapper.map(serviceTag, serviceInfo);
 		} else {
 			return null;
 		}
