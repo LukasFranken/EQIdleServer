@@ -1,4 +1,4 @@
-package de.instinct.eq_auth.service;
+package de.instinct.auth.service;
 
 import de.instinct.api.auth.dto.TokenVerificationResponse;
 

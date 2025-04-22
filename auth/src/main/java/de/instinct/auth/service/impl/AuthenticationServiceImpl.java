@@ -1,32 +1,23 @@
-package de.instinct.eq_auth.service.impl;
+package de.instinct.auth.service.impl;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import de.instinct.api.auth.dto.RegisterResponseCode;
 import de.instinct.api.auth.dto.TokenVerificationResponse;
-import de.instinct.eq_auth.service.AuthenticationService;
+import de.instinct.api.core.API;
+import de.instinct.auth.service.AuthenticationService;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	private List<String> tokens;
 	
-	private WebClient metaServiceClient;
-	
 	public AuthenticationServiceImpl() {
 		tokens = new ArrayList<>();
 		tokens.add("testuuid");
-		
-		metaServiceClient = WebClient.builder()
-				.codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(1 * 1024 * 1024))
-				.baseUrl("http://localhost:9008/meta")
-			    .build();
 	}
 
 	@Override
@@ -47,13 +38,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	private void registerMeta(String newToken) {
-		metaServiceClient.post()
-			.uri("/register")
-			.header("token", newToken)
-			.retrieve()
-			.bodyToMono(RegisterResponseCode.class)
-			.timeout(Duration.ofMillis(2000))
-			.block();
+		if (!API.meta().isConnected()) API.meta().connect();
+		API.meta().initialize(newToken);
 	}
 
 }

@@ -1,4 +1,4 @@
-package de.instinct.eq_meta.config;
+package de.instinct.auth.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

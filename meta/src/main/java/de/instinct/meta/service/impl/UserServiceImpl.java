@@ -1,31 +1,24 @@
-package de.instinct.eq_meta.service.impl;
+package de.instinct.meta.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.UserRank;
-import de.instinct.eq_meta.service.UserService;
+import de.instinct.meta.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
 	
 	private Map<String, ProfileData> users;
 	
-	private WebClient authServiceClient;
-	
 	public UserServiceImpl() {
 		users = new HashMap<>();
-		authServiceClient = WebClient.builder()
-				.codecs(clientCodecConfigurer -> clientCodecConfigurer.defaultCodecs().maxInMemorySize(1 * 1024 * 1024))
-				.baseUrl("http://localhost:9009/auth")
-			    .build();
 	}
 
 	@Override

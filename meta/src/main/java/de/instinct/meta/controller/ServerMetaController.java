@@ -1,4 +1,4 @@
-package de.instinct.eq_meta.controller;
+package de.instinct.meta.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.instinct.api.meta.dto.RegisterResponseCode;
-import de.instinct.eq_meta.service.UserService;
+import de.instinct.meta.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 @RestController

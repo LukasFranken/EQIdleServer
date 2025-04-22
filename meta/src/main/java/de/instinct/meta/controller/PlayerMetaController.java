@@ -1,4 +1,4 @@
-package de.instinct.eq_meta.controller;
+package de.instinct.meta.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import base.controller.BaseServiceController;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
-import de.instinct.eq_meta.service.UserService;
-import de.instinct.eq_meta.service.impl.UserServiceImpl;
+import de.instinct.meta.service.UserService;
+import de.instinct.meta.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/meta")

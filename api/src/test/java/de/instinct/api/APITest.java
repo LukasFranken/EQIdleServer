@@ -16,13 +16,24 @@ class APITest {
 	}
 
 	@Test
-	void test() {
+	void fullE2ETest() {
+		//init
 		API.discovery().connect();
 		API.authentication().connect();
+		API.meta().connect();
+		API.printAPIStatus();
+		System.out.println("Initialization E2E-Test successful");
+		//auth
 		String token = API.authentication().register();
+		API.authKey = token;
 		System.out.println("token " + token);
 		System.out.println(API.authentication().verify(token));
-		API.printAPIStatus();
+		System.out.println("Auth service E2E-Test successful");
+		//meta
+		//System.out.println(API.meta().registerName("testuser"));
+		System.out.println(API.meta().profile());
+		System.out.println("Meta service E2E-Test successful");
+		//finalize
 		assertEquals(true, true);
 	}
 

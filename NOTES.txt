@@ -1,1 +1,2 @@
 - implement request model object like from core into api
+- encrypt/decrypt auth key

@@ -5,6 +5,8 @@ import de.instinct.api.auth.service.impl.Authentication;
 import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.discovery.service.DiscoveryInterface;
 import de.instinct.api.discovery.service.impl.Discovery;
+import de.instinct.api.meta.service.MetaInterface;
+import de.instinct.api.meta.service.impl.Meta;
 
 public class API {
 	
@@ -13,11 +15,13 @@ public class API {
 	
 	private static Discovery discovery;
 	private static Authentication authentication;
+	private static Meta meta;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
 		discovery = new Discovery();
 		authentication = new Authentication();
+		meta = new Meta();
 	}
 	
 	public static DiscoveryInterface discovery() {
@@ -30,6 +34,11 @@ public class API {
 		return authentication;
 	}
 	
+	public static MetaInterface meta() {
+		if (!isInitialized()) return null;
+		return meta;
+	}
+	
 	public static void printAPIStatus() {
 		System.out.println("---------API STATUS---------");
 		System.out.println("Initialized: " + isInitialized());
@@ -37,6 +46,8 @@ public class API {
 		System.out.println("Discovery: " + discovery.isConnected());
 		System.out.println("----------------------------");
 		System.out.println("Authentication: " + authentication.isConnected());
+		System.out.println("----------------------------");
+		System.out.println("Meta: " + meta.isConnected());
 		System.out.println("----------------------------");
 	}
 

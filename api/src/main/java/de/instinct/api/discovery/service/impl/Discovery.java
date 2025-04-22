@@ -1,8 +1,9 @@
 package de.instinct.api.discovery.service.impl;
 
-import org.springframework.http.MediaType;
-
+import de.instinct.api.core.model.RESTRequest;
+import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.BaseService;
+import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.core.service.impl.URLBuilder;
 import de.instinct.api.discovery.dto.RegistrationResponseCode;
 import de.instinct.api.discovery.dto.ServiceInfoDTO;
@@ -22,23 +23,23 @@ public class Discovery extends BaseService implements DiscoveryInterface {
 	@Override
 	public RegistrationResponseCode register(ServiceRegistrationDTO serviceRegistrationDTO) {
 		if (!isConnected()) return null;
-		return webClient.post()
-				.uri("/register")
-				.contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(serviceRegistrationDTO)
-				.retrieve()
-				.bodyToMono(RegistrationResponseCode.class)
-				.block();
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("register")
+				.payload(serviceRegistrationDTO)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, RegistrationResponseCode.class);
 	}
 	
 	@Override
 	public ServiceInfoDTO discover(String tag) {
 		if (!isConnected()) return null;
-		return webClient.get()
-				.uri("/single/" + tag)
-				.retrieve()
-				.bodyToMono(ServiceInfoDTO.class)
-				.block();
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("single")
+				.pathVariable(tag)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, ServiceInfoDTO.class);
 	}
 
 }

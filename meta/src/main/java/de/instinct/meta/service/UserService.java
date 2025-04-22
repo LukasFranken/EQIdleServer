@@ -1,4 +1,4 @@
-package de.instinct.eq_meta.service;
+package de.instinct.meta.service;
 
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;

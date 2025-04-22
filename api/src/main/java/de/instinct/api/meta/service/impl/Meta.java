@@ -1,6 +1,9 @@
 package de.instinct.api.meta.service.impl;
 
+import de.instinct.api.core.model.RESTRequest;
+import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.BaseService;
+import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
@@ -8,7 +11,7 @@ import de.instinct.api.meta.service.MetaInterface;
 
 public class Meta extends BaseService implements MetaInterface {
 
-	public Meta(String tag) {
+	public Meta() {
 		super("meta");
 	}
 	
@@ -20,17 +23,34 @@ public class Meta extends BaseService implements MetaInterface {
 
 	@Override
 	public NameRegisterResponseCode registerName(String username) {
-		return null;
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("register")
+				.pathVariable(username)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, NameRegisterResponseCode.class);
 	}
 
 	@Override
 	public ProfileData profile() {
-		return null;
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("profile")
+				.build());
+		return ObjectJSONMapper.mapJSON(response, ProfileData.class);
 	}
 
 	@Override
 	public RegisterResponseCode initialize(String token) {
-		return null;
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("initialize")
+				.pathVariable(token)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, RegisterResponseCode.class);
 	}
 
 }
