@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
-import base.game.dto.request.GameserverInitializationRequest;
+import de.instinct.api.game.dto.GameserverInitializationRequest;
 import de.instinct.game.service.GameserverManagerService;
 import de.instinct.game.service.impl.GameserverManagerServiceImpl;
 

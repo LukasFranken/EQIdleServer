@@ -2,7 +2,7 @@ package de.instinct.game.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import base.game.dto.request.GameserverInitializationRequest;
+import de.instinct.api.game.dto.GameserverInitializationRequest;
 import de.instinct.game.service.GameserverManagerService;
 
 @Service

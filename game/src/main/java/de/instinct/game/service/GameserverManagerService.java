@@ -1,6 +1,6 @@
 package de.instinct.game.service;
 
-import base.game.dto.request.GameserverInitializationRequest;
+import de.instinct.api.game.dto.GameserverInitializationRequest;
 
 public interface GameserverManagerService {
 

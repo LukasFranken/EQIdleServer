@@ -104,18 +104,30 @@ public class BaseService implements BaseServiceInterface {
 				.uri(buildURI(request))
 				.headers(headers -> applyHeaders(headers, request))
 				.contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(request.getPayload() == null ? "" : request.getPayload())
+				.bodyValue(request.getPayload() == null ? "{}" : request.getPayload())
 				.retrieve()
 				.bodyToMono(String.class)
 				.block();
 	}
 	
 	private String sendPutRequest(RESTRequest request) {
-		return null;
+		return webClient.put()
+				.uri(buildURI(request))
+				.headers(headers -> applyHeaders(headers, request))
+				.contentType(MediaType.APPLICATION_JSON)
+				.bodyValue(request.getPayload() == null ? "{}" : request.getPayload())
+				.retrieve()
+				.bodyToMono(String.class)
+				.block();
 	}
 	
 	private String sendDeleteRequest(RESTRequest request) {
-		return null;
+		return webClient.delete()
+				.uri(buildURI(request))
+				.headers(headers -> applyHeaders(headers, request))
+				.retrieve()
+				.bodyToMono(String.class)
+				.block();
 	}
 	
 	private String buildURI(RESTRequest request) {
