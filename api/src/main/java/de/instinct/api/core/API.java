@@ -26,6 +26,14 @@ public class API {
 		authentication = new Authentication();
 		meta = new Meta();
 		matchmaking = new Matchmaking();
+		
+		if (newConfiguration != APIConfiguration.SERVER) {
+			discovery().connect();
+			authentication().connect();
+			meta().connect();
+			matchmaking().connect();
+			printAPIStatus();
+		}
 	}
 	
 	public static DiscoveryInterface discovery() {

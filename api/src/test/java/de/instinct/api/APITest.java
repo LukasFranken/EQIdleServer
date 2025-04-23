@@ -19,7 +19,7 @@ class APITest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		API.initialize(APIConfiguration.DEV);
+		API.initialize(APIConfiguration.SERVER);
 	}
 
 	@Test

@@ -15,6 +15,8 @@ public class Discovery extends BaseService implements DiscoveryInterface {
 	public Discovery() {
 		super("discovery");
 		super.baseUrl = URLBuilder.build(ServiceInfoDTO.builder()
+				.serviceProtocol("http")
+				.serviceAddress("eqgame.dev")
 				.servicePort(6000)
 				.serviceEndpoint("discovery")
 				.build());
