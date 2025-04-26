@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GameserverInitializationRequest {
+public class GameSessionInitializationRequest {
 	
 	private String lobbyUUID;
 	private List<String> playerUUIDs;

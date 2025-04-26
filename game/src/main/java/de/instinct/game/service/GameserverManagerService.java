@@ -1,9 +1,13 @@
 package de.instinct.game.service;
 
-import de.instinct.api.game.dto.GameserverInitializationRequest;
+import de.instinct.api.game.dto.GameSessionInitializationRequest;
 
 public interface GameserverManagerService {
 
-	void start(GameserverInitializationRequest request);
+	void start();
+	
+	void stop();
+	
+	void createSession(GameSessionInitializationRequest request);
 
 }
