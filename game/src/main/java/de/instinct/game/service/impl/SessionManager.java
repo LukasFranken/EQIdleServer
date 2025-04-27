@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
+import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
+import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.model.AiPlayer;
@@ -81,17 +82,6 @@ public class SessionManager {
 		}
 	}
 
-	public static void add(GameSession newSession) {
-		GameState initialGameState = gameDataLoader.generateGameState(newSession.getGameType());
-		newSession.setGameState(initialGameState);
-    	newSession.setLastUpdateTimeMS(System.currentTimeMillis());
-    	newSession.setActive(true);
-    	
-        for (User user : newSession.getUsers()) user.getConnection().sendTCP(initialGameState);
-        
-		activeSessions.add(newSession);
-	}
-
 	public static void process(FleetMovementMessage fleetMovement) {
 		for (GameSession currentSession : activeSessions) {
     	if (currentSession.getGameState().gameUUID.contentEquals(fleetMovement.gameUUID)) {
@@ -118,13 +108,24 @@ public class SessionManager {
 		GameSession session = GameSession.builder()
 				.uuid(request.getLobbyUUID())
 				.gameType(request.getType())
-				.users(request.getUserUUIDs().stream()
-						.map(uuid -> User.builder()
-								.uuid(uuid)
-								.build())
-						.collect(Collectors.toList()))
+				.users(loadUsers(request))
 				.build();
+		
+		gameDataLoader.generateGameState(session);
 		inCreationSessions.add(session);
+		API.matchmaking().callback(session.getUuid(), CallbackCode.READY);
+	}
+
+	private static List<User> loadUsers(GameSessionInitializationRequest request) {
+		List<User> users = new ArrayList<>();
+		for (String userUUID : request.getUserUUIDs()) {
+			users.add(User.builder()
+					.name(API.meta().profile(userUUID).getUsername())
+					.uuid(userUUID)
+					.loadout(API.meta().loadout(userUUID))
+					.build());
+		}
+		return users;
 	}
 
 }

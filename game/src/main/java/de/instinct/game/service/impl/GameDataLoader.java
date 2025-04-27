@@ -14,6 +14,8 @@ import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Planet;
 import de.instinct.engine.model.Player;
+import de.instinct.game.service.model.GameSession;
+import de.instinct.game.service.model.User;
 
 public class GameDataLoader {
 	
@@ -23,11 +25,11 @@ public class GameDataLoader {
 		aiEngine = new AiEngine();
 	}
 	
-	public GameState generateGameState(GameType gameType) {
+	public GameState generateGameState(GameSession session) {
 		GameState initialGameState = new GameState();
 		initialGameState.gameUUID = UUID.randomUUID().toString();
-		initialGameState.planets = generateMap(gameType);
-		initialGameState.players = loadPlayers(gameType);
+		initialGameState.planets = generateMap(session.getGameType());
+		initialGameState.players = loadPlayers(session);
 		initialGameState.gameTimeMS = 0;
 		initialGameState.maxGameTimeMS = 180_000;
 		initialGameState.activeEvents = new PriorityQueue<>();
@@ -36,36 +38,19 @@ public class GameDataLoader {
 		return initialGameState;
 	}
 
-	private List<Player> loadPlayers(GameType gameType) {
+	public List<Player> loadPlayers(GameSession session) {
 		List<Player> players = new ArrayList<>();
-		Player player1 = new Player();
-		player1.factionId = 1;
-		player1.name = "Player 1";
-		player1.fleetMovementSpeed = 50f;
-		player1.resourceGenerationSpeed = 1f;
-		player1.maxCommandPoints = 10;
-		player1.startCommandPoints = 3;
-		player1.commandPointsGenerationSpeed = 0.1;
-		player1.currentCommandPoints = player1.startCommandPoints;
-		players.add(player1);
-		
-		if (gameType.versusMode == VersusMode.AI) {
-			AiPlayer aiPlayer = aiEngine.initialize(AiDifficulty.RETARDED);
-			aiPlayer.factionId = 2;
-			aiPlayer.currentCommandPoints = aiPlayer.startCommandPoints;
-			players.add(aiPlayer);
-		} else {
-			Player player2 = new Player();
-			player2.factionId = 2;
-			player2.name = "Player 2";
-			player2.fleetMovementSpeed = 50f;
-			player2.resourceGenerationSpeed = 1f;
-			player2.maxCommandPoints = 10;
-			player2.startCommandPoints = 3;
-			player2.commandPointsGenerationSpeed = 0.1;
-			player2.currentCommandPoints = player2.startCommandPoints;
-			players.add(player2);
+		for (User user : session.getUsers()) {
+			Player userPlayer = new Player();
+			userPlayer.name = user.getName();
+			userPlayer.teamId = user.getTeamid();
+			players.add(userPlayer);
 		}
+		
+		/*AiPlayer aiPlayer = aiEngine.initialize(AiDifficulty.RETARDED);
+		aiPlayer.playerId = 2;
+		aiPlayer.currentCommandPoints = aiPlayer.startCommandPoints;
+		players.add(aiPlayer);*/
 		
 		return players;
 	}

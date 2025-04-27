@@ -46,10 +46,7 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 
 	@Override
 	public void createSession(GameSessionInitializationRequest request) {
-		//load game data
-		//load player data
-		//create session
-		//send callback to matchmaking
+		SessionManager.create(request);
 	}
 
 }

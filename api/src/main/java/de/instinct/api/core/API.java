@@ -5,6 +5,8 @@ import de.instinct.api.auth.service.impl.Authentication;
 import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.discovery.service.DiscoveryInterface;
 import de.instinct.api.discovery.service.impl.Discovery;
+import de.instinct.api.game.service.GameInterface;
+import de.instinct.api.game.service.impl.Game;
 import de.instinct.api.matchmaking.service.MatchmakingInterface;
 import de.instinct.api.matchmaking.service.impl.Matchmaking;
 import de.instinct.api.meta.service.MetaInterface;
@@ -19,6 +21,7 @@ public class API {
 	private static Authentication authentication;
 	private static Meta meta;
 	private static Matchmaking matchmaking;
+	private static Game game;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
@@ -26,12 +29,14 @@ public class API {
 		authentication = new Authentication();
 		meta = new Meta();
 		matchmaking = new Matchmaking();
+		game = new Game();
 		
 		if (newConfiguration != APIConfiguration.SERVER) {
 			discovery().connect();
 			authentication().connect();
 			meta().connect();
 			matchmaking().connect();
+			game().connect();
 			printAPIStatus();
 		}
 	}
@@ -56,6 +61,11 @@ public class API {
 		return matchmaking;
 	}
 	
+	public static GameInterface game() {
+		if (!isInitialized()) return null;
+		return game;
+	}
+	
 	public static void printAPIStatus() {
 		System.out.println("---------API STATUS---------");
 		System.out.println("Initialized: " + isInitialized());
@@ -67,6 +77,8 @@ public class API {
 		System.out.println("Meta: " + meta.isConnected());
 		System.out.println("----------------------------");
 		System.out.println("Matchmaking: " + matchmaking.isConnected());
+		System.out.println("----------------------------");
+		System.out.println("Game: " + game.isConnected());
 		System.out.println("----------------------------");
 	}
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
+import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.game.config.ApplicationConfig;
 import de.instinct.game.config.GameserverConfig;
@@ -25,6 +26,12 @@ public class GameController extends BaseServiceController {
 		super("game", applicationCofig.getPort(), applicationCofig.getVersion());
 		service = new GameserverManagerServiceImpl(gameserverConfig);
 		this.applicationCofig = applicationCofig;
+	}
+	
+	@Override
+	protected void connectToAPIs() {
+		API.matchmaking().connect();
+		API.meta().connect();
 	}
 	
 	@GetMapping()

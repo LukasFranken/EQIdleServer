@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.core.API;
+import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponse;
@@ -72,7 +74,11 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		
 		if (foundPlayers == requiredPlayers && existingLobby.getGameserverInfo().getStatus() == GameserverStatus.NOT_CREATED) {
 			existingLobby.getGameserverInfo().setStatus(GameserverStatus.IN_CREATION);
-			//TODO init gameserver
+			API.game().create(GameSessionInitializationRequest.builder()
+					.lobbyUUID(lobbyToken)
+					.type(existingLobby.getType())
+					.userUUIDs(existingLobby.getPlayerUUIDs())
+					.build());
 		}
 		
 		MatchmakingStatusResponseCode responseCode = MatchmakingStatusResponseCode.MATCHING;

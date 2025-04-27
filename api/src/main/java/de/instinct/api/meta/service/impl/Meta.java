@@ -4,6 +4,7 @@ import de.instinct.api.core.model.RESTRequest;
 import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.meta.dto.Loadout;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
@@ -33,11 +34,12 @@ public class Meta extends BaseService implements MetaInterface {
 	}
 
 	@Override
-	public ProfileData profile() {
+	public ProfileData profile(String token) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.GET)
 				.endpoint("profile")
+				.pathVariable(token)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, ProfileData.class);
 	}
@@ -51,6 +53,17 @@ public class Meta extends BaseService implements MetaInterface {
 				.pathVariable(token)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, RegisterResponseCode.class);
+	}
+
+	@Override
+	public Loadout loadout(String token) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("loadout")
+				.pathVariable(token)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, Loadout.class);
 	}
 
 }

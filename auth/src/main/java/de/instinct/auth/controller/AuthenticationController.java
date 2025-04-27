@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
 import de.instinct.api.auth.dto.TokenVerificationResponse;
+import de.instinct.api.core.API;
 import de.instinct.auth.service.AuthenticationService;
 import de.instinct.auth.service.impl.AuthenticationServiceImpl;
 
@@ -21,6 +22,11 @@ public class AuthenticationController extends BaseServiceController {
 	public AuthenticationController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version) {
 		super("auth", serverPort, version);
 		authenticationService = new AuthenticationServiceImpl();
+	}
+	
+	@Override
+	protected void connectToAPIs() {
+		API.meta().connect();
 	}
 	
 	@GetMapping("/verify/{token}")

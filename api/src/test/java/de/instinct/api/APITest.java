@@ -39,7 +39,7 @@ class APITest {
 		System.out.println("Auth service E2E-Test successful");
 		//meta
 		System.out.println(API.meta().registerName("testuser"));
-		System.out.println(API.meta().profile());
+		System.out.println(API.meta().profile(token));
 		System.out.println("Meta service E2E-Test successful");
 		MatchmakingRegistrationResponse matchmakingRegistrationResponse = API.matchmaking().register(MatchmakingRegistrationRequest.builder()
 				.gameType(GameType.builder()

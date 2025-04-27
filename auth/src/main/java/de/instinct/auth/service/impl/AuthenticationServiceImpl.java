@@ -38,7 +38,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 
 	private void registerMeta(String newToken) {
-		if (!API.meta().isConnected()) API.meta().connect();
 		API.meta().initialize(newToken);
 	}
 

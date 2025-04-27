@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
+import de.instinct.api.meta.dto.Loadout;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
@@ -27,14 +28,24 @@ public class MetaController extends BaseServiceController {
 		userService = new UserServiceImpl();
 	}
 	
+	@Override
+	protected void connectToAPIs() {
+		
+	}
+	
 	@PostMapping("/register/{username}")
 	public ResponseEntity<NameRegisterResponseCode> registerName(@RequestHeader String token, @PathVariable String username) {
 		return ResponseEntity.ok(userService.registerName(token, username));
 	}
 	
-	@GetMapping("/profile")
-	public ResponseEntity<ProfileData> profile(@RequestHeader String token) {
+	@GetMapping("/profile/{token}")
+	public ResponseEntity<ProfileData> profile(@PathVariable String token) {
 		return ResponseEntity.ok(userService.getProfile(token));
+	}
+	
+	@GetMapping("/loadout/{token}")
+	public ResponseEntity<Loadout> loadout(@PathVariable String token) {
+		return ResponseEntity.ok(userService.getLoadout(token));
 	}
 	
 	@PostMapping("/initialize/{token}")

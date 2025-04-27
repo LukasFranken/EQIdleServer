@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
+import de.instinct.api.core.API;
 import de.instinct.api.core.model.GeneralRequestResponse;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
@@ -29,6 +30,11 @@ public class MatchmakingController extends BaseServiceController {
 	public MatchmakingController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version) {
 		super("matchmaking", serverPort, version);
 		matchmakingService = new MatchmakingServiceImpl();
+	}
+	
+	@Override
+	protected void connectToAPIs() {
+		API.game().connect();
 	}
 	
 	@PostMapping("/register")

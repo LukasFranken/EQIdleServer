@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.meta.dto.Loadout;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.api.meta.dto.ProfileData;
@@ -57,6 +58,18 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Loadout getLoadout(String token) {
+		return Loadout.builder()
+				.fleetMovementSpeed(50f)
+				.resourceGenerationSpeed(1f)
+				.commandPointsGenerationSpeed(0.1)
+				.maxCommandPoints(10)
+				.maxPlanetCapacity(20)
+				.startCommandPoints(3)
+				.build();
 	}
 
 }
