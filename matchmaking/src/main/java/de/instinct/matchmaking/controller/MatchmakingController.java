@@ -37,8 +37,18 @@ public class MatchmakingController extends BaseServiceController {
 		API.game().connect();
 	}
 	
-	@PostMapping("/register")
-	public ResponseEntity<MatchmakingRegistrationResponse> register(@RequestHeader("token") String authToken, @RequestBody MatchmakingRegistrationRequest request) {
+	@PostMapping("/create")
+	public ResponseEntity<MatchmakingRegistrationResponse> create(@RequestHeader("token") String authToken, @RequestBody MatchmakingRegistrationRequest request) {
+		return ResponseEntity.ok(matchmakingService.register(authToken, request));
+	}
+	
+	@PostMapping("/invite")
+	public ResponseEntity<MatchmakingRegistrationResponse> invite(@RequestHeader("token") String authToken, @RequestBody MatchmakingRegistrationRequest request) {
+		return ResponseEntity.ok(matchmakingService.register(authToken, request));
+	}
+	
+	@PostMapping("/start")
+	public ResponseEntity<MatchmakingRegistrationResponse> start(@RequestHeader("token") String authToken, @RequestBody MatchmakingRegistrationRequest request) {
 		return ResponseEntity.ok(matchmakingService.register(authToken, request));
 	}
 	
