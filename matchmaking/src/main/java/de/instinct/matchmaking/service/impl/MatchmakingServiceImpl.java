@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
+import de.instinct.api.game.dto.UserData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponse;
@@ -73,12 +74,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		int requiredPlayers = calculateRequiredPlayers(existingLobby.getType());
 		
 		if (foundPlayers == requiredPlayers && existingLobby.getGameserverInfo().getStatus() == GameserverStatus.NOT_CREATED) {
-			existingLobby.getGameserverInfo().setStatus(GameserverStatus.IN_CREATION);
-			API.game().create(GameSessionInitializationRequest.builder()
-					.lobbyUUID(lobbyToken)
-					.type(existingLobby.getType())
-					.userUUIDs(existingLobby.getPlayerUUIDs())
-					.build());
+			createGameSession(existingLobby);
 		}
 		
 		MatchmakingStatusResponseCode responseCode = MatchmakingStatusResponseCode.MATCHING;
@@ -91,6 +87,21 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		return mapper.mapGameserverInfo(response, existingLobby.getGameserverInfo());
 	}
 	
+	private void createGameSession(Lobby lobby) {
+		lobby.getGameserverInfo().setStatus(GameserverStatus.IN_CREATION);
+		API.game().create(GameSessionInitializationRequest.builder()
+				.lobbyUUID(lobby.getLobbyUUID())
+				.type(lobby.getType())
+				.users(getUsers(lobby))
+				.build());
+	}
+
+	private List<UserData> getUsers(Lobby lobby) {
+		List<UserData> users = new ArrayList<>();
+		
+		return users;
+	}
+
 	@Override
 	public void callback(String lobbyToken, CallbackCode code) {
 		Lobby existingLobby = getLobby(lobbyToken);

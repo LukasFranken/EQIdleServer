@@ -12,7 +12,6 @@ import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.model.AiPlayer;
-import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Player;
 import de.instinct.engine.net.message.types.FleetMovementMessage;
 import de.instinct.engine.order.GameOrder;

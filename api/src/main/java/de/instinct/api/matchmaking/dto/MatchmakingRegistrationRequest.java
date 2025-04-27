@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MatchmakingRegistrationRequest {
 	
+	private String lobbyUUID;
 	private GameType gameType;
 
 }
