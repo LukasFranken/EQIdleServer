@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.matchmaking.model.VersusMode;
@@ -16,12 +17,13 @@ import de.instinct.engine.net.message.types.FleetMovementMessage;
 import de.instinct.engine.order.GameOrder;
 import de.instinct.engine.order.types.FleetMovementOrder;
 import de.instinct.game.service.model.GameSession;
-import de.instinct.game.service.model.PlayerConnection;
+import de.instinct.game.service.model.User;
 
 public class SessionManager {
 	
 	private static List<GameSession> expiredSessions;
 	private static List<GameSession> activeSessions;
+	private static List<GameSession> inCreationSessions;
 	private static GameEngineInterface engineInterface;
 	private static GameDataLoader gameDataLoader;
 	private static AiEngine aiEngine;
@@ -31,6 +33,7 @@ public class SessionManager {
 	public static void init() {
 		expiredSessions = new ArrayList<>();
 		activeSessions = new ArrayList<>();
+		inCreationSessions = new ArrayList<>();
 		engineInterface = new GameEngineInterface();
 		gameDataLoader = new GameDataLoader();
 		aiEngine = new AiEngine();
@@ -73,8 +76,8 @@ public class SessionManager {
 	}
 
 	private static void updateClients(GameSession session) {
-		for (PlayerConnection playerConnection : session.getPlayerConnections()) {
-			playerConnection.connection.sendTCP(session.getGameState());
+		for (User user : session.getUsers()) {
+			user.getConnection().sendTCP(session.getGameState());
 		}
 	}
 
@@ -84,7 +87,7 @@ public class SessionManager {
     	newSession.setLastUpdateTimeMS(System.currentTimeMillis());
     	newSession.setActive(true);
     	
-        for (PlayerConnection playerConnection : newSession.getPlayerConnections()) playerConnection.connection.sendTCP(initialGameState);
+        for (User user : newSession.getUsers()) user.getConnection().sendTCP(initialGameState);
         
 		activeSessions.add(newSession);
 	}
@@ -93,7 +96,7 @@ public class SessionManager {
 		for (GameSession currentSession : activeSessions) {
     	if (currentSession.getGameState().gameUUID.contentEquals(fleetMovement.gameUUID)) {
     		FleetMovementOrder fleetMovementOrder = new FleetMovementOrder();
-    		fleetMovementOrder.factionId = getFactionId(currentSession, fleetMovement.userUUID);
+    		fleetMovementOrder.factionId = getPlayerId(currentSession, fleetMovement.userUUID);
     		fleetMovementOrder.fromPlanetId = fleetMovement.fromPlanetId;
     		fleetMovementOrder.toPlanetId = fleetMovement.toPlanetId;
     		engineInterface.queue(currentSession.getGameState(), fleetMovementOrder);
@@ -103,16 +106,25 @@ public class SessionManager {
     }
 	}
 
-	private static int getFactionId(GameSession currentSession, String userUUID) {
-		PlayerConnection playerConnection = currentSession.getPlayerConnections().stream()
+	private static int getPlayerId(GameSession currentSession, String userUUID) {
+		User currentUser = currentSession.getUsers().stream()
 				.findFirst()
-				.filter(pc -> pc.userUUID.contentEquals(userUUID))
+				.filter(user -> user.getUuid().contentEquals(userUUID))
 				.orElse(null);
-		return playerConnection == null ? -1 : playerConnection.factionId;
+		return currentUser == null ? -1 : currentUser.getPlayerId();
 	}
 
 	public static void create(GameSessionInitializationRequest request) {
-		
+		GameSession session = GameSession.builder()
+				.uuid(request.getLobbyUUID())
+				.gameType(request.getType())
+				.users(request.getUserUUIDs().stream()
+						.map(uuid -> User.builder()
+								.uuid(uuid)
+								.build())
+						.collect(Collectors.toList()))
+				.build();
+		inCreationSessions.add(session);
 	}
 
 }

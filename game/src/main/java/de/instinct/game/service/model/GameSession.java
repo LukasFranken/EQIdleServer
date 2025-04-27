@@ -11,8 +11,9 @@ import lombok.Data;
 @Builder
 public class GameSession {
 	
+	private String uuid;
 	private GameType gameType;
-	private List<PlayerConnection> playerConnections;
+	private List<User> users;
 	private GameState gameState;
 	private long lastUpdateTimeMS;
 	private boolean active;

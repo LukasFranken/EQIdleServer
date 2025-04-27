@@ -11,7 +11,7 @@ import lombok.Data;
 public class GameSessionInitializationRequest {
 	
 	private String lobbyUUID;
-	private List<String> playerUUIDs;
+	private List<String> userUUIDs;
 	private GameType type;
 
 }
