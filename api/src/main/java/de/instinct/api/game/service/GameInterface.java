@@ -9,6 +9,6 @@ public interface GameInterface extends BaseServiceInterface {
 	
 	void stop();
 	
-	void create(GameSessionInitializationRequest request);
+	String create(GameSessionInitializationRequest request);
 
 }

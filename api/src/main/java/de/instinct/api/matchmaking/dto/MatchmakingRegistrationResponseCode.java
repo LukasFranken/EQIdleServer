@@ -3,9 +3,8 @@ package de.instinct.api.matchmaking.dto;
 public enum MatchmakingRegistrationResponseCode {
 	
 	SUCCESS,
-	INVALID_GAME_TYPE,
-	DISABLED_GAME_TYPE,
-	INVALID_AUTH_TOKEN,
-	ALREADY_IN_LOBBY
+	INVALID_LOBBY_TOKEN,
+	NO_GAME_TYPE,
+	ALREADY_SEARCHING
 
 }

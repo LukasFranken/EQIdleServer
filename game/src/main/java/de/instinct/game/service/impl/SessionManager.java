@@ -2,12 +2,14 @@ package de.instinct.game.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
+import de.instinct.api.game.dto.UserData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.engine.ai.AiEngine;
@@ -29,6 +31,7 @@ public class SessionManager {
 	private static AiEngine aiEngine;
 	
 	private static int PERIODIC_UPDATE_MS = 100;
+	private static ScheduledExecutorService scheduler;
 	
 	public static void init() {
 		expiredSessions = new ArrayList<>();
@@ -38,7 +41,7 @@ public class SessionManager {
 		gameDataLoader = new GameDataLoader();
 		aiEngine = new AiEngine();
 		
-		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduler.scheduleAtFixedRate(() -> {
 			List<GameSession> sessionsSnapshot = new ArrayList<>(activeSessions);
 	        for (GameSession session : sessionsSnapshot) {
@@ -103,9 +106,24 @@ public class SessionManager {
 		return currentUser == null ? -1 : currentUser.getPlayerId();
 	}
 
-	public static void create(GameSessionInitializationRequest request) {
+	public static String create(GameSessionInitializationRequest request) {
+		String uuid = UUID.randomUUID().toString();
+		
+		scheduler.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				startSession(uuid, request);
+			}
+			
+		});
+		
+		return uuid;
+	}
+
+	private static void startSession(String uuid, GameSessionInitializationRequest request) {
 		GameSession session = GameSession.builder()
-				.uuid(request.getLobbyUUID())
+				.uuid(uuid)
 				.gameType(request.getType())
 				.users(loadUsers(request))
 				.build();
@@ -117,11 +135,12 @@ public class SessionManager {
 
 	private static List<User> loadUsers(GameSessionInitializationRequest request) {
 		List<User> users = new ArrayList<>();
-		for (String userUUID : request.getUserUUIDs()) {
+		for (UserData userData : request.getUsers()) {
 			users.add(User.builder()
-					.name(API.meta().profile(userUUID).getUsername())
-					.uuid(userUUID)
-					.loadout(API.meta().loadout(userUUID))
+					.name(API.meta().profile(userData.getUuid()).getUsername())
+					.uuid(userData.getUuid())
+					.teamid(userData.getTeamId())
+					.loadout(API.meta().loadout(userData.getUuid()))
 					.build());
 		}
 		return users;

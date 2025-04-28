@@ -66,4 +66,14 @@ public class Meta extends BaseService implements MetaInterface {
 		return ObjectJSONMapper.mapJSON(response, Loadout.class);
 	}
 
+	@Override
+	public String token(String username) {
+		if (!isConnected()) return null;
+		return super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("token")
+				.pathVariable(username)
+				.build());
+	}
+
 }

@@ -10,7 +10,6 @@ import lombok.Data;
 @Builder
 public class GameSessionInitializationRequest {
 	
-	private String lobbyUUID;
 	private List<UserData> users;
 	private GameType type;
 

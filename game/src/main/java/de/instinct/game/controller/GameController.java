@@ -52,9 +52,8 @@ public class GameController extends BaseServiceController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<?> createSession(@RequestBody GameSessionInitializationRequest request) {
-		service.createSession(request);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<String> createSession(@RequestBody GameSessionInitializationRequest request) {
+		return ResponseEntity.ok(service.createSession(request));
 	}
 
 }

@@ -6,9 +6,15 @@ import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.matchmaking.dto.CallbackCode;
+import de.instinct.api.matchmaking.dto.InviteResponse;
+import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
+import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
+import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
+import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponse;
+import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
+import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.service.MatchmakingInterface;
 
 public class Matchmaking extends BaseService implements MatchmakingInterface {
@@ -24,27 +30,112 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 	}
 
 	@Override
-	public MatchmakingRegistrationResponse register(MatchmakingRegistrationRequest request) {
+	public LobbyCreationResponse create() {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
-				.endpoint("register")
-				.payload(request)
+				.endpoint("create")
 				.build());
-		return ObjectJSONMapper.mapJSON(response, MatchmakingRegistrationResponse.class);
+		return ObjectJSONMapper.mapJSON(response, LobbyCreationResponse.class);
 	}
 
 	@Override
-	public MatchmakingStatusResponse status(String lobbyUUID) {
+	public LobbyTypeSetResponse settype(String lobbyUUID, GameType selectedGameType) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("settype")
+				.pathVariable(lobbyUUID)
+				.payload(selectedGameType)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, LobbyTypeSetResponse.class);
+	}
+
+	@Override
+	public InviteResponse invite(String username) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("invite")
+				.pathVariable(username)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, InviteResponse.class);
+	}
+
+	@Override
+	public void accept(String lobbyUUID) {
+		if (!isConnected()) return;
+		super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("accept")
+				.pathVariable(lobbyUUID)
+				.build());
+	}
+
+	@Override
+	public void decline(String lobbyUUID) {
+		if (!isConnected()) return;
+		super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("decline")
+				.pathVariable(lobbyUUID)
+				.build());
+	}
+
+	@Override
+	public InvitesStatusResponse invites() {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("invites")
+				.build());
+		return ObjectJSONMapper.mapJSON(response, InvitesStatusResponse.class);
+	}
+
+	@Override
+	public MatchmakingRegistrationResponseCode start(MatchmakingRegistrationRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("start")
+				.payload(request)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, MatchmakingRegistrationResponseCode.class);
+	}
+
+	@Override
+	public LobbyStatusResponse status(String lobbyUUID) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.GET)
 				.endpoint("status")
-				.pathVariable(lobbyUUID)
+				.endpoint(lobbyUUID)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, LobbyStatusResponse.class);
+	}
+
+	@Override
+	public MatchmakingStatusResponse matchmaking(String lobbyUUID) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("matchmaking")
+				.endpoint(lobbyUUID)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, MatchmakingStatusResponse.class);
 	}
 
+	@Override
+	public GeneralRequestResponse finish(String lobbyUUID) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.PUT)
+				.endpoint("finish")
+				.pathVariable(lobbyUUID)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, GeneralRequestResponse.class);
+	}
+	
 	@Override
 	public GeneralRequestResponse callback(String lobbyUUID, CallbackCode code) {
 		if (!isConnected()) return null;

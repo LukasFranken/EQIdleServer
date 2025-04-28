@@ -52,5 +52,10 @@ public class MetaController extends BaseServiceController {
 	public ResponseEntity<RegisterResponseCode> initialize(@PathVariable String token) {
 		return ResponseEntity.ok(userService.initialize(token));
 	}
-
+	
+	@GetMapping("/token/{username}")
+	public ResponseEntity<String> token(@PathVariable String username) {
+		return ResponseEntity.ok(userService.token(username));
+	}
+	
 }

@@ -37,9 +37,9 @@ public class Game extends BaseService implements GameInterface {
 	}
 
 	@Override
-	public void create(GameSessionInitializationRequest request) {
-		if (!isConnected()) return;
-		super.sendRequest(RESTRequest.builder()
+	public String create(GameSessionInitializationRequest request) {
+		if (!isConnected()) return null;
+		return super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
 				.endpoint("create")
 				.payload(request)

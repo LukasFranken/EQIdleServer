@@ -15,4 +15,6 @@ public interface UserService {
 
 	Loadout getLoadout(String token);
 
+	String token(String username);
+
 }

@@ -15,5 +15,7 @@ public interface MetaInterface extends BaseServiceInterface {
 	RegisterResponseCode initialize(String token);
 
 	Loadout loadout(String token);
+
+	String token(String username);
 	
 }

@@ -1,5 +1,8 @@
 package de.instinct.api.matchmaking.dto;
 
+import java.util.List;
+
+import de.instinct.api.matchmaking.model.GameType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MatchmakingRegistrationResponse {
+public class LobbyStatusResponse {
 	
-	private MatchmakingRegistrationResponseCode code;
-	private String lobbyUUID;
+	private LobbyStatusCode code;
+	private GameType type;
+	private List<String> userNames;
 
 }

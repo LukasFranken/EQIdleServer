@@ -8,6 +8,7 @@ import lombok.Data;
 public class GameserverInfo {
 	
 	private GameserverStatus status;
+	private String gameSessionUUID;
 	private String address;
 	private int port;
 

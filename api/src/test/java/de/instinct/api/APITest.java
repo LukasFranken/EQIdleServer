@@ -1,15 +1,13 @@
 package de.instinct.api;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import de.instinct.api.core.API;
 import de.instinct.api.core.config.APIConfiguration;
-import de.instinct.api.matchmaking.dto.CallbackCode;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponse;
+import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
 import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.matchmaking.model.GameMode;
 import de.instinct.api.matchmaking.model.GameType;
@@ -29,6 +27,7 @@ class APITest {
 		API.authentication().connect();
 		API.meta().connect();
 		API.matchmaking().connect();
+		API.game().connect();
 		API.printAPIStatus();
 		System.out.println("Initialization E2E-Test successful");
 		//auth
@@ -41,17 +40,23 @@ class APITest {
 		System.out.println(API.meta().registerName("testuser"));
 		System.out.println(API.meta().profile(token));
 		System.out.println("Meta service E2E-Test successful");
-		MatchmakingRegistrationResponse matchmakingRegistrationResponse = API.matchmaking().register(MatchmakingRegistrationRequest.builder()
-				.gameType(GameType.builder()
-						.versusMode(VersusMode.AI)
-						.gameMode(GameMode.CONQUEST)
-						.factionMode(FactionMode.ONE_VS_ONE)
-						.build())
-				.build());
-		System.out.println(API.matchmaking().status(matchmakingRegistrationResponse.getLobbyUUID()));
-		System.out.println(API.matchmaking().callback(matchmakingRegistrationResponse.getLobbyUUID(), CallbackCode.READY));
-		System.out.println(API.matchmaking().dispose(matchmakingRegistrationResponse.getLobbyUUID()));
+		//matchmaking
+		String token2 = API.authentication().register();
+		API.authKey = token2;
+		API.meta().registerName("testuser2");
+		
+		String lobbyUUID = API.matchmaking().create().getLobbyUUID();
+		System.out.println(lobbyUUID);
+		System.out.println(API.matchmaking().settype(lobbyUUID, GameType.builder().factionMode(FactionMode.ONE_VS_ONE).versusMode(VersusMode.PVP).gameMode(GameMode.KING_OF_THE_HILL).build()));
+		API.matchmaking().invite("testuser");
+		API.authKey = token;
+		System.out.println(API.matchmaking().invites());
+		API.matchmaking().accept(lobbyUUID);
+		System.out.println(API.matchmaking().status(lobbyUUID));
 		System.out.println("Matchmaking service E2E-Test successful");
+		//game
+		
+		System.out.println("Game service E2E-Test successful");
 		//finalize
 		assertEquals(true, true);
 	}

@@ -45,8 +45,8 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 	}
 
 	@Override
-	public void createSession(GameSessionInitializationRequest request) {
-		SessionManager.create(request);
+	public String createSession(GameSessionInitializationRequest request) {
+		return SessionManager.create(request);
 	}
 
 }

@@ -72,4 +72,13 @@ public class UserServiceImpl implements UserService {
 				.build();
 	}
 
+	@Override
+	public String token(String username) {
+	    return users.entrySet().stream()
+	                .filter(user -> username.equals(user.getValue().getUsername()))
+	                .map(Map.Entry::getKey)
+	                .findFirst()
+	                .orElse(null);
+	}
+
 }

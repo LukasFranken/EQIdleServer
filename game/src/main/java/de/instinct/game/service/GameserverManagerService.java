@@ -8,6 +8,6 @@ public interface GameserverManagerService {
 	
 	void stop();
 	
-	void createSession(GameSessionInitializationRequest request);
+	String createSession(GameSessionInitializationRequest request);
 
 }
