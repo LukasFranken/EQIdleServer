@@ -20,7 +20,6 @@ import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.model.GameType;
@@ -49,20 +48,24 @@ public class MatchmakingController extends BaseServiceController {
 		return ResponseEntity.ok(matchmakingService.createLobby(authToken));
 	}
 	
+	@GetMapping("/get")
+	public ResponseEntity<String> get(@RequestHeader("token") String authToken) {
+		return ResponseEntity.ok(matchmakingService.getUserLobby(authToken));
+	}
+	
 	@PostMapping("/settype/{lobbyUUID}")
 	public ResponseEntity<LobbyTypeSetResponse> settype(@RequestHeader("token") String authToken, @PathVariable String lobbyUUID, @RequestBody GameType selectedGameType) {
 		return ResponseEntity.ok(matchmakingService.setType(authToken, lobbyUUID, selectedGameType));
 	}
 	
 	@PostMapping("/invite/{username}")
-	public ResponseEntity<InviteResponse> invite(@RequestHeader("token") String authToken, @RequestBody String username) {
+	public ResponseEntity<InviteResponse> invite(@RequestHeader("token") String authToken, @PathVariable String username) {
 		return ResponseEntity.ok(matchmakingService.invite(authToken, username));
 	}
 	
 	@PostMapping("/accept/{lobbyUUID}")
-	public ResponseEntity<?> accept(@RequestHeader("token") String authToken, @PathVariable String lobbyUUID) {
-		matchmakingService.respond(authToken, lobbyUUID, true);
-		return ResponseEntity.ok("OK");
+	public ResponseEntity<String> accept(@RequestHeader("token") String authToken, @PathVariable String lobbyUUID) {
+		return ResponseEntity.ok(matchmakingService.respond(authToken, lobbyUUID, true));
 	}
 	
 	@PostMapping("/decline/{lobbyUUID}")
@@ -76,9 +79,9 @@ public class MatchmakingController extends BaseServiceController {
 		return ResponseEntity.ok(matchmakingService.getInvites(authToken));
 	}
 	
-	@PostMapping("/start")
-	public ResponseEntity<MatchmakingRegistrationResponseCode> start(@RequestHeader("token") String authToken, @RequestBody MatchmakingRegistrationRequest request) {
-		return ResponseEntity.ok(matchmakingService.start(authToken, request));
+	@PostMapping("/start/{lobbyUUID}")
+	public ResponseEntity<MatchmakingRegistrationResponseCode> start(@RequestHeader("token") String authToken, @PathVariable String lobbyUUID) {
+		return ResponseEntity.ok(matchmakingService.start(authToken, lobbyUUID));
 	}
 	
 	@GetMapping("/status/{lobbyUUID}")
@@ -91,21 +94,21 @@ public class MatchmakingController extends BaseServiceController {
 		return ResponseEntity.ok(matchmakingService.getMatchmakingStatus(lobbyUUID));
 	}
 	
-	@PutMapping("/callback/{lobbyUUID}")
-	public ResponseEntity<GeneralRequestResponse> callback(@PathVariable String lobbyUUID, @RequestBody CallbackCode code) {
-		matchmakingService.callback(lobbyUUID, code);
+	@PutMapping("/callback/{gamesessionUUID}")
+	public ResponseEntity<GeneralRequestResponse> callback(@PathVariable String gamesessionUUID, @RequestBody CallbackCode code) {
+		matchmakingService.callback(gamesessionUUID, code);
 		return ResponseEntity.ok(GeneralRequestResponse.OK);
 	}
 	
-	@PutMapping("/finish/{lobbyUUID}")
-	public ResponseEntity<GeneralRequestResponse> finish(@PathVariable String lobbyUUID) {
-		matchmakingService.finish(lobbyUUID);
+	@PutMapping("/finish/{gamesessionUUID}")
+	public ResponseEntity<GeneralRequestResponse> finish(@PathVariable String gamesessionUUID) {
+		matchmakingService.finish(gamesessionUUID);
 		return ResponseEntity.ok(GeneralRequestResponse.OK);
 	}
 	
-	@PutMapping("/dispose/{lobbyUUID}")
-	public ResponseEntity<GeneralRequestResponse> dispose(@PathVariable String lobbyUUID) {
-		matchmakingService.dispose(lobbyUUID);
+	@PutMapping("/dispose/{gamesessionUUID}")
+	public ResponseEntity<GeneralRequestResponse> dispose(@PathVariable String gamesessionUUID) {
+		matchmakingService.dispose(gamesessionUUID);
 		return ResponseEntity.ok(GeneralRequestResponse.OK);
 	}
 	

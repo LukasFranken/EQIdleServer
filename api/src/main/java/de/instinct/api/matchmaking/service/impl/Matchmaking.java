@@ -11,7 +11,6 @@ import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.model.GameType;
@@ -38,6 +37,15 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 				.build());
 		return ObjectJSONMapper.mapJSON(response, LobbyCreationResponse.class);
 	}
+	
+	@Override
+	public String get() {
+		if (!isConnected()) return null;
+		return super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("get")
+				.build());
+	}
 
 	@Override
 	public LobbyTypeSetResponse settype(String lobbyUUID, GameType selectedGameType) {
@@ -63,9 +71,9 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 	}
 
 	@Override
-	public void accept(String lobbyUUID) {
-		if (!isConnected()) return;
-		super.sendRequest(RESTRequest.builder()
+	public String accept(String lobbyUUID) {
+		if (!isConnected()) return null;
+		return super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
 				.endpoint("accept")
 				.pathVariable(lobbyUUID)
@@ -73,9 +81,9 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 	}
 
 	@Override
-	public void decline(String lobbyUUID) {
-		if (!isConnected()) return;
-		super.sendRequest(RESTRequest.builder()
+	public String decline(String lobbyUUID) {
+		if (!isConnected()) return null;
+		return super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
 				.endpoint("decline")
 				.pathVariable(lobbyUUID)
@@ -93,12 +101,12 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 	}
 
 	@Override
-	public MatchmakingRegistrationResponseCode start(MatchmakingRegistrationRequest request) {
+	public MatchmakingRegistrationResponseCode start(String lobbyUUID) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
 				.endpoint("start")
-				.payload(request)
+				.pathVariable(lobbyUUID)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, MatchmakingRegistrationResponseCode.class);
 	}
@@ -109,7 +117,7 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.GET)
 				.endpoint("status")
-				.endpoint(lobbyUUID)
+				.pathVariable(lobbyUUID)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, LobbyStatusResponse.class);
 	}
@@ -120,7 +128,7 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.GET)
 				.endpoint("matchmaking")
-				.endpoint(lobbyUUID)
+				.pathVariable(lobbyUUID)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, MatchmakingStatusResponse.class);
 	}

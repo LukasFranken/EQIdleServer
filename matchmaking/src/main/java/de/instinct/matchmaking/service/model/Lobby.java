@@ -2,6 +2,7 @@ package de.instinct.matchmaking.service.model;
 
 import java.util.List;
 
+import de.instinct.api.matchmaking.dto.LobbyStatusCode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.Invite;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.Data;
 @Builder
 public class Lobby {
 	
+	private LobbyStatusCode code;
 	private String lobbyUUID;
 	private GameType type;
 	private List<String> userUUIDs;

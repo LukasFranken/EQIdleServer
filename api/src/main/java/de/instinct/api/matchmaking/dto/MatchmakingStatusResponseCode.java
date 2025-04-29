@@ -6,6 +6,7 @@ public enum MatchmakingStatusResponseCode {
 	IN_GAMESERVER_CREATION,
 	READY,
 	LOBBY_DOESNT_EXIST,
+	NOT_IN_MATCHMAKING,
 	ERROR
 
 }

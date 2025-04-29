@@ -8,7 +8,6 @@ import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.model.GameType;
@@ -17,17 +16,19 @@ public interface MatchmakingInterface extends BaseServiceInterface {
 	
 	LobbyCreationResponse create();
 	
+	String get();
+	
 	LobbyTypeSetResponse settype(String lobbyUUID, GameType selectedGameType);
 	
 	InviteResponse invite(String username);
 	
-	void accept(String lobbyUUID);
+	String accept(String lobbyUUID);
 	
-	void decline(String lobbyUUID);
+	String decline(String lobbyUUID);
 	
 	InvitesStatusResponse invites();
 	
-	MatchmakingRegistrationResponseCode start(MatchmakingRegistrationRequest request);
+	MatchmakingRegistrationResponseCode start(String lobbyUUID);
 	
 	LobbyStatusResponse status(String lobbyUUID);
 	

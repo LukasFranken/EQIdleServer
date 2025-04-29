@@ -6,7 +6,6 @@ import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.model.GameType;
@@ -15,24 +14,26 @@ public interface MatchmakingService {
 
 	LobbyCreationResponse createLobby(String authToken);
 	
+	String getUserLobby(String authToken);
+	
 	LobbyTypeSetResponse setType(String authToken, String lobbyUUID, GameType selectedGameType);
 	
 	InviteResponse invite(String authToken, String username);
 	
-	void respond(String authToken, String lobbyUUID, boolean accepted);
+	String respond(String authToken, String lobbyUUID, boolean accepted);
 	
 	InvitesStatusResponse getInvites(String authToken);
 	
-	MatchmakingRegistrationResponseCode start(String playerAuthToken, MatchmakingRegistrationRequest request);
+	MatchmakingRegistrationResponseCode start(String playerAuthToken, String lobbyUUID);
 
 	LobbyStatusResponse getStatus(String lobbyToken);
 	
 	MatchmakingStatusResponse getMatchmakingStatus(String lobbyUUID);
 
-	void callback(String lobbyToken, CallbackCode code);
+	void callback(String gamesessionUUID, CallbackCode code);
 	
-	void finish(String lobbyToken);
+	void finish(String gamesessionUUID);
 
-	void dispose(String lobbyToken);
+	void dispose(String gamesessionUUID);
 
 }

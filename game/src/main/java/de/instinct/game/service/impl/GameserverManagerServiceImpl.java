@@ -24,6 +24,7 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 
 	@Override
 	public void start() {
+		SessionManager.init();
 		connectionListener = new ServerConnectionListener();
 		server = new Server();
 		Kryo kryo = server.getKryo();

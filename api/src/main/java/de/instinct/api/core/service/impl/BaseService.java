@@ -80,6 +80,7 @@ public class BaseService implements BaseServiceInterface {
     }
 
     public String sendRequest(RESTRequest request) {
+    	System.out.println("sending request: " + request);
         setAuthToken(request);
         return switch (request.getType()) {
             case GET -> sendGetRequest(request);

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import de.instinct.api.core.API;
 import de.instinct.api.core.config.APIConfiguration;
-import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
 import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.matchmaking.model.GameMode;
 import de.instinct.api.matchmaking.model.GameType;
@@ -44,15 +43,28 @@ class APITest {
 		String token2 = API.authentication().register();
 		API.authKey = token2;
 		API.meta().registerName("testuser2");
+		API.authKey = token;
 		
 		String lobbyUUID = API.matchmaking().create().getLobbyUUID();
 		System.out.println(lobbyUUID);
-		System.out.println(API.matchmaking().settype(lobbyUUID, GameType.builder().factionMode(FactionMode.ONE_VS_ONE).versusMode(VersusMode.PVP).gameMode(GameMode.KING_OF_THE_HILL).build()));
-		API.matchmaking().invite("testuser");
-		API.authKey = token;
+		System.out.println(API.matchmaking().settype(lobbyUUID, GameType.builder().factionMode(FactionMode.THREE_VS_THREE).versusMode(VersusMode.AI).gameMode(GameMode.KING_OF_THE_HILL).build()));
+		System.out.println(API.matchmaking().invite("testuser2"));
+		API.authKey = token2;
 		System.out.println(API.matchmaking().invites());
 		API.matchmaking().accept(lobbyUUID);
 		System.out.println(API.matchmaking().status(lobbyUUID));
+		API.authKey = token;
+		System.out.println(API.matchmaking().start(lobbyUUID));
+		System.out.println(API.matchmaking().matchmaking(lobbyUUID));
+		
+		String token3 = API.authentication().register();
+		API.authKey = token3;
+		API.meta().registerName("testuser3");
+		String lobbyUUID2 = API.matchmaking().create().getLobbyUUID();
+		System.out.println(API.matchmaking().settype(lobbyUUID2, GameType.builder().factionMode(FactionMode.THREE_VS_THREE).versusMode(VersusMode.AI).gameMode(GameMode.KING_OF_THE_HILL).build()));
+		System.out.println(API.matchmaking().status(lobbyUUID2));
+		System.out.println(API.matchmaking().start(lobbyUUID2));
+		System.out.println(API.matchmaking().matchmaking(lobbyUUID2));
 		System.out.println("Matchmaking service E2E-Test successful");
 		//game
 		

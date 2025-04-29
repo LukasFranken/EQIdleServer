@@ -17,7 +17,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	
 	public AuthenticationServiceImpl() {
 		tokens = new ArrayList<>();
-		tokens.add("testuuid");
 	}
 
 	@Override

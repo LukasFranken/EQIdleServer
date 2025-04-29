@@ -1,9 +1,7 @@
 package de.instinct.matchmaking.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,7 +18,6 @@ import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusCode;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
-import de.instinct.api.matchmaking.dto.MatchmakingRegistrationRequest;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponseCode;
@@ -36,19 +33,12 @@ import de.instinct.matchmaking.service.model.Lobby;
 @Service
 public class MatchmakingServiceImpl implements MatchmakingService {
 	
-	private Map<String, LobbyStatusCode> lobbyStati;
 	private List<Lobby> lobbies;
-	private List<Lobby> searchingLobbies;
-	private List<Lobby> playingLobbies;
-	private List<Lobby> disposedLobbies;
 	private List<Invite> invites;
 	private final MatchmakingMapper mapper;
 	
 	public MatchmakingServiceImpl() {
-		lobbyStati = new HashMap<>();
 		lobbies = new ArrayList<>();
-		searchingLobbies = new ArrayList<>();
-		disposedLobbies = new ArrayList<>();
 		invites = new ArrayList<>();
 		mapper = new MatchmakingMapperImpl();
 	}
@@ -60,7 +50,6 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 			lobby = createLobby();
 			lobby.getUserUUIDs().add(authToken);
 			lobbies.add(lobby);
-			lobbyStati.put(lobby.getLobbyUUID(), LobbyStatusCode.IDLE);
 		}
 		return LobbyCreationResponse.builder()
 				.lobbyUUID(lobby.getLobbyUUID())
@@ -68,8 +57,15 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	}
 	
 	@Override
+	public String getUserLobby(String authToken) {
+		Lobby userLobby = getPlayerLobby(authToken);
+		if (userLobby == null) return null;
+		return userLobby.getLobbyUUID();
+	}
+	
+	@Override
 	public LobbyTypeSetResponse setType(String authToken, String lobbyUUID, GameType selectedGameType) {
-		Lobby lobby = getLobby(lobbyUUID, LobbyStatusCode.IDLE);
+		Lobby lobby = getLobby(lobbyUUID);
 		if (lobby == null) return LobbyTypeSetResponse.LOBBY_DOESNT_EXIST;
 		lobby.setType(selectedGameType);
 		return LobbyTypeSetResponse.SUCCESS;
@@ -77,7 +73,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	
 	@Override
 	public InviteResponse invite(String authToken, String username) {
-		String usertoken = API.meta().token("username");
+		String usertoken = API.meta().token(username);
 		if (usertoken == null) return InviteResponse.USERNAME_DOESNT_EXIST;
 		Lobby lobby = getPlayerLobby(authToken);
 		if (alreadyInvited(lobby, usertoken)) return InviteResponse.ALREADY_INVITED;
@@ -98,14 +94,15 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	}
 
 	@Override
-	public void respond(String authToken, String lobbyUUID, boolean accepted) {
+	public String respond(String authToken, String lobbyUUID, boolean accepted) {
 		Invite invite = getInviteByLobbyUUID(lobbyUUID);
-		Lobby lobby = getLobby(lobbyUUID, LobbyStatusCode.IDLE);
-		if (invite == null) return;
-		if(accepted) {
+		Lobby lobby = getLobby(lobbyUUID);
+		if (invite == null) return null;
+		if (accepted) {
 			lobby.getUserUUIDs().add(authToken);
 		}
 		invites.remove(invite);
+		return lobby.getLobbyUUID();
 	}
 
 	private Invite getInviteByLobbyUUID(String lobbyUUID) {
@@ -125,37 +122,28 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	}
 	
 	@Override
-	public MatchmakingRegistrationResponseCode start(String playerAuthToken, MatchmakingRegistrationRequest request) {
-		if (isSearching(request.getLobbyUUID())) return MatchmakingRegistrationResponseCode.ALREADY_SEARCHING;
-		Lobby lobby = getLobby(request.getLobbyUUID(), LobbyStatusCode.IDLE);
+	public MatchmakingRegistrationResponseCode start(String playerAuthToken, String lobbyUUID) {
+		Lobby lobby = getLobby(lobbyUUID);
 		if (lobby == null) return MatchmakingRegistrationResponseCode.INVALID_LOBBY_TOKEN;
+		if (lobby.getCode() == LobbyStatusCode.MATCHING) return MatchmakingRegistrationResponseCode.ALREADY_SEARCHING;
 		if (lobby.getType() == null) return MatchmakingRegistrationResponseCode.NO_GAME_TYPE;
-		searchingLobbies.add(lobby);
-		lobbies.remove(lobby);
-		lobbyStati.put(lobby.getLobbyUUID(), LobbyStatusCode.MATCHING);
 		
-		if (calculateTotalPlayersFound(lobby.getType(), searchingLobbies) >= calculateRequiredPlayers(lobby.getType())) {
+		lobby.setCode(LobbyStatusCode.MATCHING);
+		
+		if (calculateTotalPlayersFound(lobby.getType()) >= calculateRequiredPlayers(lobby.getType())) {
 			match(lobby.getType());
 		}
 		
 		return MatchmakingRegistrationResponseCode.SUCCESS;
 	}
 	
-	private boolean isSearching(String lobbyUUID) {
-		return searchingLobbies.stream()
-				.anyMatch(lobby -> lobby.getLobbyUUID().contentEquals(lobbyUUID));
-	}
-	
 	@Override
 	public LobbyStatusResponse getStatus(String lobbyToken) {
-		LobbyStatusCode code = lobbyStati.get(lobbyToken);
-		if (code == null) return LobbyStatusResponse.builder().code(LobbyStatusCode.DOESNT_EXIST).build();
-		
-		Lobby lobby = getLobby(lobbyToken, code);
+		Lobby lobby = getLobby(lobbyToken);
 		if (lobby == null) return LobbyStatusResponse.builder().code(LobbyStatusCode.DOESNT_EXIST).build();
 		
 		return LobbyStatusResponse.builder()
-				.code(code)
+				.code(lobby.getCode())
 				.type(lobby.getType())
 				.userNames(loadUsernames(lobby.getUserUUIDs()))
 				.build();
@@ -169,14 +157,17 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	@Override
 	public MatchmakingStatusResponse getMatchmakingStatus(String lobbyToken) {
-		Lobby existingLobby = getLobby(lobbyToken, LobbyStatusCode.MATCHING);
-		if (existingLobby == null) return MatchmakingStatusResponse.builder()
+		Lobby lobby = getLobby(lobbyToken);
+		if (lobby == null) return MatchmakingStatusResponse.builder()
 				.code(MatchmakingStatusResponseCode.LOBBY_DOESNT_EXIST)
+				.build();
+		if (lobby.getCode() != LobbyStatusCode.MATCHING && lobby.getCode() != LobbyStatusCode.IN_GAME) return MatchmakingStatusResponse.builder()
+				.code(MatchmakingStatusResponseCode.NOT_IN_MATCHMAKING)
 				.build();
 		
 		
-		int foundPlayers = calculateTotalPlayersFound(existingLobby.getType(), searchingLobbies);
-		int requiredPlayers = calculateRequiredPlayers(existingLobby.getType());
+		int requiredPlayers = calculateRequiredPlayers(lobby.getType());
+		int foundPlayers = lobby.getCode() == LobbyStatusCode.MATCHING ? calculateTotalPlayersFound(lobby.getType()) : requiredPlayers;
 		
 		MatchmakingStatusResponseCode responseCode = MatchmakingStatusResponseCode.MATCHING;
 		MatchmakingStatusResponse response =  MatchmakingStatusResponse.builder()
@@ -185,13 +176,13 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				.code(responseCode)
 				.build();
 		
-		return mapper.mapGameserverInfo(response, existingLobby.getGameserverInfo());
+		return mapper.mapGameserverInfo(response, lobby.getGameserverInfo());
 	}
 	
-	private int calculateTotalPlayersFound(GameType type, List<Lobby> lobbies) {
+	private int calculateTotalPlayersFound(GameType type) {
 		int count = 0;
 		for (Lobby lobby : lobbies) {
-			if (lobby.getType().matches(type)) {
+			if (lobby.getType().matches(type) && lobby.getCode() == LobbyStatusCode.MATCHING) {
 				count += lobby.getUserUUIDs().size();
 			}
 		}
@@ -201,14 +192,12 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	private void match(GameType type) {
 	    int requiredPlayers = calculateRequiredPlayers(type);
 
-	    List<Lobby> candidates = searchingLobbies.stream()
-	        .filter(l -> l.getType().matches(type))
+	    List<Lobby> candidates = lobbies.stream()
+	        .filter(l -> l.getCode() == LobbyStatusCode.MATCHING && l.getType().matches(type))
 	        .collect(Collectors.toList());
 
 	    List<Lobby> matched = new ArrayList<>();
 	    if (findCombination(candidates, 0, requiredPlayers, matched)) {
-	    	searchingLobbies.removeAll(matched);
-	    	playingLobbies.addAll(matched);
 	        List<UserData> usersWithTeams = assignTeams(matched, type);
 	        createGameSession(matched, usersWithTeams);
 	    }
@@ -278,14 +267,14 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	@Override
 	public void callback(String gameSessionToken, CallbackCode code) {
-		for (Lobby lobby : playingLobbies) {
-			if (lobby.getGameserverInfo().getGameSessionUUID().contentEquals(gameSessionToken)) {
+		for (Lobby lobby : lobbies) {
+			if (lobby.getGameserverInfo().getGameSessionUUID() != null && lobby.getGameserverInfo().getGameSessionUUID().contentEquals(gameSessionToken)) {
 				switch (code) {
 				case READY:
 					lobby.getGameserverInfo().setStatus(GameserverStatus.READY);
 					lobby.getGameserverInfo().setAddress("eqgame.dev");
 					lobby.getGameserverInfo().setPort(9005);
-					lobbyStati.put(lobby.getLobbyUUID(), LobbyStatusCode.IN_GAME);
+					lobby.setCode(LobbyStatusCode.IN_GAME);
 					break;
 				case ERROR:
 					lobby.getGameserverInfo().setStatus(GameserverStatus.ERROR);
@@ -300,27 +289,22 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	
 	@Override
 	public void finish(String gameSessionToken) {
-		for (Lobby lobby : playingLobbies) {
-			if (lobby.getGameserverInfo().getGameSessionUUID().contentEquals(gameSessionToken)) {
+		for (Lobby lobby : lobbies) {
+			if (lobby.getGameserverInfo().getGameSessionUUID() != null && lobby.getGameserverInfo().getGameSessionUUID().contentEquals(gameSessionToken)) {
 				lobby.getGameserverInfo().setStatus(GameserverStatus.NOT_CREATED);
 				lobby.getGameserverInfo().setAddress(null);
 				lobby.getGameserverInfo().setPort(0);
 				lobby.getGameserverInfo().setGameSessionUUID(null);
-				playingLobbies.remove(lobby);
-				lobbies.add(lobby);
-				lobbyStati.put(lobby.getLobbyUUID(), LobbyStatusCode.IDLE);
+				lobby.setCode(LobbyStatusCode.IDLE);
 			}
 		}
 	}
 	
 	@Override
 	public void dispose(String lobbyToken) {
-		Lobby disposeLobby = getLobby(lobbyToken, lobbyStati.get(lobbyToken));
+		Lobby disposeLobby = getLobby(lobbyToken);
 		if (disposeLobby == null) return;
-		
-		lobbies.remove(disposeLobby);
-		disposedLobbies.add(disposeLobby);
-		lobbyStati.put(lobbyToken, LobbyStatusCode.DISPOSED);
+		disposeLobby.setCode(LobbyStatusCode.DISPOSED);
 	}
 
 	private int calculateRequiredPlayers(GameType type) {
@@ -330,6 +314,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	private Lobby createLobby() {
 		return Lobby.builder()
+				.code(LobbyStatusCode.IDLE)
 				.lobbyUUID(UUID.randomUUID().toString())
 				.userUUIDs(new ArrayList<>())
 				.gameserverInfo(GameserverInfo.builder()
@@ -339,27 +324,17 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				.build();
 	}
 	
-	private Lobby getLobby(String lobbyToken, LobbyStatusCode code) {
-		return getLobbies(code).stream()
-				.findFirst()
+	private Lobby getLobby(String lobbyToken) {
+		return lobbies.stream()
 				.filter(lobby -> lobby.getLobbyUUID().contentEquals(lobbyToken))
+				.findFirst()
 				.orElse(null);
-	}
-
-	private List<Lobby> getLobbies(LobbyStatusCode code) {
-		switch (code) {
-			case IDLE: return lobbies;
-			case DISPOSED: return disposedLobbies;
-			case MATCHING: return searchingLobbies;
-			case IN_GAME: return playingLobbies;
-			default: return new ArrayList<>();
-		}
 	}
 
 	private Lobby getPlayerLobby(String playerAuthToken) {
 		return lobbies.stream()
-				.findFirst()
 				.filter(lobby -> lobby.getUserUUIDs().contains(playerAuthToken))
+				.findFirst()
 				.orElse(null);
 	}
 
