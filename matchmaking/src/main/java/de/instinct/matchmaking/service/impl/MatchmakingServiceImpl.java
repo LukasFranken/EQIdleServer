@@ -281,7 +281,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				switch (code) {
 				case READY:
 					lobby.getGameserverInfo().setStatus(GameserverStatus.READY);
-					lobby.getGameserverInfo().setAddress("eqgame.dev");
+					lobby.getGameserverInfo().setAddress("localhost");
 					lobby.getGameserverInfo().setPort(9005);
 					lobby.setCode(LobbyStatusCode.IN_GAME);
 					break;

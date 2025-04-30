@@ -17,6 +17,5 @@ public class GameSession {
 	private GameState gameState;
 	private long lastUpdateTimeMS;
 	private boolean active;
-	private boolean matchmakingComplete;
 
 }

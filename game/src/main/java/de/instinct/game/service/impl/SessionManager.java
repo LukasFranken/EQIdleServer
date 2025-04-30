@@ -7,6 +7,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.esotericsoftware.kryonet.Connection;
+
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.UserData;
@@ -16,6 +18,8 @@ import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.Player;
 import de.instinct.engine.net.message.types.FleetMovementMessage;
+import de.instinct.engine.net.message.types.JoinMessage;
+import de.instinct.engine.net.message.types.PlayerAssigned;
 import de.instinct.engine.order.GameOrder;
 import de.instinct.engine.order.types.FleetMovementOrder;
 import de.instinct.game.service.model.GameSession;
@@ -74,11 +78,13 @@ public class SessionManager {
         	if (session.getGameState().winner != 0) {
 				expiredSessions.add(session);
 				activeSessions.remove(session);
+				API.matchmaking().finish(session.getUuid());
 			}
         }
 	}
 
 	private static void updateClients(GameSession session) {
+		System.out.println("updating users: " + session.getUsers());
 		for (User user : session.getUsers()) {
 			user.getConnection().sendTCP(session.getGameState());
 		}
@@ -88,7 +94,7 @@ public class SessionManager {
 		for (GameSession currentSession : activeSessions) {
     	if (currentSession.getGameState().gameUUID.contentEquals(fleetMovement.gameUUID)) {
     		FleetMovementOrder fleetMovementOrder = new FleetMovementOrder();
-    		fleetMovementOrder.factionId = getPlayerId(currentSession, fleetMovement.userUUID);
+    		fleetMovementOrder.playerId = getPlayerId(currentSession, fleetMovement.userUUID);
     		fleetMovementOrder.fromPlanetId = fleetMovement.fromPlanetId;
     		fleetMovementOrder.toPlanetId = fleetMovement.toPlanetId;
     		engineInterface.queue(currentSession.getGameState(), fleetMovementOrder);
@@ -144,6 +150,28 @@ public class SessionManager {
 					.build());
 		}
 		return users;
+	}
+
+	public static void join(JoinMessage joinMessage, Connection connection) {
+		for (GameSession session : inCreationSessions) {
+			for (User user : session.getUsers()) {
+				if (user.getUuid().contentEquals(joinMessage.playerUUID)) {
+					user.setConnection(connection);
+					PlayerAssigned playerAssigned = new PlayerAssigned();
+					playerAssigned.playerId = user.getPlayerId();
+					user.getConnection().sendTCP(playerAssigned);
+					for (User checkUser : session.getUsers()) {
+						if (checkUser.getConnection() == null) {
+							return;
+						}
+					}
+					System.out.println("added to active sessions");
+					inCreationSessions.remove(session);
+					activeSessions.add(session);
+					return;
+				}
+			}
+		}
 	}
 
 }

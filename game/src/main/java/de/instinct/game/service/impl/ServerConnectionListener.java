@@ -21,8 +21,10 @@ public class ServerConnectionListener extends Listener {
     }
 
     public void received(Connection c, Object o) {
+    	System.out.println("received: " + o);
     	if (o instanceof JoinMessage) {
-            
+    		JoinMessage joinMessage = (JoinMessage) o;
+            SessionManager.join(joinMessage, c);
         }
         if (o instanceof FleetMovementMessage) {
             FleetMovementMessage fleetMovement = (FleetMovementMessage) o;
