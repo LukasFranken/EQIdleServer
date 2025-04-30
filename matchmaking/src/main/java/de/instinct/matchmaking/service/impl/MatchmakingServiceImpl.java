@@ -15,6 +15,7 @@ import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
+import de.instinct.api.matchmaking.dto.LobbyLeaveResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusCode;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
@@ -57,6 +58,14 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	}
 	
 	@Override
+	public LobbyLeaveResponse leaveLobby(String authToken) {
+		Lobby lobby = getPlayerLobby(authToken);
+		if (lobby == null) return LobbyLeaveResponse.NOT_IN_LOBBY;
+		lobby.getUserUUIDs().remove(authToken);
+		return LobbyLeaveResponse.SUCCESS;
+	}
+	
+	@Override
 	public String getUserLobby(String authToken) {
 		Lobby userLobby = getPlayerLobby(authToken);
 		if (userLobby == null) return null;
@@ -74,7 +83,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	@Override
 	public InviteResponse invite(String authToken, String username) {
 		String usertoken = API.meta().token(username);
-		if (usertoken == null) return InviteResponse.USERNAME_DOESNT_EXIST;
+		if (usertoken.contentEquals("")) return InviteResponse.USERNAME_DOESNT_EXIST;
 		Lobby lobby = getPlayerLobby(authToken);
 		if (alreadyInvited(lobby, usertoken)) return InviteResponse.ALREADY_INVITED;
 		invites.add(Invite.builder()

@@ -18,6 +18,7 @@ import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
+import de.instinct.api.matchmaking.dto.LobbyLeaveResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
@@ -48,6 +49,11 @@ public class MatchmakingController extends BaseServiceController {
 		return ResponseEntity.ok(matchmakingService.createLobby(authToken));
 	}
 	
+	@PostMapping("/leave")
+	public ResponseEntity<LobbyLeaveResponse> leave(@RequestHeader("token") String authToken) {
+		return ResponseEntity.ok(matchmakingService.leaveLobby(authToken));
+	}
+	
 	@GetMapping("/get")
 	public ResponseEntity<String> get(@RequestHeader("token") String authToken) {
 		return ResponseEntity.ok(matchmakingService.getUserLobby(authToken));
@@ -56,6 +62,11 @@ public class MatchmakingController extends BaseServiceController {
 	@PostMapping("/settype/{lobbyUUID}")
 	public ResponseEntity<LobbyTypeSetResponse> settype(@RequestHeader("token") String authToken, @PathVariable String lobbyUUID, @RequestBody GameType selectedGameType) {
 		return ResponseEntity.ok(matchmakingService.setType(authToken, lobbyUUID, selectedGameType));
+	}
+	
+	@PostMapping("/resettype/{lobbyUUID}")
+	public ResponseEntity<LobbyTypeSetResponse> resettype(@RequestHeader("token") String authToken, @PathVariable String lobbyUUID) {
+		return ResponseEntity.ok(matchmakingService.setType(authToken, lobbyUUID, null));
 	}
 	
 	@PostMapping("/invite/{username}")

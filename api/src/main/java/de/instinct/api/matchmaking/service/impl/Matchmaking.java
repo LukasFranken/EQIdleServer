@@ -9,6 +9,7 @@ import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
+import de.instinct.api.matchmaking.dto.LobbyLeaveResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
@@ -39,6 +40,16 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 	}
 	
 	@Override
+	public LobbyLeaveResponse leave() {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("leave")
+				.build());
+		return ObjectJSONMapper.mapJSON(response, LobbyLeaveResponse.class);
+	}
+	
+	@Override
 	public String get() {
 		if (!isConnected()) return null;
 		return super.sendRequest(RESTRequest.builder()
@@ -55,6 +66,17 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 				.endpoint("settype")
 				.pathVariable(lobbyUUID)
 				.payload(selectedGameType)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, LobbyTypeSetResponse.class);
+	}
+	
+	@Override
+	public LobbyTypeSetResponse resettype(String lobbyUUID) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("resettype")
+				.pathVariable(lobbyUUID)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, LobbyTypeSetResponse.class);
 	}

@@ -4,6 +4,7 @@ import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
+import de.instinct.api.matchmaking.dto.LobbyLeaveResponse;
 import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
@@ -13,6 +14,8 @@ import de.instinct.api.matchmaking.model.GameType;
 public interface MatchmakingService {
 
 	LobbyCreationResponse createLobby(String authToken);
+	
+	LobbyLeaveResponse leaveLobby(String authToken);
 	
 	String getUserLobby(String authToken);
 	
