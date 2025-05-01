@@ -16,10 +16,12 @@ public class ServerConnectionListener extends Listener {
 		connections = new ArrayList<>();
 	}
 	
+	@Override
 	public void connected(Connection c) {
         connections.add(c);
     }
 
+	@Override
     public void received(Connection c, Object o) {
     	System.out.println("received: " + o);
     	if (o instanceof JoinMessage) {
@@ -32,9 +34,9 @@ public class ServerConnectionListener extends Listener {
         }
     }
 
+	@Override
     public void disconnected(Connection c) {
         connections.remove(c);
-        
     }
 
 	public void dispose() {

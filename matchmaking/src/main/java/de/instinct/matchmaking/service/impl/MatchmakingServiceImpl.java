@@ -267,7 +267,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				.type(matchedLobbies.get(0).getType())
 				.users(userData)
 				.build());
-		
+		System.out.println("creating session");
 		for (Lobby lobby : matchedLobbies) {
 			lobby.getGameserverInfo().setStatus(GameserverStatus.IN_CREATION);
 			lobby.getGameserverInfo().setGameSessionUUID(gameSessionToken);
@@ -281,7 +281,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				switch (code) {
 				case READY:
 					lobby.getGameserverInfo().setStatus(GameserverStatus.READY);
-					lobby.getGameserverInfo().setAddress("localhost");
+					lobby.getGameserverInfo().setAddress("eqgame.dev");
 					lobby.getGameserverInfo().setPort(9005);
 					lobby.setCode(LobbyStatusCode.IN_GAME);
 					break;

@@ -43,10 +43,9 @@ public class GameDataLoader {
 		List<Player> players = new ArrayList<>();
 		for (User user : session.getUsers()) {
 			if (user.getTeamid() == 1) {
-				Player userPlayer = new Player();
-				userPlayer.name = user.getName();
-				userPlayer.teamId = user.getTeamid();
+				Player userPlayer = getPlayer(user);
 				userPlayer.playerId = id;
+				user.setPlayerId(userPlayer.playerId);
 				players.add(userPlayer);
 				id++;
 			}
@@ -63,10 +62,9 @@ public class GameDataLoader {
 		} else {
 			for (User user : session.getUsers()) {
 				if (user.getTeamid() == 2) {
-					Player userPlayer = new Player();
-					userPlayer.name = user.getName();
-					userPlayer.teamId = user.getTeamid();
+					Player userPlayer = getPlayer(user);
 					userPlayer.playerId = id;
+					user.setPlayerId(userPlayer.playerId);
 					players.add(userPlayer);
 					id++;
 				}
@@ -74,6 +72,19 @@ public class GameDataLoader {
 		}
 		
 		return players;
+	}
+
+	private Player getPlayer(User user) {
+		Player newPlayer = new Player();
+		newPlayer.name = user.getName();
+		newPlayer.teamId = user.getTeamid();
+		newPlayer.fleetMovementSpeed = user.getLoadout().getFleetMovementSpeed();
+		newPlayer.resourceGenerationSpeed = user.getLoadout().getResourceGenerationSpeed();
+		newPlayer.commandPointsGenerationSpeed = user.getLoadout().getCommandPointsGenerationSpeed();
+		newPlayer.startCommandPoints = user.getLoadout().getStartCommandPoints();
+		newPlayer.currentCommandPoints = newPlayer.startCommandPoints;
+		newPlayer.maxCommandPoints = user.getLoadout().getMaxCommandPoints();
+		return newPlayer;
 	}
 
 	private List<Planet> generateMap(GameType gameType) {
@@ -90,7 +101,7 @@ public class GameDataLoader {
     	startPlanetPlayerOne.ownerId = 1;
     	startPlanetPlayerOne.value = 10;
     	startPlanetPlayerOne.xPos = 0;
-    	startPlanetPlayerOne.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 350;
+    	startPlanetPlayerOne.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 450;
     	planets.add(startPlanetPlayerOne);
     	
     	Planet startPlanetPlayerTwo = new Planet();
@@ -98,7 +109,7 @@ public class GameDataLoader {
     	startPlanetPlayerTwo.ownerId = gameType.factionMode.teamPlayerCount + 1;
     	startPlanetPlayerTwo.value = 10;
     	startPlanetPlayerTwo.xPos = 0;
-    	startPlanetPlayerTwo.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 350;
+    	startPlanetPlayerTwo.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 450;
     	planets.add(startPlanetPlayerTwo);
     	
     	if (gameType.factionMode.teamPlayerCount >= 2) {
@@ -107,7 +118,7 @@ public class GameDataLoader {
     		startPlanetPlayerThree.ownerId = 2;
     		startPlanetPlayerThree.value = 10;
     		startPlanetPlayerThree.xPos = -200;
-    		startPlanetPlayerThree.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 350;
+    		startPlanetPlayerThree.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 450;
         	planets.add(startPlanetPlayerThree);
         	
         	Planet startPlanetPlayerFour = new Planet();
@@ -115,7 +126,7 @@ public class GameDataLoader {
         	startPlanetPlayerFour.ownerId = gameType.factionMode.teamPlayerCount + 2;
         	startPlanetPlayerFour.value = 10;
         	startPlanetPlayerFour.xPos = 200;
-        	startPlanetPlayerFour.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 350;
+        	startPlanetPlayerFour.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 450;
         	planets.add(startPlanetPlayerFour);
 		}
     	
@@ -125,7 +136,7 @@ public class GameDataLoader {
     		startPlanetPlayerFive.ownerId = 3;
     		startPlanetPlayerFive.value = 10;
     		startPlanetPlayerFive.xPos = 200;
-    		startPlanetPlayerFive.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 350;
+    		startPlanetPlayerFive.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 450;
         	planets.add(startPlanetPlayerFive);
         	
         	Planet startPlanetPlayerSix = new Planet();
@@ -133,7 +144,7 @@ public class GameDataLoader {
         	startPlanetPlayerSix.ownerId = gameType.factionMode.teamPlayerCount + 3;
         	startPlanetPlayerSix.value = 10;
         	startPlanetPlayerSix.xPos = -200;
-        	startPlanetPlayerSix.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 350;
+        	startPlanetPlayerSix.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 450;
         	planets.add(startPlanetPlayerSix);
 		}
 	}
@@ -176,7 +187,7 @@ public class GameDataLoader {
     	neutralPlanet6.ownerId = 0;
     	neutralPlanet6.value = 10;
     	neutralPlanet6.xPos = 150;
-    	neutralPlanet6.yPos = 500;
+    	neutralPlanet6.yPos = 400;
     	planets.add(neutralPlanet6);
     	
     	Planet neutralPlanet7 = new Planet();
@@ -184,7 +195,7 @@ public class GameDataLoader {
     	neutralPlanet7.ownerId = 0;
     	neutralPlanet7.value = 10;
     	neutralPlanet7.xPos = -150;
-    	neutralPlanet7.yPos = -500;
+    	neutralPlanet7.yPos = -400;
     	planets.add(neutralPlanet7);
 	}
 

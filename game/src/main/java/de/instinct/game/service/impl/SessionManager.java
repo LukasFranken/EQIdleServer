@@ -84,9 +84,10 @@ public class SessionManager {
 	}
 
 	private static void updateClients(GameSession session) {
-		System.out.println("updating users: " + session.getUsers());
 		for (User user : session.getUsers()) {
-			user.getConnection().sendTCP(session.getGameState());
+			if (user.getConnection() != null && user.getConnection().isConnected()) {
+				user.getConnection().sendTCP(session.getGameState());
+			}
 		}
 	}
 
@@ -134,7 +135,7 @@ public class SessionManager {
 				.users(loadUsers(request))
 				.build();
 		
-		gameDataLoader.generateGameState(session);
+		session.setGameState(gameDataLoader.generateGameState(session));
 		inCreationSessions.add(session);
 		API.matchmaking().callback(session.getUuid(), CallbackCode.READY);
 	}
@@ -160,18 +161,35 @@ public class SessionManager {
 					PlayerAssigned playerAssigned = new PlayerAssigned();
 					playerAssigned.playerId = user.getPlayerId();
 					user.getConnection().sendTCP(playerAssigned);
-					for (User checkUser : session.getUsers()) {
-						if (checkUser.getConnection() == null) {
-							return;
-						}
-					}
-					System.out.println("added to active sessions");
-					inCreationSessions.remove(session);
-					activeSessions.add(session);
+					checkKickoff(session);
 					return;
 				}
 			}
 		}
+		for (GameSession session : activeSessions) {
+			for (User user : session.getUsers()) {
+				if (user.getUuid().contentEquals(joinMessage.playerUUID)) {
+					user.setConnection(connection);
+					PlayerAssigned playerAssigned = new PlayerAssigned();
+					playerAssigned.playerId = user.getPlayerId();
+					user.getConnection().sendTCP(playerAssigned);
+					user.getConnection().sendTCP(session.getGameState());
+				}
+			}
+		}
+	}
+
+	private static void checkKickoff(GameSession session) {
+		for (User checkUser : session.getUsers()) {
+			if (checkUser.getConnection() == null) {
+				return;
+			}
+		}
+		
+		inCreationSessions.remove(session);
+		session.setLastUpdateTimeMS(System.currentTimeMillis());
+		activeSessions.add(session);
+		updateClients(session);
 	}
 
 }
