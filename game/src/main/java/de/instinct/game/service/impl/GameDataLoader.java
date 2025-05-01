@@ -1,6 +1,7 @@
 package de.instinct.game.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.UUID;
@@ -35,12 +36,21 @@ public class GameDataLoader {
 		initialGameState.activeEvents = new PriorityQueue<>();
 		initialGameState.winner = 0;
 		initialGameState.atpToWin = 50;
+		initialGameState.teamATPs = new HashMap<>();
+		initialGameState.teamATPs.put(1, 0D);
+		initialGameState.teamATPs.put(2, 0D);
 		return initialGameState;
 	}
 
 	public List<Player> loadPlayers(GameSession session) {
-		int id = 1;
 		List<Player> players = new ArrayList<>();
+		
+		Player neutralPlayer = new Player();
+		neutralPlayer.playerId = 0;
+		neutralPlayer.teamId = 0;
+		players.add(neutralPlayer);
+		
+		int id = 1;
 		for (User user : session.getUsers()) {
 			if (user.getTeamid() == 1) {
 				Player userPlayer = getPlayer(user);
@@ -101,7 +111,7 @@ public class GameDataLoader {
     	startPlanetPlayerOne.ownerId = 1;
     	startPlanetPlayerOne.value = 10;
     	startPlanetPlayerOne.xPos = 0;
-    	startPlanetPlayerOne.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 450;
+    	startPlanetPlayerOne.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + 300;
     	planets.add(startPlanetPlayerOne);
     	
     	Planet startPlanetPlayerTwo = new Planet();
@@ -109,49 +119,49 @@ public class GameDataLoader {
     	startPlanetPlayerTwo.ownerId = gameType.factionMode.teamPlayerCount + 1;
     	startPlanetPlayerTwo.value = 10;
     	startPlanetPlayerTwo.xPos = 0;
-    	startPlanetPlayerTwo.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 450;
+    	startPlanetPlayerTwo.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - 300;
     	planets.add(startPlanetPlayerTwo);
     	
     	if (gameType.factionMode.teamPlayerCount >= 2) {
     		Planet startPlanetPlayerThree = new Planet();
-    		startPlanetPlayerThree.id = 0;
+    		startPlanetPlayerThree.id = 2;
     		startPlanetPlayerThree.ownerId = 2;
     		startPlanetPlayerThree.value = 10;
     		startPlanetPlayerThree.xPos = -200;
-    		startPlanetPlayerThree.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 450;
+    		startPlanetPlayerThree.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + 300;
         	planets.add(startPlanetPlayerThree);
         	
         	Planet startPlanetPlayerFour = new Planet();
-        	startPlanetPlayerFour.id = 1;
+        	startPlanetPlayerFour.id = 3;
         	startPlanetPlayerFour.ownerId = gameType.factionMode.teamPlayerCount + 2;
         	startPlanetPlayerFour.value = 10;
         	startPlanetPlayerFour.xPos = 200;
-        	startPlanetPlayerFour.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 450;
+        	startPlanetPlayerFour.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - 300;
         	planets.add(startPlanetPlayerFour);
 		}
     	
     	if (gameType.factionMode.teamPlayerCount >= 3) {
     		Planet startPlanetPlayerFive = new Planet();
-    		startPlanetPlayerFive.id = 0;
+    		startPlanetPlayerFive.id = 4;
     		startPlanetPlayerFive.ownerId = 3;
     		startPlanetPlayerFive.value = 10;
     		startPlanetPlayerFive.xPos = 200;
-    		startPlanetPlayerFive.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + EngineUtility.PLANET_RADIUS + 450;
+    		startPlanetPlayerFive.yPos = -(EngineUtility.MAP_BOUNDS.y / 2) + 300;
         	planets.add(startPlanetPlayerFive);
         	
         	Planet startPlanetPlayerSix = new Planet();
-        	startPlanetPlayerSix.id = 1;
+        	startPlanetPlayerSix.id = 5;
         	startPlanetPlayerSix.ownerId = gameType.factionMode.teamPlayerCount + 3;
         	startPlanetPlayerSix.value = 10;
         	startPlanetPlayerSix.xPos = -200;
-        	startPlanetPlayerSix.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - EngineUtility.PLANET_RADIUS - 450;
+        	startPlanetPlayerSix.yPos = (EngineUtility.MAP_BOUNDS.y / 2) - 300;
         	planets.add(startPlanetPlayerSix);
 		}
 	}
 
 	private void generateNeutralPlanets(List<Planet> planets) {
 		Planet neutralPlanet2 = new Planet();
-    	neutralPlanet2.id = 3;
+    	neutralPlanet2.id = 6;
     	neutralPlanet2.ownerId = 0;
     	neutralPlanet2.value = 30;
     	neutralPlanet2.xPos = -250;
@@ -159,7 +169,7 @@ public class GameDataLoader {
     	planets.add(neutralPlanet2);
     	
     	Planet neutralPlanet3 = new Planet();
-    	neutralPlanet3.id = 4;
+    	neutralPlanet3.id = 7;
     	neutralPlanet3.ownerId = 0;
     	neutralPlanet3.value = 30;
     	neutralPlanet3.xPos = 250;
@@ -167,7 +177,7 @@ public class GameDataLoader {
     	planets.add(neutralPlanet3);
     	
     	Planet neutralPlanet4 = new Planet();
-    	neutralPlanet4.id = 5;
+    	neutralPlanet4.id = 8;
     	neutralPlanet4.ownerId = 0;
     	neutralPlanet4.value = 20;
     	neutralPlanet4.xPos = 150;
@@ -175,7 +185,7 @@ public class GameDataLoader {
     	planets.add(neutralPlanet4);
     	
     	Planet neutralPlanet5 = new Planet();
-    	neutralPlanet5.id = 6;
+    	neutralPlanet5.id = 9;
     	neutralPlanet5.ownerId = 0;
     	neutralPlanet5.value = 20;
     	neutralPlanet5.xPos = -150;
@@ -183,7 +193,7 @@ public class GameDataLoader {
     	planets.add(neutralPlanet5);
     	
     	Planet neutralPlanet6 = new Planet();
-    	neutralPlanet6.id = 7;
+    	neutralPlanet6.id = 10;
     	neutralPlanet6.ownerId = 0;
     	neutralPlanet6.value = 10;
     	neutralPlanet6.xPos = 150;
@@ -191,7 +201,7 @@ public class GameDataLoader {
     	planets.add(neutralPlanet6);
     	
     	Planet neutralPlanet7 = new Planet();
-    	neutralPlanet7.id = 8;
+    	neutralPlanet7.id = 11;
     	neutralPlanet7.ownerId = 0;
     	neutralPlanet7.value = 10;
     	neutralPlanet7.xPos = -150;
@@ -201,7 +211,7 @@ public class GameDataLoader {
 
 	private void generateAncientPlanet(List<Planet> planets) {
 		Planet ancientPlanet = new Planet();
-    	ancientPlanet.id = 2;
+    	ancientPlanet.id = 12;
     	ancientPlanet.ownerId = 0;
     	ancientPlanet.value = 0;
     	ancientPlanet.xPos = 0;
