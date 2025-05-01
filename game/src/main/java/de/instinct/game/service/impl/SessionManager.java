@@ -107,8 +107,8 @@ public class SessionManager {
 
 	private static int getPlayerId(GameSession currentSession, String userUUID) {
 		User currentUser = currentSession.getUsers().stream()
-				.findFirst()
 				.filter(user -> user.getUuid().contentEquals(userUUID))
+				.findFirst()
 				.orElse(null);
 		return currentUser == null ? -1 : currentUser.getPlayerId();
 	}
@@ -161,6 +161,7 @@ public class SessionManager {
 					PlayerAssigned playerAssigned = new PlayerAssigned();
 					playerAssigned.playerId = user.getPlayerId();
 					user.getConnection().sendTCP(playerAssigned);
+					System.out.println("assigning id " + playerAssigned.playerId + " to " + user.getName());
 					checkKickoff(session);
 					return;
 				}
