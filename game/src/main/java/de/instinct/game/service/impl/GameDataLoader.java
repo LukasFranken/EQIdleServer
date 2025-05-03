@@ -37,6 +37,7 @@ public class GameDataLoader {
 		initialGameState.winner = 0;
 		initialGameState.atpToWin = 50;
 		initialGameState.teamATPs = new HashMap<>();
+		initialGameState.teamATPs.put(0, 0D);
 		initialGameState.teamATPs.put(1, 0D);
 		initialGameState.teamATPs.put(2, 0D);
 		return initialGameState;
