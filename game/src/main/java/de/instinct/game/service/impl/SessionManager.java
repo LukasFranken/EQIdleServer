@@ -14,11 +14,13 @@ import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.UserData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.model.VersusMode;
+import de.instinct.engine.EngineUtility;
 import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.Player;
 import de.instinct.engine.net.message.types.FleetMovementMessage;
 import de.instinct.engine.net.message.types.JoinMessage;
+import de.instinct.engine.net.message.types.LoadedMessage;
 import de.instinct.engine.net.message.types.PlayerAssigned;
 import de.instinct.engine.order.GameOrder;
 import de.instinct.engine.order.types.FleetMovementOrder;
@@ -158,6 +160,7 @@ public class SessionManager {
 			for (User user : session.getUsers()) {
 				if (user.getUuid().contentEquals(joinMessage.playerUUID)) {
 					user.setConnection(connection);
+					EngineUtility.getPlayer(session.getGameState(), user.getPlayerId()).connected = true;
 					PlayerAssigned playerAssigned = new PlayerAssigned();
 					playerAssigned.playerId = user.getPlayerId();
 					user.getConnection().sendTCP(playerAssigned);
@@ -191,6 +194,44 @@ public class SessionManager {
 		session.setLastUpdateTimeMS(System.currentTimeMillis());
 		activeSessions.add(session);
 		updateClients(session);
+	}
+
+	public static void loaded(LoadedMessage loadedMessage, Connection c) {
+		for (GameSession session : activeSessions) {
+			for (User user : session.getUsers()) {
+				if (user.getUuid().contentEquals(loadedMessage.playerUUID)) {
+					EngineUtility.getPlayer(session.getGameState(), user.getPlayerId()).loaded = true;
+					System.out.println("game loaded: id " + user.getPlayerId() + " - " + user.getName());
+					checkGameStart(session);
+					return;
+				}
+			}
+		}
+	}
+
+	private static void checkGameStart(GameSession session) {
+		boolean canStart = true;
+		for (User user : session.getUsers()) {
+			Player player = EngineUtility.getPlayer(session.getGameState(), user.getPlayerId());
+			if (!player.loaded && player.teamId != 0) canStart = false;
+		}
+		if (canStart) {
+			session.getGameState().started = true;
+		}
+		updateClients(session);
+	}
+
+	public static void disconnect(Connection c) {
+		for (GameSession session : inCreationSessions) {
+			for (User user : session.getUsers()) {
+				if (user.getConnection() == c) {
+					EngineUtility.getPlayer(session.getGameState(), user.getPlayerId()).connected = false;
+					System.out.println("disconnected: id " + user.getPlayerId() + " - " + user.getName());
+					updateClients(session);
+					return;
+				}
+			}
+		}
 	}
 
 }

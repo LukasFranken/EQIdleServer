@@ -67,6 +67,8 @@ public class GameDataLoader {
 				AiPlayer aiPlayer = aiEngine.initialize(AiDifficulty.RETARDED);
 				aiPlayer.playerId = id;
 				aiPlayer.teamId = 2;
+				aiPlayer.connected = true;
+				aiPlayer.loaded = true;
 				players.add(aiPlayer);
 				id++;
 			}
