@@ -9,12 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileData {
+public class ResourceData {
 	
-	private String username;
-	private PlayerRank rank;
-	private UserRank userRank;
-	private long currentExp;
-	private ResourceData resources;
+	private long credits;
+	private long iron;
+	private long gold;
+	private long quartz;
+	private long deuterium;
+	private long equilibrium;
 
 }

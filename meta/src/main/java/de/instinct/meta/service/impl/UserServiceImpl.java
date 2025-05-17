@@ -5,11 +5,14 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.Loadout;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.ResourceData;
+import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.UserRank;
 import de.instinct.meta.service.UserService;
 
@@ -33,6 +36,7 @@ public class UserServiceImpl implements UserService {
 		users.put(token, ProfileData.builder()
 				.rank(PlayerRank.RECRUIT)
 				.userRank(UserRank.REGISTERED)
+				.resources(ResourceData.builder().build())
 				.build());
 		return RegisterResponseCode.SUCCESS;
 	}
@@ -79,6 +83,41 @@ public class UserServiceImpl implements UserService {
 	                .map(Map.Entry::getKey)
 	                .findFirst()
 	                .orElse(null);
+	}
+
+	@Override
+	public ResourceUpdateResponseCode updateResources(String token, ResourceData resourceUpdate) {
+		ProfileData userProfile = users.get(token);
+		if (userProfile == null) return ResourceUpdateResponseCode.INVALID_TOKEN;
+		if (userProfile.getResources() == null) return ResourceUpdateResponseCode.ERROR;
+		updateResourceData(userProfile.getResources(), resourceUpdate);
+		return ResourceUpdateResponseCode.SUCCESS;
+	}
+	
+	public void updateResourceData(ResourceData resources, ResourceData resourceUpdate) {
+		resources.setCredits(resources.getCredits() + resourceUpdate.getCredits());
+		resources.setIron(resources.getIron() + resourceUpdate.getIron());
+		resources.setGold(resources.getGold() + resourceUpdate.getGold());
+		resources.setQuartz(resources.getQuartz() + resourceUpdate.getQuartz());
+		resources.setDeuterium(resources.getDeuterium() + resourceUpdate.getDeuterium());
+		resources.setEquilibrium(resources.getEquilibrium() + resourceUpdate.getEquilibrium());
+	}
+
+	@Override
+	public ExperienceUpdateResponseCode addExperience(String token, String experience) {
+		ProfileData userProfile = users.get(token);
+		if (userProfile == null) return ExperienceUpdateResponseCode.INVALID_TOKEN;
+		long exp = 0;
+		try {
+			exp = Long.parseLong(experience);
+		} catch (Exception e) {
+			return ExperienceUpdateResponseCode.ERROR;
+		}
+		userProfile.setCurrentExp(userProfile.getCurrentExp() + exp);
+		if (userProfile.getRank().getNextRequiredExp() <= userProfile.getCurrentExp()) {
+			userProfile.setRank(userProfile.getRank().getNextRank());
+		}
+		return ExperienceUpdateResponseCode.SUCCESS;
 	}
 
 }

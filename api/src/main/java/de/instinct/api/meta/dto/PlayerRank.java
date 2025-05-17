@@ -73,10 +73,10 @@ public enum PlayerRank {
 		this.requiredExp = requiredExp;
 	}
 	
-	public static PlayerRank getCurrent(long currentExp) {
+	public static PlayerRank getByExp(long exp) {
 		PlayerRank current = RECRUIT;
 		for (PlayerRank rank : PlayerRank.values()) {
-			if (rank.requiredExp <= currentExp) {
+			if (rank.requiredExp <= exp) {
 				current = rank;
 			} else {
 				break;
@@ -104,6 +104,15 @@ public enum PlayerRank {
 			return values[ordinal + 1].requiredExp;
 		}
 		return -1L;
+	}
+	
+	public PlayerRank getNextRank() {
+		int ordinal = this.ordinal();
+		PlayerRank[] values = PlayerRank.values();
+		if (ordinal + 1 < values.length) {
+			return values[ordinal + 1];
+		}
+		return values[ordinal];
 	}
 	
 }

@@ -5,15 +5,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
+import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.Loadout;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.ResourceData;
+import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.meta.service.UserService;
 import de.instinct.meta.service.impl.UserServiceImpl;
 
@@ -56,6 +60,16 @@ public class MetaController extends BaseServiceController {
 	@GetMapping("/token/{username}")
 	public ResponseEntity<String> token(@PathVariable String username) {
 		return ResponseEntity.ok(userService.token(username));
+	}
+	
+	@PostMapping("/resources/{token}")
+	public ResponseEntity<ResourceUpdateResponseCode> resources(@PathVariable String token, @RequestBody ResourceData resourceUpdate) {
+		return ResponseEntity.ok(userService.updateResources(token, resourceUpdate));
+	}
+	
+	@PostMapping("/experience/{token}/{experience}")
+	public ResponseEntity<ExperienceUpdateResponseCode> experience(@PathVariable String token, @PathVariable String experience) {
+		return ResponseEntity.ok(userService.addExperience(token, experience));
 	}
 	
 }

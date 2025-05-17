@@ -1,10 +1,13 @@
 package de.instinct.api.meta.service;
 
 import de.instinct.api.core.service.BaseServiceInterface;
+import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.Loadout;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.ResourceData;
+import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 
 public interface MetaInterface extends BaseServiceInterface {
 
@@ -17,5 +20,9 @@ public interface MetaInterface extends BaseServiceInterface {
 	Loadout loadout(String token);
 
 	String token(String username);
+	
+	ResourceUpdateResponseCode resources(String token, ResourceData resourceUpdate);
+	
+	ExperienceUpdateResponseCode experience(String token, long experience);
 	
 }

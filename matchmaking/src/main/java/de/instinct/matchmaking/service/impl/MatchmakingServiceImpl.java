@@ -25,6 +25,7 @@ import de.instinct.api.matchmaking.dto.MatchmakingStatusResponseCode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.Invite;
 import de.instinct.api.matchmaking.model.VersusMode;
+import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.matchmaking.service.MatchmakingMapper;
 import de.instinct.matchmaking.service.MatchmakingService;
 import de.instinct.matchmaking.service.model.GameserverInfo;
@@ -305,6 +306,17 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				lobby.getGameserverInfo().setPort(0);
 				lobby.getGameserverInfo().setGameSessionUUID(null);
 				lobby.setCode(LobbyStatusCode.IDLE);
+				for (String userUUID : lobby.getUserUUIDs()) {
+					API.meta().experience(userUUID, 40);
+					API.meta().resources(userUUID, ResourceData.builder()
+							.credits(500)
+							.iron(50)
+							.gold(25)
+							.quartz(10)
+							.deuterium(5)
+							.equilibrium(1)
+							.build());
+				}
 			}
 		}
 	}
