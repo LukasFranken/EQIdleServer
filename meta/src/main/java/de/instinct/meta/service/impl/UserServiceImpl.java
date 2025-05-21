@@ -1,12 +1,16 @@
 package de.instinct.meta.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.Loadout;
+import de.instinct.api.meta.dto.ModuleData;
+import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.api.meta.dto.ProfileData;
@@ -15,11 +19,12 @@ import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.UserRank;
 import de.instinct.meta.service.UserService;
+import de.instinct.meta.service.model.UserData;
 
 @Service
 public class UserServiceImpl implements UserService {
 	
-	private Map<String, ProfileData> users;
+	private Map<String, UserData> users;
 	
 	public UserServiceImpl() {
 		users = new HashMap<>();
@@ -27,17 +32,40 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ProfileData getProfile(String token) {
-		return users.get(token);
+		return users.get(token).getProfile();
+	}
+	
+	@Override
+	public ModuleData getModules(String token) {
+		return users.get(token).getModules();
+	}
+	
+	@Override
+	public ModuleRegistrationResponseCode registerModule(String token, MenuModule module) {
+		UserData user = users.get(token);
+		if (user == null) return ModuleRegistrationResponseCode.INVALID_TOKEN;
+		if (user.getModules().getEnabledModules().contains(module)) return ModuleRegistrationResponseCode.ALREADY_REGISTERED;
+		user.getModules().getEnabledModules().add(module);
+		return ModuleRegistrationResponseCode.SUCCESS;
 	}
 
 	@Override
 	public RegisterResponseCode initialize(String token) {
 		if (token == null || token.contentEquals("")) return RegisterResponseCode.BAD_TOKEN;
-		users.put(token, ProfileData.builder()
-				.rank(PlayerRank.RECRUIT)
-				.userRank(UserRank.REGISTERED)
+		UserData newUser = UserData.builder()
+				.profile(ProfileData.builder()
+						.rank(PlayerRank.RECRUIT)
+						.userRank(UserRank.REGISTERED)
+						.build())
+				.modules(ModuleData.builder()
+						.enabledModules(new ArrayList<>())
+						.build())
 				.resources(ResourceData.builder().build())
-				.build());
+				.build();
+		newUser.getModules().getEnabledModules().add(MenuModule.PLAY);
+		newUser.getModules().getEnabledModules().add(MenuModule.PROFILE);
+		newUser.getModules().getEnabledModules().add(MenuModule.SETTINGS);
+		users.put(token, newUser);
 		return RegisterResponseCode.SUCCESS;
 	}
 
@@ -45,7 +73,7 @@ public class UserServiceImpl implements UserService {
 	public NameRegisterResponseCode registerName(String token, String name) {
 		if (!usernameExists(name)) {
 			if (users.containsKey(token)) {
-				users.get(token).setUsername(name);
+				users.get(token).getProfile().setUsername(name);
 				return NameRegisterResponseCode.SUCCESS;
 			} else {
 				return NameRegisterResponseCode.BAD_TOKEN;
@@ -56,8 +84,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private boolean usernameExists(String name) {
-		for (ProfileData profile : users.values()) {
-			if (profile.getUsername() != null && profile.getUsername().contentEquals(name)) {
+		for (UserData user : users.values()) {
+			if (user.getProfile().getUsername() != null && user.getProfile().getUsername().contentEquals(name)) {
 				return true;
 			}
 		}
@@ -79,7 +107,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String token(String username) {
 	    return users.entrySet().stream()
-	                .filter(user -> username.equals(user.getValue().getUsername()))
+	                .filter(user -> username.equals(user.getValue().getProfile().getUsername()))
 	                .map(Map.Entry::getKey)
 	                .findFirst()
 	                .orElse(null);
@@ -87,10 +115,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResourceUpdateResponseCode updateResources(String token, ResourceData resourceUpdate) {
-		ProfileData userProfile = users.get(token);
-		if (userProfile == null) return ResourceUpdateResponseCode.INVALID_TOKEN;
-		if (userProfile.getResources() == null) return ResourceUpdateResponseCode.ERROR;
-		updateResourceData(userProfile.getResources(), resourceUpdate);
+		UserData user = users.get(token);
+		if (user == null) return ResourceUpdateResponseCode.INVALID_TOKEN;
+		if (user.getResources() == null) return ResourceUpdateResponseCode.ERROR;
+		updateResourceData(user.getResources(), resourceUpdate);
 		return ResourceUpdateResponseCode.SUCCESS;
 	}
 	
@@ -105,17 +133,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ExperienceUpdateResponseCode addExperience(String token, String experience) {
-		ProfileData userProfile = users.get(token);
-		if (userProfile == null) return ExperienceUpdateResponseCode.INVALID_TOKEN;
+		UserData user = users.get(token);
+		if (user == null) return ExperienceUpdateResponseCode.INVALID_TOKEN;
+		ProfileData profile = user.getProfile();
 		long exp = 0;
 		try {
 			exp = Long.parseLong(experience);
 		} catch (Exception e) {
 			return ExperienceUpdateResponseCode.ERROR;
 		}
-		userProfile.setCurrentExp(userProfile.getCurrentExp() + exp);
-		if (userProfile.getRank().getNextRequiredExp() <= userProfile.getCurrentExp()) {
-			userProfile.setRank(userProfile.getRank().getNextRank());
+		profile.setCurrentExp(profile.getCurrentExp() + exp);
+		if (profile.getRank().getNextRequiredExp() <= profile.getCurrentExp()) {
+			profile.setRank(profile.getRank().getNextRank());
 		}
 		return ExperienceUpdateResponseCode.SUCCESS;
 	}

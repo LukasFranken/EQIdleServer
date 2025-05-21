@@ -1,5 +1,8 @@
 package de.instinct.api.meta.dto;
 
+import java.util.List;
+
+import de.instinct.api.core.modules.MenuModule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProfileData {
+public class ModuleData {
 	
-	private String username;
-	private PlayerRank rank;
-	private UserRank userRank;
-	private long currentExp;
+	private List<MenuModule> enabledModules;
 
 }

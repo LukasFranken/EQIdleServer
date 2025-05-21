@@ -11,7 +11,7 @@ import com.esotericsoftware.kryonet.Connection;
 
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
-import de.instinct.api.game.dto.UserData;
+import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.engine.EngineUtility;
@@ -144,7 +144,7 @@ public class SessionManager {
 
 	private static List<User> loadUsers(GameSessionInitializationRequest request) {
 		List<User> users = new ArrayList<>();
-		for (UserData userData : request.getUsers()) {
+		for (UserTeamData userData : request.getUsers()) {
 			users.add(User.builder()
 					.name(API.meta().profile(userData.getUuid()).getUsername())
 					.uuid(userData.getUuid())

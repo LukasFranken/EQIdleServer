@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserData {
+public class UserTeamData {
 	
 	private String uuid;
 	private int teamId;

@@ -2,10 +2,13 @@ package de.instinct.api.meta.service.impl;
 
 import de.instinct.api.core.model.RESTRequest;
 import de.instinct.api.core.model.SupportedRequestType;
+import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.Loadout;
+import de.instinct.api.meta.dto.ModuleData;
+import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
@@ -45,6 +48,29 @@ public class Meta extends BaseService implements MetaInterface {
 				.pathVariable(token)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ProfileData.class);
+	}
+	
+	@Override
+	public ModuleData modules(String token) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("modules")
+				.pathVariable(token)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ModuleData.class);
+	}
+	
+	@Override
+	public ModuleRegistrationResponseCode registerModule(String token, MenuModule module) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("modules")
+				.payload(module)
+				.pathVariable(token)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ModuleRegistrationResponseCode.class);
 	}
 
 	@Override

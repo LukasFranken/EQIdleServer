@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GameSessionInitializationRequest {
 	
-	private List<UserData> users;
+	private List<UserTeamData> users;
 	private GameType type;
 
 }

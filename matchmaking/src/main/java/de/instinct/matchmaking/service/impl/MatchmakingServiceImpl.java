@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
-import de.instinct.api.game.dto.UserData;
+import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
@@ -208,18 +208,18 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	    List<Lobby> matched = new ArrayList<>();
 	    if (findCombination(candidates, 0, requiredPlayers, matched)) {
-	        List<UserData> usersWithTeams = assignTeams(matched, type);
+	        List<UserTeamData> usersWithTeams = assignTeams(matched, type);
 	        createGameSession(matched, usersWithTeams);
 	    }
 	}
 
-	private List<UserData> assignTeams(List<Lobby> matchedLobbies, GameType type) {
-	    List<UserData> result = new ArrayList<>();
+	private List<UserTeamData> assignTeams(List<Lobby> matchedLobbies, GameType type) {
+	    List<UserTeamData> result = new ArrayList<>();
 
 	    if (type.getVersusMode() == VersusMode.AI) {
 	        matchedLobbies.forEach(lobby ->
 	            lobby.getUserUUIDs().forEach(uuid ->
-	                result.add(new UserData(uuid, 1))
+	                result.add(new UserTeamData(uuid, 1))
 	            )
 	        );
 	        return result;
@@ -237,7 +237,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	    for (Lobby lobby : matchedLobbies) {
 	        int teamId = team1Ids.contains(lobby.getLobbyUUID()) ? 1 : 2;
 	        lobby.getUserUUIDs().forEach(uuid ->
-	            result.add(new UserData(uuid, teamId))
+	            result.add(new UserTeamData(uuid, teamId))
 	        );
 	    }
 
@@ -263,7 +263,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	    return false;
 	}
 	
-	private void createGameSession(List<Lobby> matchedLobbies, List<UserData> userData) {
+	private void createGameSession(List<Lobby> matchedLobbies, List<UserTeamData> userData) {
 		String gameSessionToken = API.game().create(GameSessionInitializationRequest.builder()
 				.type(matchedLobbies.get(0).getType())
 				.users(userData)
