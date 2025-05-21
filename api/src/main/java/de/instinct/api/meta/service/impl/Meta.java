@@ -62,6 +62,17 @@ public class Meta extends BaseService implements MetaInterface {
 	}
 	
 	@Override
+	public ResourceData resources(String token) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("resources")
+				.pathVariable(token)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ResourceData.class);
+	}
+	
+	@Override
 	public ModuleRegistrationResponseCode registerModule(String token, MenuModule module) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
@@ -106,7 +117,7 @@ public class Meta extends BaseService implements MetaInterface {
 	}
 
 	@Override
-	public ResourceUpdateResponseCode resources(String token, ResourceData resourceUpdate) {
+	public ResourceUpdateResponseCode addResources(String token, ResourceData resourceUpdate) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)

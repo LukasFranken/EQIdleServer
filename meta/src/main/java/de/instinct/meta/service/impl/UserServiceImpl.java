@@ -32,12 +32,23 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ProfileData getProfile(String token) {
-		return users.get(token).getProfile();
+		UserData user = users.get(token);
+		if (user == null) return null;
+		return user.getProfile();
 	}
 	
 	@Override
 	public ModuleData getModules(String token) {
-		return users.get(token).getModules();
+		UserData user = users.get(token);
+		if (user == null) return null;
+		return user.getModules();
+	}
+	
+	@Override
+	public ResourceData getResources(String token) {
+		UserData user = users.get(token);
+		if (user == null) return null;
+		return user.getResources();
 	}
 	
 	@Override

@@ -20,6 +20,8 @@ public interface MetaInterface extends BaseServiceInterface {
 	
 	ModuleData modules(String token);
 	
+	ResourceData resources(String token);
+	
 	ModuleRegistrationResponseCode registerModule(String token, MenuModule module);
 	
 	RegisterResponseCode initialize(String token);
@@ -28,7 +30,7 @@ public interface MetaInterface extends BaseServiceInterface {
 
 	String token(String username);
 	
-	ResourceUpdateResponseCode resources(String token, ResourceData resourceUpdate);
+	ResourceUpdateResponseCode addResources(String token, ResourceData resourceUpdate);
 	
 	ExperienceUpdateResponseCode experience(String token, long experience);
 	

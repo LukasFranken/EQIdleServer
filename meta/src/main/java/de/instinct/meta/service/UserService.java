@@ -17,6 +17,8 @@ public interface UserService {
 	
 	ModuleData getModules(String token);
 	
+	ResourceData getResources(String token);
+	
 	RegisterResponseCode initialize(String token);
 	
 	NameRegisterResponseCode registerName(String token, String name);

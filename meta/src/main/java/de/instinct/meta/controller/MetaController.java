@@ -75,8 +75,13 @@ public class MetaController extends BaseServiceController {
 		return ResponseEntity.ok(userService.token(username));
 	}
 	
+	@GetMapping("/resources/{token}")
+	public ResponseEntity<ResourceData> resources(@PathVariable String token) {
+		return ResponseEntity.ok(userService.getResources(token));
+	}
+	
 	@PostMapping("/resources/{token}")
-	public ResponseEntity<ResourceUpdateResponseCode> resources(@PathVariable String token, @RequestBody ResourceData resourceUpdate) {
+	public ResponseEntity<ResourceUpdateResponseCode> addResources(@PathVariable String token, @RequestBody ResourceData resourceUpdate) {
 		return ResponseEntity.ok(userService.updateResources(token, resourceUpdate));
 	}
 	
