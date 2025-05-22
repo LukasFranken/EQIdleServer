@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import base.controller.BaseServiceController;
 import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
-import de.instinct.api.meta.dto.Loadout;
+import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.ModuleData;
 import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
@@ -61,7 +61,7 @@ public class MetaController extends BaseServiceController {
 	}
 	
 	@GetMapping("/loadout/{token}")
-	public ResponseEntity<Loadout> loadout(@PathVariable String token) {
+	public ResponseEntity<LoadoutData> loadout(@PathVariable String token) {
 		return ResponseEntity.ok(userService.getLoadout(token));
 	}
 	

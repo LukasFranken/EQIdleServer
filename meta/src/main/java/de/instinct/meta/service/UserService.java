@@ -2,7 +2,7 @@ package de.instinct.meta.service;
 
 import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
-import de.instinct.api.meta.dto.Loadout;
+import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.ModuleData;
 import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
@@ -23,7 +23,7 @@ public interface UserService {
 	
 	NameRegisterResponseCode registerName(String token, String name);
 
-	Loadout getLoadout(String token);
+	LoadoutData getLoadout(String token);
 
 	String token(String username);
 

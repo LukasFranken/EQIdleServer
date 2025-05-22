@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.VersusMode;
+import de.instinct.api.meta.dto.ShipData;
 import de.instinct.engine.EngineUtility;
 import de.instinct.engine.ai.AiDifficulty;
 import de.instinct.engine.ai.AiEngine;
@@ -15,6 +16,8 @@ import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Planet;
 import de.instinct.engine.model.Player;
+import de.instinct.engine.model.ship.Ship;
+import de.instinct.engine.model.ship.ShipType;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
 
@@ -49,6 +52,7 @@ public class GameDataLoader {
 		Player neutralPlayer = new Player();
 		neutralPlayer.playerId = 0;
 		neutralPlayer.teamId = 0;
+		neutralPlayer.maxPlanetCapacity = 50;
 		players.add(neutralPlayer);
 		
 		int id = 1;
@@ -91,13 +95,29 @@ public class GameDataLoader {
 		Player newPlayer = new Player();
 		newPlayer.name = user.getName();
 		newPlayer.teamId = user.getTeamid();
-		newPlayer.fleetMovementSpeed = user.getLoadout().getFleetMovementSpeed();
 		newPlayer.resourceGenerationSpeed = user.getLoadout().getResourceGenerationSpeed();
 		newPlayer.commandPointsGenerationSpeed = user.getLoadout().getCommandPointsGenerationSpeed();
 		newPlayer.startCommandPoints = user.getLoadout().getStartCommandPoints();
 		newPlayer.currentCommandPoints = newPlayer.startCommandPoints;
 		newPlayer.maxCommandPoints = user.getLoadout().getMaxCommandPoints();
+		newPlayer.maxPlanetCapacity = user.getLoadout().getMaxPlanetCapacity();
+		
+		newPlayer.ships = getShips(user);
 		return newPlayer;
+	}
+
+	private List<Ship> getShips(User user) {
+		List<Ship> ships = new ArrayList<>();
+		for (ShipData userShip : user.getLoadout().getShips()) {
+			Ship ship = new Ship();
+			ship.type = ShipType.valueOf(userShip.getType().toString());
+			ship.cost = userShip.getCost();
+			ship.model = userShip.getModel();
+			ship.movementSpeed = userShip.getMovementSpeed();
+			ship.power = userShip.getPower();
+			ships.add(ship);
+		}
+		return ships;
 	}
 
 	private List<Planet> generateMap(GameType gameType) {

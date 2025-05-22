@@ -2,7 +2,7 @@ package de.instinct.game.service.model;
 
 import com.esotericsoftware.kryonet.Connection;
 
-import de.instinct.api.meta.dto.Loadout;
+import de.instinct.api.meta.dto.LoadoutData;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class User {
 	private String name;
 	private int playerId;
 	private int teamid;
-	private Loadout loadout;
+	private LoadoutData loadout;
 	private Connection connection;
 
 }

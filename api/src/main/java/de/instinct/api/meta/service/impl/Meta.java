@@ -6,7 +6,7 @@ import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
-import de.instinct.api.meta.dto.Loadout;
+import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.ModuleData;
 import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
@@ -96,14 +96,14 @@ public class Meta extends BaseService implements MetaInterface {
 	}
 
 	@Override
-	public Loadout loadout(String token) {
+	public LoadoutData loadout(String token) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.GET)
 				.endpoint("loadout")
 				.pathVariable(token)
 				.build());
-		return ObjectJSONMapper.mapJSON(response, Loadout.class);
+		return ObjectJSONMapper.mapJSON(response, LoadoutData.class);
 	}
 
 	@Override

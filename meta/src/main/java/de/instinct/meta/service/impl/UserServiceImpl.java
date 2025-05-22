@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
-import de.instinct.api.meta.dto.Loadout;
+import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.ModuleData;
 import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
@@ -17,6 +17,8 @@ import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
+import de.instinct.api.meta.dto.ShipData;
+import de.instinct.api.meta.dto.ShipType;
 import de.instinct.api.meta.dto.UserRank;
 import de.instinct.meta.service.UserService;
 import de.instinct.meta.service.model.UserData;
@@ -104,15 +106,24 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Loadout getLoadout(String token) {
-		return Loadout.builder()
-				.fleetMovementSpeed(50f)
+	public LoadoutData getLoadout(String token) {
+		LoadoutData loadout = LoadoutData.builder()
+				.ships(new ArrayList<>())
 				.resourceGenerationSpeed(1f)
 				.commandPointsGenerationSpeed(0.1)
 				.maxCommandPoints(10)
 				.maxPlanetCapacity(20)
 				.startCommandPoints(3)
 				.build();
+		loadout.getShips().add(ShipData.builder()
+				.uuid("abc")
+				.type(ShipType.FIGHTER)
+				.model("hawk")
+				.movementSpeed(70f)
+				.cost(3)
+				.power(5)
+				.build());
+		return loadout;
 	}
 
 	@Override
@@ -156,8 +167,17 @@ public class UserServiceImpl implements UserService {
 		profile.setCurrentExp(profile.getCurrentExp() + exp);
 		if (profile.getRank().getNextRequiredExp() <= profile.getCurrentExp()) {
 			profile.setRank(profile.getRank().getNextRank());
+			grantNewRankPriviledges(user);
 		}
 		return ExperienceUpdateResponseCode.SUCCESS;
+	}
+
+	private void grantNewRankPriviledges(UserData user) {
+		switch (user.getProfile().getRank()) {
+		case PRIVATE:
+			user.getModules().getEnabledModules().add(MenuModule.INVENTORY);
+			break;
+		}
 	}
 
 }
