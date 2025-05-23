@@ -11,6 +11,8 @@ import de.instinct.api.matchmaking.service.MatchmakingInterface;
 import de.instinct.api.matchmaking.service.impl.Matchmaking;
 import de.instinct.api.meta.service.MetaInterface;
 import de.instinct.api.meta.service.impl.Meta;
+import de.instinct.api.shipyard.service.ShipyardInterface;
+import de.instinct.api.shipyard.service.impl.Shipyard;
 
 public class API {
 	
@@ -22,6 +24,7 @@ public class API {
 	private static Meta meta;
 	private static Matchmaking matchmaking;
 	private static Game game;
+	private static Shipyard shipyard;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
@@ -30,6 +33,7 @@ public class API {
 		meta = new Meta();
 		matchmaking = new Matchmaking();
 		game = new Game();
+		shipyard = new Shipyard();
 		
 		if (newConfiguration != APIConfiguration.SERVER) {
 			discovery().connect();
@@ -37,6 +41,7 @@ public class API {
 			meta().connect();
 			matchmaking().connect();
 			game().connect();
+			shipyard().connect();
 			printAPIStatus();
 		}
 	}
@@ -66,6 +71,11 @@ public class API {
 		return game;
 	}
 	
+	public static ShipyardInterface shipyard() {
+		if (!isInitialized()) return null;
+		return shipyard;
+	}
+	
 	public static void printAPIStatus() {
 		System.out.println("---------API STATUS---------");
 		System.out.println("Initialized: " + isInitialized());
@@ -79,6 +89,8 @@ public class API {
 		System.out.println("Matchmaking: " + matchmaking.isConnected());
 		System.out.println("----------------------------");
 		System.out.println("Game: " + game.isConnected());
+		System.out.println("----------------------------");
+		System.out.println("Shipyard: " + shipyard.isConnected());
 		System.out.println("----------------------------");
 	}
 

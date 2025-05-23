@@ -1,2 +1,14 @@
-- implement request model object like from core into api
-- encrypt/decrypt auth key
+PORTMAP UDP 9011 - 9020
+
+9011 - Gameserver UDP
+
+PORTMAP TCP 6000, 8080 - 9010
+
+6000 - Discovery
+
+9004 - Game
+9006 - Gameserver TCP
+9008 - Meta
+9007 - Shipyard
+9009 - Auth
+9010 - Matchmaking
