@@ -82,12 +82,17 @@ public class BaseService implements BaseServiceInterface {
     public String sendRequest(RESTRequest request) {
     	setAuthToken(request);
     	System.out.println("sending request: " + request);
-        return switch (request.getType()) {
-            case GET -> sendGetRequest(request);
-            case POST -> sendPostRequest(request);
-            case PUT -> sendPutRequest(request);
-            case DELETE -> sendDeleteRequest(request);
+        switch (request.getType()) {
+            case GET:
+            	return sendGetRequest(request);
+            case POST:
+            	return sendPostRequest(request);
+            case PUT: 
+            	return sendPutRequest(request);
+            case DELETE:
+            	return sendDeleteRequest(request);
         };
+        return null;
     }
 
     private void setAuthToken(RESTRequest request) {
