@@ -15,7 +15,7 @@ public class ShipyardController extends BaseServiceController {
 	private final ShipyardService service;
 
 	public ShipyardController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version) {
-		super("meta", serverPort, version);
+		super("shipyard", serverPort, version);
 		service = new ShipyardServiceImpl();
 	}
 	

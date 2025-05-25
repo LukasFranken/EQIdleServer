@@ -31,7 +31,9 @@ public class BaseService implements BaseServiceInterface {
     public void loadURL() {
         ServiceInfoDTO serviceInfo = API.discovery().discover(tag);
         if (serviceInfo == null) {
+        	System.out.print("\u001b[31m");
             System.out.println("Error loading baseUrl for " + tag);
+            System.out.print("\u001b[0m");
             return;
         }
         baseUrl = URLBuilder.build(serviceInfo);
@@ -40,11 +42,15 @@ public class BaseService implements BaseServiceInterface {
     @Override
     public void connect() {
         if (baseUrl == null) {
+        	System.out.print("\u001b[31m");
             System.out.println("Can't connect: Missing baseUrl for " + tag);
+            System.out.print("\u001b[0m");
             return;
         }
         if (connected) {
+        	System.out.print("\u001b[33m");
             System.out.println("Already connected: " + tag);
+            System.out.print("\u001b[0m");
             return;
         }
 
@@ -57,12 +63,18 @@ public class BaseService implements BaseServiceInterface {
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 connected = true;
+                System.out.print("\u001b[32m");
                 System.out.println("Connected to " + tag + " via URL: " + baseUrl);
+                System.out.print("\u001b[0m");
             } else {
+            	System.out.print("\u001b[31m");
                 System.out.println("Error connecting to URL: " + baseUrl + " -> HTTP " + response.code());
+                System.out.print("\u001b[0m");
             }
         } catch (IOException e) {
+        	System.out.print("\u001b[31m");
             System.out.println("Error connecting to URL: " + baseUrl);
+            System.out.print("\u001b[0m");
         }
     }
 
@@ -74,15 +86,19 @@ public class BaseService implements BaseServiceInterface {
 
     @Override
     public boolean isConnected() {
+    	System.out.print("\u001b[31m");
         if (baseUrl == null) System.out.println("No URL loaded for " + tag);
         if (!connected) System.out.println("Not connected to URL: " + baseUrl);
+        System.out.print("\u001b[0m");
         return connected;
     }
 
     public String sendRequest(RESTRequest request) {
     	setAuthToken(request);
+    	System.out.print("\u001b[35m");
     	System.out.println("sending request: " + request);
-        switch (request.getType()) {
+    	System.out.print("\u001b[0m");
+    	switch (request.getType()) {
             case GET:
             	return sendGetRequest(request);
             case POST:

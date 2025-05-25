@@ -176,6 +176,7 @@ public class UserServiceImpl implements UserService {
 		switch (user.getProfile().getRank()) {
 		case PRIVATE:
 			user.getModules().getEnabledModules().add(MenuModule.INVENTORY);
+			user.getModules().getEnabledModules().add(MenuModule.SHIPYARD);
 			break;
 		}
 	}
