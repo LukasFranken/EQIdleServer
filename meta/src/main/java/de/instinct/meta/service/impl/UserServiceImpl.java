@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.core.API;
 import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
@@ -20,6 +21,7 @@ import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.ShipData;
 import de.instinct.api.meta.dto.ShipType;
 import de.instinct.api.meta.dto.UserRank;
+import de.instinct.api.shipyard.service.impl.ShipyardInitializationResponseCode;
 import de.instinct.meta.service.UserService;
 import de.instinct.meta.service.model.UserData;
 
@@ -167,14 +169,15 @@ public class UserServiceImpl implements UserService {
 		profile.setCurrentExp(profile.getCurrentExp() + exp);
 		if (profile.getRank().getNextRequiredExp() <= profile.getCurrentExp()) {
 			profile.setRank(profile.getRank().getNextRank());
-			grantNewRankPriviledges(user);
+			grantNewRankPriviledges(token, user);
 		}
 		return ExperienceUpdateResponseCode.SUCCESS;
 	}
 
-	private void grantNewRankPriviledges(UserData user) {
+	private void grantNewRankPriviledges(String token, UserData user) {
 		switch (user.getProfile().getRank()) {
 		case PRIVATE:
+			API.shipyard().init(token);
 			user.getModules().getEnabledModules().add(MenuModule.INVENTORY);
 			user.getModules().getEnabledModules().add(MenuModule.SHIPYARD);
 			break;

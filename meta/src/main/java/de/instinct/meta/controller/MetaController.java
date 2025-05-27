@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
+import de.instinct.api.core.API;
 import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
@@ -37,7 +38,7 @@ public class MetaController extends BaseServiceController {
 	
 	@Override
 	protected void connectToAPIs() {
-		
+		API.shipyard().connect();
 	}
 	
 	@PostMapping("/register/{username}")
