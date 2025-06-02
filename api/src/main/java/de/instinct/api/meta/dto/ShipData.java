@@ -16,6 +16,8 @@ public class ShipData {
 	private String model;
 	private float movementSpeed;
 	private int cost;
+	private int health;
 	private int power;
+	private boolean inUse;
 
 }

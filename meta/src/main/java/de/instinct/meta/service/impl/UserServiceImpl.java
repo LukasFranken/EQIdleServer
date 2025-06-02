@@ -3,6 +3,8 @@ package de.instinct.meta.service.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.ShipData;
 import de.instinct.api.meta.dto.ShipType;
 import de.instinct.api.meta.dto.UserRank;
-import de.instinct.api.shipyard.service.impl.ShipyardInitializationResponseCode;
+import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.meta.service.UserService;
 import de.instinct.meta.service.model.UserData;
 
@@ -81,6 +83,7 @@ public class UserServiceImpl implements UserService {
 		newUser.getModules().getEnabledModules().add(MenuModule.PROFILE);
 		newUser.getModules().getEnabledModules().add(MenuModule.SETTINGS);
 		users.put(token, newUser);
+		API.shipyard().init(token);
 		return RegisterResponseCode.SUCCESS;
 	}
 
@@ -111,20 +114,16 @@ public class UserServiceImpl implements UserService {
 	public LoadoutData getLoadout(String token) {
 		LoadoutData loadout = LoadoutData.builder()
 				.ships(new ArrayList<>())
-				.resourceGenerationSpeed(1f)
+				.resourceGenerationSpeed(0.5f)
 				.commandPointsGenerationSpeed(0.1)
 				.maxCommandPoints(10)
-				.maxPlanetCapacity(20)
+				.maxPlanetCapacity(10)
 				.startCommandPoints(3)
 				.build();
-		loadout.getShips().add(ShipData.builder()
-				.uuid("abc")
-				.type(ShipType.FIGHTER)
-				.model("hawk")
-				.movementSpeed(70f)
-				.cost(3)
-				.power(5)
-				.build());
+		loadout.setShips(API.shipyard().data(token).getOwnedShips()
+				.stream()
+				.filter(ship -> ship.isInUse())
+				.toList());
 		return loadout;
 	}
 
@@ -177,7 +176,6 @@ public class UserServiceImpl implements UserService {
 	private void grantNewRankPriviledges(String token, UserData user) {
 		switch (user.getProfile().getRank()) {
 		case PRIVATE:
-			API.shipyard().init(token);
 			user.getModules().getEnabledModules().add(MenuModule.INVENTORY);
 			user.getModules().getEnabledModules().add(MenuModule.SHIPYARD);
 			break;

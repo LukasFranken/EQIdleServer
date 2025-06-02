@@ -5,6 +5,8 @@ import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.shipyard.dto.ShipyardData;
+import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
+import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.api.shipyard.service.ShipyardInterface;
 
 public class Shipyard extends BaseService implements ShipyardInterface {
@@ -39,6 +41,17 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.pathVariable(token)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipyardData.class);
+	}
+
+	@Override
+	public UseShipResponseCode use(String token, String shipUUID) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("use")
+				.pathVariable(token + "/" + shipUUID)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, UseShipResponseCode.class);
 	}
 
 }

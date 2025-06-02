@@ -1,4 +1,4 @@
-package de.instinct.api.shipyard.service.impl;
+package de.instinct.api.shipyard.dto;
 
 public enum ShipyardInitializationResponseCode {
 	
