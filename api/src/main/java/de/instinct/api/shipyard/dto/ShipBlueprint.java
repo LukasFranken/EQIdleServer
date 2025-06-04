@@ -1,4 +1,4 @@
-package de.instinct.api.meta.dto;
+package de.instinct.api.shipyard.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +9,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShipData {
+public class ShipBlueprint {
 	
 	private String uuid;
 	private ShipType type;
 	private String model;
 	private float movementSpeed;
 	private int cost;
-	private int health;
-	private int power;
+	private int commandPointsCost;
+	private ShipWeapon weapon;
+	private ShipDefense defense;
+	
 	private boolean inUse;
 
 }

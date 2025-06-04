@@ -1,4 +1,4 @@
-package de.instinct.api.meta.dto;
+package de.instinct.api.shipyard.dto;
 
 public enum ShipType {
 	

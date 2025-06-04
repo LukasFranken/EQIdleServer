@@ -2,6 +2,8 @@ package de.instinct.api.meta.dto;
 
 import java.util.List;
 
+import de.instinct.api.construction.dto.Infrastructure;
+import de.instinct.api.shipyard.dto.ShipBlueprint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,12 +15,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoadoutData {
 	
-	private double resourceGenerationSpeed;
 	private double commandPointsGenerationSpeed;
 	private double maxCommandPoints;
-	private double maxPlanetCapacity;
 	private double startCommandPoints;
 	
-	private List<ShipData> ships;
+	private Infrastructure infrastructure;
+	private List<ShipBlueprint> ships;
 
 }

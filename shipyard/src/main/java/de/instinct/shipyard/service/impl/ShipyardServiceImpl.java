@@ -8,8 +8,11 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import de.instinct.api.meta.dto.ShipData;
-import de.instinct.api.meta.dto.ShipType;
+import de.instinct.api.construction.dto.WeaponType;
+import de.instinct.api.shipyard.dto.ShipBlueprint;
+import de.instinct.api.shipyard.dto.ShipDefense;
+import de.instinct.api.shipyard.dto.ShipType;
+import de.instinct.api.shipyard.dto.ShipWeapon;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
@@ -27,34 +30,75 @@ public class ShipyardServiceImpl implements ShipyardService {
 	@Override
 	public ShipyardInitializationResponseCode init(String token) {
 		if (userShipyards.containsKey(token)) return ShipyardInitializationResponseCode.ALREADY_INITIALIZED;
-		List<ShipData> ownedShips = new ArrayList<>();
-		ownedShips.add(ShipData.builder()
+		List<ShipBlueprint> ownedShips = new ArrayList<>();
+		ShipDefense hawkDefense = ShipDefense.builder()
+				.shield(2)
+				.armor(5)
+				.shieldRegenerationSpeed(0.2f)
+				.build();
+		ShipWeapon hawkWeapon = ShipWeapon.builder()
+				.type(WeaponType.LASER)
+				.damage(2)
+				.range(80f)
+				.speed(50f)
+				.cooldown(2000)
+				.build();
+		ownedShips.add(ShipBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
 				.type(ShipType.FIGHTER)
 				.model("hawk")
 				.movementSpeed(120f)
 				.cost(3)
-				.health(2)
-				.power(5)
+				.commandPointsCost(1)
+				.defense(hawkDefense)
+				.weapon(hawkWeapon)
 				.inUse(true)
 				.build());
-		ownedShips.add(ShipData.builder()
+		
+		ShipDefense turtleDefense = ShipDefense.builder()
+				.shield(5)
+				.armor(7)
+				.shieldRegenerationSpeed(0.2f)
+				.build();
+		ShipWeapon turtleWeapon = ShipWeapon.builder()
+				.type(WeaponType.LASER)
+				.damage(2)
+				.range(40f)
+				.speed(40f)
+				.cooldown(2000)
+				.build();
+		ownedShips.add(ShipBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
 				.type(ShipType.FIGHTER)
 				.model("turtle")
 				.movementSpeed(50f)
 				.cost(6)
-				.health(10)
-				.power(5)
+				.commandPointsCost(1)
+				.defense(turtleDefense)
+				.weapon(turtleWeapon)
 				.build());
-		ownedShips.add(ShipData.builder()
+		
+		ShipDefense sharkDefense = ShipDefense.builder()
+				.shield(3)
+				.armor(3)
+				.shieldRegenerationSpeed(0.2f)
+				.build();
+		ShipWeapon sharkWeapon = ShipWeapon.builder()
+				.type(WeaponType.PROJECTILE)
+				.damage(2)
+				.range(50f)
+				.speed(70f)
+				.cooldown(1000)
+				.build();
+		ownedShips.add(ShipBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
 				.type(ShipType.FIGHTER)
 				.model("shark")
 				.movementSpeed(75f)
 				.cost(5)
-				.health(7)
-				.power(8)
+				.commandPointsCost(1)
+				.defense(sharkDefense)
+				.weapon(sharkWeapon)
 				.build());
 		ShipyardData shipyardData = ShipyardData.builder()
 				.ownedShips(ownedShips)
@@ -73,14 +117,14 @@ public class ShipyardServiceImpl implements ShipyardService {
 	public UseShipResponseCode useShip(String token, String shipUUID) {
 		ShipyardData shipyard = userShipyards.get(token);
 		if (shipyard == null) return UseShipResponseCode.NOT_INITIALIZED;
-		ShipData ship = shipyard.getOwnedShips().stream()
+		ShipBlueprint ship = shipyard.getOwnedShips().stream()
 				.filter(s -> s.getUuid().equals(shipUUID))
 				.findFirst()
 				.orElse(null);
 		if (ship == null) return UseShipResponseCode.INVALID_UUID;
 		//if (shipyard.getSlots() <= 0) return UseShipResponseCode.NO_SLOTS_AVAILABLE;
 		if (ship.isInUse()) return UseShipResponseCode.ALREADY_IN_USE;
-		for (ShipData s : shipyard.getOwnedShips()) {
+		for (ShipBlueprint s : shipyard.getOwnedShips()) {
 			s.setInUse(false);
 		}
 		ship.setInUse(true);

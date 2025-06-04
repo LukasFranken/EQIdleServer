@@ -1,7 +1,5 @@
 package de.instinct.api.shipyard.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShipyardData {
+public class ShipDefense {
 	
-	private int slots;
-	private List<ShipBlueprint> ownedShips;
+	private float shieldRegenerationSpeed;
+	private float shield;
+	private float armor;
 
 }

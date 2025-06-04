@@ -2,18 +2,20 @@ package de.instinct.game.service.impl;
 
 import java.util.List;
 
-import de.instinct.engine.EngineUtility;
-import de.instinct.engine.EventEngine;
+import de.instinct.engine.FleetEngine;
+import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.order.GameOrder;
+import de.instinct.engine.util.EngineUtility;
 import de.instinct.game.service.model.GameSession;
 
 public class GameEngineInterface {
 	
-	private EventEngine engine;
+	private FleetEngine engine;
 	
 	public GameEngineInterface() {
-		engine = new EventEngine();
+		engine = new FleetEngine();
+		engine.initialize();
 	}
 
 	public boolean updateGameState(GameSession session) {
@@ -23,6 +25,10 @@ public class GameEngineInterface {
 		session.setLastUpdateTimeMS(currentTime);
 		EngineUtility.checkVictory(session.getGameState());
 		return containedValidOrder || session.getGameState().winner != 0;
+	}
+	
+	public GameState initializeGameState(GameStateInitialization gameStateInitialization) {
+		return engine.initializeGameState(gameStateInitialization);
 	}
 
 	public void queue(GameState gameState, GameOrder gameOrder) {

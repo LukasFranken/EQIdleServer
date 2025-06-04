@@ -3,11 +3,13 @@ package de.instinct.meta.service.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.construction.dto.Infrastructure;
+import de.instinct.api.construction.dto.PlanetDefense;
+import de.instinct.api.construction.dto.PlanetWeapon;
+import de.instinct.api.construction.dto.WeaponType;
 import de.instinct.api.core.API;
 import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
@@ -20,10 +22,7 @@ import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
-import de.instinct.api.meta.dto.ShipData;
-import de.instinct.api.meta.dto.ShipType;
 import de.instinct.api.meta.dto.UserRank;
-import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.meta.service.UserService;
 import de.instinct.meta.service.model.UserData;
 
@@ -114,10 +113,25 @@ public class UserServiceImpl implements UserService {
 	public LoadoutData getLoadout(String token) {
 		LoadoutData loadout = LoadoutData.builder()
 				.ships(new ArrayList<>())
-				.resourceGenerationSpeed(0.5f)
+				.infrastructure(Infrastructure.builder()
+						.resourceGenerationSpeed(1f)
+						.maxResourceCapacity(20)
+						.percentOfArmorAfterCapture(0.2f)
+						.planetDefense(PlanetDefense.builder()
+								.armor(10)
+								.shield(10)
+								.shieldRegenerationSpeed(0.5f)
+								.build())
+						.planetWeapon(PlanetWeapon.builder()
+								.type(WeaponType.PROJECTILE)
+								.cooldown(1000)
+								.range(100f)
+								.speed(50f)
+								.damage(4)
+								.build())
+						.build())
 				.commandPointsGenerationSpeed(0.1)
 				.maxCommandPoints(10)
-				.maxPlanetCapacity(10)
 				.startCommandPoints(3)
 				.build();
 		loadout.setShips(API.shipyard().data(token).getOwnedShips()
