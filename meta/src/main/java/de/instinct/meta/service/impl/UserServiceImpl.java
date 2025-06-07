@@ -192,6 +192,7 @@ public class UserServiceImpl implements UserService {
 		case PRIVATE:
 			user.getModules().getEnabledModules().add(MenuModule.INVENTORY);
 			user.getModules().getEnabledModules().add(MenuModule.SHIPYARD);
+			user.getModules().getEnabledModules().add(MenuModule.CONSTRUCTION);
 			break;
 		}
 	}

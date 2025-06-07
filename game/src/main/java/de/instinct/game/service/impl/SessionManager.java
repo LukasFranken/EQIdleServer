@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -50,7 +51,17 @@ public class SessionManager {
 		gameDataLoader = new GameDataLoader();
 		aiEngine = new AiEngine();
 		
-		scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+		    @Override
+		    public Thread newThread(Runnable r) {
+		        Thread thread = new Thread(r);
+		        thread.setUncaughtExceptionHandler((t, e) -> {
+		            System.err.println("Unhandled exception in thread " + t.getName() + ": " + e);
+		            e.printStackTrace();
+		        });
+		        return thread;
+		    }
+		});
 		scheduler.scheduleAtFixedRate(() -> {
 			List<GameSession> sessionsSnapshot = new ArrayList<>(activeSessions);
 	        for (GameSession session : sessionsSnapshot) {
@@ -83,6 +94,7 @@ public class SessionManager {
         	if (session.getGameState().winner != 0) {
 				expiredSessions.add(session);
 				activeSessions.remove(session);
+				System.out.println("Finished session: " + session.getUuid());
 				API.matchmaking().finish(session.getUuid());
 			}
         }
@@ -125,7 +137,12 @@ public class SessionManager {
 			
 			@Override
 			public void run() {
-				startSession(uuid, request);
+				try {
+					startSession(uuid, request);
+				} catch (Exception e) {
+					System.err.println("Error starting session: " + e.getMessage());
+					e.printStackTrace();
+				}
 			}
 			
 		});
@@ -144,6 +161,7 @@ public class SessionManager {
 		session.setGameState(engineInterface.initializeGameState(initialization));
 		readyUpAI(session.getGameState());
 		inCreationSessions.add(session);
+		System.out.println("Starting session: " + uuid);
 		API.matchmaking().callback(session.getUuid(), CallbackCode.READY);
 	}
 
@@ -164,6 +182,7 @@ public class SessionManager {
 	private static List<User> loadUsers(GameSessionInitializationRequest request) {
 		List<User> users = new ArrayList<>();
 		for (UserTeamData userData : request.getUsers()) {
+			System.out.println(userData);
 			users.add(User.builder()
 					.name(API.meta().profile(userData.getUuid()).getUsername())
 					.uuid(userData.getUuid())

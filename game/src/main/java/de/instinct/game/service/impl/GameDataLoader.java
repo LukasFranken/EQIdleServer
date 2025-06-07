@@ -56,6 +56,20 @@ public class GameDataLoader {
 		Player neutralPlayer = new Player();
 		neutralPlayer.id = 0;
 		neutralPlayer.teamId = 0;
+		neutralPlayer.name = "Neutral Player";
+		PlanetData neutralPlanetData = new PlanetData();
+		Weapon neutralPlanetWeapon = new Weapon();
+		neutralPlanetWeapon.type = WeaponType.PROJECTILE;
+		neutralPlanetWeapon.damage = 5;
+		neutralPlanetWeapon.range = 100f;
+		neutralPlanetWeapon.cooldown = 1000;
+		neutralPlanetWeapon.speed = 70f;
+		neutralPlanetData.weapon = neutralPlanetWeapon;
+		Defense neutralPlanetDefense = new Defense();
+		neutralPlanetDefense.armor = 50;
+		neutralPlanetData.defense = neutralPlanetDefense;
+		neutralPlayer.planetData = neutralPlanetData;
+		neutralPlayer.ships = new ArrayList<>();
 		players.add(neutralPlayer);
 		
 		int id = 1;
@@ -176,13 +190,14 @@ public class GameDataLoader {
 		generateAncientPlanet(planetInits);
 		generateNeutralPlanets(planetInits);
 		generatePlayerPlanets(planetInits, gameType);
+		map.planets = planetInits;
 		return map;
 	}
 
 	private void generatePlayerPlanets(List<PlanetInitialization> planets, GameType gameType) {
 		PlanetInitialization startPlanetPlayerOne = new PlanetInitialization();
     	startPlanetPlayerOne.ownerId = 1;
-    	startPlanetPlayerOne.position = new Vector2(0, (EngineUtility.MAP_BOUNDS.y / 2) + 300);
+    	startPlanetPlayerOne.position = new Vector2(0, -(EngineUtility.MAP_BOUNDS.y / 2) + 300);
     	startPlanetPlayerOne.startArmorPercent = 0.5f;
     	planets.add(startPlanetPlayerOne);
     	

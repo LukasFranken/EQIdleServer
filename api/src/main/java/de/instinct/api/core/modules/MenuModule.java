@@ -9,7 +9,8 @@ public enum MenuModule {
 	INVENTORY("INVENTORY"),
 	MARKET("MARKET"),
 	SHOP("SHOP"),
-	SHIPYARD("SHIPYARD");
+	SHIPYARD("SHIPYARD"),
+	CONSTRUCTION("CONSTRUCTION");
 	
 	String label;
 	

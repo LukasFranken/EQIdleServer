@@ -32,6 +32,7 @@ public class GameEngineInterface {
 	}
 
 	public void queue(GameState gameState, GameOrder gameOrder) {
+		System.out.println("Queueing order: " + gameOrder);
 		engine.queue(gameState, gameOrder);
 	}
 
