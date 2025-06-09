@@ -100,6 +100,30 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.defense(sharkDefense)
 				.weapon(sharkWeapon)
 				.build());
+		
+		ShipDefense cheetahDefense = ShipDefense.builder()
+				.shield(5)
+				.armor(10)
+				.shieldRegenerationSpeed(0.5f)
+				.build();
+		ShipWeapon cheetahWeapon = ShipWeapon.builder()
+				.type(WeaponType.LASER)
+				.damage(5)
+				.range(80f)
+				.speed(100f)
+				.cooldown(1000)
+				.build();
+		ownedShips.add(ShipBlueprint.builder()
+				.uuid(UUID.randomUUID().toString())
+				.type(ShipType.FIGHTER)
+				.model("cheetah")
+				.movementSpeed(200f)
+				.cost(2)
+				.commandPointsCost(1)
+				.defense(cheetahDefense)
+				.weapon(cheetahWeapon)
+				.inUse(false)
+				.build());
 		ShipyardData shipyardData = ShipyardData.builder()
 				.ownedShips(ownedShips)
 				.slots(5)
@@ -110,7 +134,12 @@ public class ShipyardServiceImpl implements ShipyardService {
 
 	@Override
 	public ShipyardData getShipyardData(String token) {
-		return userShipyards.get(token);
+		ShipyardData shipyard = userShipyards.get(token);
+		if (shipyard == null) {
+			init(token);
+			shipyard = userShipyards.get(token);
+		}
+		return shipyard;
 	}
 
 	@Override
