@@ -6,10 +6,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import de.instinct.api.construction.dto.Infrastructure;
-import de.instinct.api.construction.dto.PlanetDefense;
-import de.instinct.api.construction.dto.PlanetWeapon;
-import de.instinct.api.construction.dto.WeaponType;
 import de.instinct.api.core.API;
 import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
@@ -83,6 +79,7 @@ public class UserServiceImpl implements UserService {
 		newUser.getModules().getEnabledModules().add(MenuModule.SETTINGS);
 		users.put(token, newUser);
 		API.shipyard().init(token);
+		API.construction().init(token);
 		return RegisterResponseCode.SUCCESS;
 	}
 
@@ -113,26 +110,10 @@ public class UserServiceImpl implements UserService {
 	public LoadoutData getLoadout(String token) {
 		LoadoutData loadout = LoadoutData.builder()
 				.ships(new ArrayList<>())
-				.infrastructure(Infrastructure.builder()
-						.resourceGenerationSpeed(1f)
-						.maxResourceCapacity(20)
-						.percentOfArmorAfterCapture(0.2f)
-						.planetDefense(PlanetDefense.builder()
-								.armor(10)
-								.shield(10)
-								.shieldRegenerationSpeed(0.5f)
-								.build())
-						.planetWeapon(PlanetWeapon.builder()
-								.type(WeaponType.PROJECTILE)
-								.cooldown(1000)
-								.range(100f)
-								.speed(50f)
-								.damage(4)
-								.build())
-						.build())
-				.commandPointsGenerationSpeed(0.1)
-				.maxCommandPoints(10)
-				.startCommandPoints(3)
+				.infrastructure(API.construction().data(token))
+				.commandPointsGenerationSpeed(0.1f)
+				.maxCommandPoints(10f)
+				.startCommandPoints(3f)
 				.build();
 		loadout.setShips(API.shipyard().data(token).getOwnedShips()
 				.stream()
@@ -187,6 +168,7 @@ public class UserServiceImpl implements UserService {
 		return ExperienceUpdateResponseCode.SUCCESS;
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	private void grantNewRankPriviledges(String token, UserData user) {
 		switch (user.getProfile().getRank()) {
 		case PRIVATE:

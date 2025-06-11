@@ -18,13 +18,11 @@ public class GameEngineInterface {
 		engine.initialize();
 	}
 
-	public boolean updateGameState(GameSession session) {
-		boolean containedValidOrder = false;
+	public void updateGameState(GameSession session) {
 		long currentTime = System.currentTimeMillis();
-		containedValidOrder = engine.update(session.getGameState(), currentTime - session.getLastUpdateTimeMS());
+		engine.update(session.getGameState(), currentTime - session.getLastUpdateTimeMS());
 		session.setLastUpdateTimeMS(currentTime);
 		EngineUtility.checkVictory(session.getGameState());
-		return containedValidOrder || session.getGameState().winner != 0;
 	}
 	
 	public GameState initializeGameState(GameStateInitialization gameStateInitialization) {
@@ -40,6 +38,10 @@ public class GameEngineInterface {
 		for (GameOrder gameOrder : gameOrders) {
 			queue(gameState, gameOrder);
 		}
+	}
+	
+	public boolean containsUnprocessedOrders() {
+		return engine.containsUnprocessedOrders();
 	}
 
 }

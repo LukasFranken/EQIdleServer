@@ -2,6 +2,8 @@ package de.instinct.api.core;
 
 import de.instinct.api.auth.service.AuthenticationInterface;
 import de.instinct.api.auth.service.impl.Authentication;
+import de.instinct.api.construction.service.ConstructionInterface;
+import de.instinct.api.construction.service.impl.Construction;
 import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.discovery.service.DiscoveryInterface;
 import de.instinct.api.discovery.service.impl.Discovery;
@@ -25,6 +27,7 @@ public class API {
 	private static Matchmaking matchmaking;
 	private static Game game;
 	private static Shipyard shipyard;
+	private static Construction construction;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
@@ -34,6 +37,7 @@ public class API {
 		matchmaking = new Matchmaking();
 		game = new Game();
 		shipyard = new Shipyard();
+		construction = new Construction();
 		
 		if (newConfiguration != APIConfiguration.SERVER) {
 			discovery().connect();
@@ -42,6 +46,7 @@ public class API {
 			matchmaking().connect();
 			game().connect();
 			shipyard().connect();
+			construction().connect();
 			printAPIStatus();
 		}
 	}
@@ -76,6 +81,11 @@ public class API {
 		return shipyard;
 	}
 	
+	public static ConstructionInterface construction() {
+		if (!isInitialized()) return null;
+		return construction;
+	}
+	
 	public static void printAPIStatus() {
 		System.out.println("\u001b[38;2;150;150;150m---------API STATUS---------");
 		System.out.println(isInitialized() ? "\u001b[32m" + "API initialized" + "\u001b[0m" : "\u001b[31m" + "API not Initialized!" + "\u001b[0m");
@@ -91,6 +101,8 @@ public class API {
 		System.out.println("Game: " + getConnectedString(game.isConnected()));
 		System.out.println("\u001b[38;2;150;150;150m----------------------------");
 		System.out.println("Shipyard: " + getConnectedString(shipyard.isConnected()));
+		System.out.println("\u001b[38;2;150;150;150m----------------------------");
+		System.out.println("Construction: " + getConnectedString(construction.isConnected()));
 		System.out.println("\u001b[38;2;150;150;150m----------------------------\u001B[0m");
 	}
 	

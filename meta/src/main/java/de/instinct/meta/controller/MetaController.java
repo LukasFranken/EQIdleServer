@@ -39,6 +39,7 @@ public class MetaController extends BaseServiceController {
 	@Override
 	protected void connectToAPIs() {
 		API.shipyard().connect();
+		API.construction().connect();
 	}
 	
 	@PostMapping("/register/{username}")

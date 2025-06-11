@@ -40,7 +40,7 @@ public class SessionManager {
 	private static GameDataLoader gameDataLoader;
 	private static AiEngine aiEngine;
 	
-	private static int PERIODIC_UPDATE_MS = 100;
+	private static int PERIODIC_UPDATE_MS = 50;
 	private static ScheduledExecutorService scheduler;
 	
 	public static void init() {
@@ -88,15 +88,17 @@ public class SessionManager {
 	}
 
 	private static void updateSession(GameSession session) {
-		boolean clientUpdateRequired = engineInterface.updateGameState(session);
+		boolean clientUpdateRequired = engineInterface.containsUnprocessedOrders();
+		engineInterface.updateGameState(session);
+		if (session.getGameState().winner != 0) {
+			clientUpdateRequired = true;
+			expiredSessions.add(session);
+			activeSessions.remove(session);
+			System.out.println("Finished session: " + session.getUuid());
+			API.matchmaking().finish(session.getUuid());
+		}
         if (clientUpdateRequired) {
         	updateClients(session);
-        	if (session.getGameState().winner != 0) {
-				expiredSessions.add(session);
-				activeSessions.remove(session);
-				System.out.println("Finished session: " + session.getUuid());
-				API.matchmaking().finish(session.getUuid());
-			}
         }
 	}
 
