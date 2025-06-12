@@ -210,7 +210,7 @@ public class GameDataLoader {
     	if (gameType.factionMode.teamPlayerCount >= 2) {
     		PlanetInitialization startPlanetPlayerThree = new PlanetInitialization();
     		startPlanetPlayerThree.ownerId = 2;
-    		startPlanetPlayerThree.position = new Vector2(-200, (EngineUtility.MAP_BOUNDS.y / 2) + 300);
+    		startPlanetPlayerThree.position = new Vector2(-200, -(EngineUtility.MAP_BOUNDS.y / 2) + 300);
     		startPlanetPlayerThree.startArmorPercent = 0.5f;
         	planets.add(startPlanetPlayerThree);
         	

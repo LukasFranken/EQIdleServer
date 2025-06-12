@@ -94,7 +94,6 @@ public class SessionManager {
 			clientUpdateRequired = true;
 			expiredSessions.add(session);
 			activeSessions.remove(session);
-			System.out.println("Finished session: " + session.getUuid());
 			API.matchmaking().finish(session.getUuid());
 		}
         if (clientUpdateRequired) {

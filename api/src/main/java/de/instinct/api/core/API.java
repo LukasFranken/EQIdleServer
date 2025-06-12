@@ -88,21 +88,19 @@ public class API {
 	
 	public static void printAPIStatus() {
 		System.out.println("\u001b[38;2;150;150;150m---------API STATUS---------");
-		System.out.println(isInitialized() ? "\u001b[32m" + "API initialized" + "\u001b[0m" : "\u001b[31m" + "API not Initialized!" + "\u001b[0m");
+		System.out.println(isInitialized() ? "\u001b[32m" + "API initialized" : "\u001b[31m" + "API not Initialized!");
 		System.out.println("\u001b[38;2;150;150;150m----------SERVICES----------");
-		System.out.println("Discovery: " + getConnectedString(discovery.isConnected()));
-		System.out.println("\u001b[38;2;150;150;150m----------------------------");
-		System.out.println("Authentication: " + getConnectedString(authentication.isConnected()));
-		System.out.println("\u001b[38;2;150;150;150m----------------------------");
-		System.out.println("Meta: " + getConnectedString(meta.isConnected()));
-		System.out.println("\u001b[38;2;150;150;150m----------------------------");
-		System.out.println("Matchmaking: " + getConnectedString(matchmaking.isConnected()));
-		System.out.println("\u001b[38;2;150;150;150m----------------------------");
-		System.out.println("Game: " + getConnectedString(game.isConnected()));
-		System.out.println("\u001b[38;2;150;150;150m----------------------------");
-		System.out.println("Shipyard: " + getConnectedString(shipyard.isConnected()));
-		System.out.println("\u001b[38;2;150;150;150m----------------------------");
-		System.out.println("Construction: " + getConnectedString(construction.isConnected()));
+		printServiceStatus("Discovery", discovery.isConnected());
+		printServiceStatus("Authentication", authentication.isConnected());
+		printServiceStatus("Meta", meta.isConnected());
+		printServiceStatus("Matchmaking", matchmaking.isConnected());
+		printServiceStatus("Game", game.isConnected());
+		printServiceStatus("Shipyard", shipyard.isConnected());
+		printServiceStatus("Construction", construction.isConnected());
+	}
+	
+	private static void printServiceStatus(String serviceName, boolean connected) {
+		System.out.println("\u001b[38;2;150;150;150m" + serviceName + ": " + getConnectedString(connected));
 		System.out.println("\u001b[38;2;150;150;150m----------------------------\u001B[0m");
 	}
 	
