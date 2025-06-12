@@ -31,9 +31,7 @@ public class BaseService implements BaseServiceInterface {
     public void loadURL() {
         ServiceInfoDTO serviceInfo = API.discovery().discover(tag);
         if (serviceInfo == null) {
-        	System.out.print("\u001b[31m");
-            System.out.println("Error loading baseUrl for " + tag);
-            System.out.print("\u001b[0m");
+        	API.loggingHook.log("Error loading baseUrl for " + tag);
             return;
         }
         baseUrl = URLBuilder.build(serviceInfo);
@@ -42,15 +40,11 @@ public class BaseService implements BaseServiceInterface {
     @Override
     public void connect() {
         if (baseUrl == null) {
-        	System.out.print("\u001b[31m");
-            System.out.println("Can't connect: Missing baseUrl for " + tag);
-            System.out.print("\u001b[0m");
+        	API.loggingHook.log("Can't connect: Missing baseUrl for " + tag);
             return;
         }
         if (connected) {
-        	System.out.print("\u001b[33m");
-            System.out.println("Already connected: " + tag);
-            System.out.print("\u001b[0m");
+        	API.loggingHook.log("Already connected: " + tag);
             return;
         }
 
@@ -63,18 +57,12 @@ public class BaseService implements BaseServiceInterface {
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 connected = true;
-                System.out.print("\u001b[32m");
-                System.out.println("Connected to " + tag + " via URL: " + baseUrl);
-                System.out.print("\u001b[0m");
+                API.loggingHook.log("Connected to " + tag + " via URL: " + baseUrl);
             } else {
-            	System.out.print("\u001b[31m");
-                System.out.println("Error connecting to URL: " + baseUrl + " -> HTTP " + response.code());
-                System.out.print("\u001b[0m");
+            	API.loggingHook.log("Error connecting to URL: " + baseUrl + " -> HTTP " + response.code());
             }
         } catch (IOException e) {
-        	System.out.print("\u001b[31m");
-            System.out.println("Error connecting to URL: " + baseUrl);
-            System.out.print("\u001b[0m");
+        	API.loggingHook.log("Error connecting to URL: " + baseUrl);
         }
     }
 
@@ -86,18 +74,14 @@ public class BaseService implements BaseServiceInterface {
 
     @Override
     public boolean isConnected() {
-    	System.out.print("\u001b[31m");
-        if (baseUrl == null) System.out.println("No URL loaded for " + tag);
-        if (!connected) System.out.println("Not connected to URL: " + baseUrl);
-        System.out.print("\u001b[0m");
+        if (baseUrl == null) API.loggingHook.log("No URL loaded for " + tag);
+        if (!connected) API.loggingHook.log("Not connected to URL: " + baseUrl);
         return connected;
     }
 
     public String sendRequest(RESTRequest request) {
     	setAuthToken(request);
-    	System.out.print("\u001b[35m");
-    	System.out.println("sending request: " + request);
-    	System.out.print("\u001b[0m");
+    	API.loggingHook.log("sending request: " + request);
     	switch (request.getType()) {
             case GET:
             	return sendGetRequest(request);
@@ -169,7 +153,7 @@ public class BaseService implements BaseServiceInterface {
                 return response.body().string();
             }
         } catch (IOException e) {
-            System.out.println("Error during request: " + e.getMessage());
+        	API.loggingHook.log("Error during request: " + e.getMessage());
         }
         return null;
     }
