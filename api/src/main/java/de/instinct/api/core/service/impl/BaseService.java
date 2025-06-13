@@ -27,6 +27,10 @@ public class BaseService implements BaseServiceInterface {
         this.tag = tag;
         this.client = new OkHttpClient();
     }
+    
+    public String getTag() {
+		return tag;
+	}
 
     public void loadURL() {
         ServiceInfoDTO serviceInfo = API.discovery().discover(tag);

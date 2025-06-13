@@ -21,7 +21,15 @@ public class API {
 	
 	public static APIConfiguration configuration;
 	public static String authKey;
-	public static LoggingHook loggingHook;
+	
+	public static LoggingHook loggingHook = new LoggingHook() {
+		
+		@Override
+		public void log(String message) {
+			System.out.println(message);
+		}
+		
+	};
 	
 	private static Discovery discovery;
 	private static Authentication authentication;
@@ -51,17 +59,6 @@ public class API {
 			construction().connect();
 			printAPIStatus();
 		}
-		
-		if (loggingHook == null) {
-			loggingHook = new LoggingHook() {
-				
-				@Override
-				public void log(String message) {
-					System.out.println(message);
-				}
-				
-			};
-		}
 	}
 	
 	public static void setLoggingHook(LoggingHook newLoggingHook) {
@@ -69,40 +66,46 @@ public class API {
 	}
 	
 	public static DiscoveryInterface discovery() {
-		if (!isInitialized()) return null;
+		if (!apiReady()) return null;
 		return discovery;
 	}
 	
 	public static AuthenticationInterface authentication() {
-		if (!isInitialized()) return null;
+		if (!apiReady()) return null;
 		return authentication;
 	}
 	
 	public static MetaInterface meta() {
-		if (!isInitialized()) return null;
+		if (!apiReady()) return null;
 		return meta;
 	}
 	
 	public static MatchmakingInterface matchmaking() {
-		if (!isInitialized()) return null;
+		if (!apiReady()) return null;
 		return matchmaking;
 	}
 	
 	public static GameInterface game() {
-		if (!isInitialized()) return null;
+		if (!apiReady()) return null;
 		return game;
 	}
 	
 	public static ShipyardInterface shipyard() {
-		if (!isInitialized()) return null;
+		if (!apiReady()) return null;
 		return shipyard;
 	}
 	
 	public static ConstructionInterface construction() {
-		if (!isInitialized()) return null;
+		if (!apiReady()) return null;
 		return construction;
 	}
 	
+	private static boolean apiReady() {
+		if (isInitialized()) return true;
+		loggingHook.log("API not connected. Connect first via API.initialize()!");
+		return false;
+	}
+
 	public static void printAPIStatus() {
 		loggingHook.log("---------API STATUS---------");
 		loggingHook.log(isInitialized() ? "API initialized" : "API not Initialized!");
@@ -124,10 +127,9 @@ public class API {
 	private static String getConnectedString(boolean connected) {
 		return connected ? "connected" : "not connected";
 	}
-
-	private static boolean isInitialized() {
+	
+	public static boolean isInitialized() {
 		if (discovery == null) {
-			loggingHook.log("API not connected. Connect first via API.initialize()!");
 			return false;
 		}
 		return true;
