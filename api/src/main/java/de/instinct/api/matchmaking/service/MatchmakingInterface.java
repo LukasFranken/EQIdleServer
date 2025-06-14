@@ -11,6 +11,7 @@ import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
+import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.model.GameType;
 
 public interface MatchmakingInterface extends BaseServiceInterface {
@@ -38,6 +39,8 @@ public interface MatchmakingInterface extends BaseServiceInterface {
 	LobbyStatusResponse status(String lobbyUUID);
 	
 	MatchmakingStatusResponse matchmaking(String lobbyUUID);
+	
+	MatchmakingStopResponseCode stop(String lobbyUUID);
 	
 	GeneralRequestResponse callback(String lobbyUUID, CallbackCode code);
 	

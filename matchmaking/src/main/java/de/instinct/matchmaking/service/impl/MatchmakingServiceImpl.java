@@ -22,6 +22,7 @@ import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponseCode;
+import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.Invite;
 import de.instinct.api.matchmaking.model.VersusMode;
@@ -145,6 +146,16 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		}
 		
 		return MatchmakingRegistrationResponseCode.SUCCESS;
+	}
+	
+	@Override
+	public MatchmakingStopResponseCode stop(String authToken, String lobbyUUID) {
+		Lobby lobby = getLobby(lobbyUUID);
+		if (lobby == null) return MatchmakingStopResponseCode.LOBBY_DOESNT_EXIST;
+		if (lobby.getCode() != LobbyStatusCode.MATCHING) return MatchmakingStopResponseCode.NOT_MATCHING;
+		
+		lobby.setCode(LobbyStatusCode.IDLE);
+		return MatchmakingStopResponseCode.SUCCESS;
 	}
 	
 	@Override

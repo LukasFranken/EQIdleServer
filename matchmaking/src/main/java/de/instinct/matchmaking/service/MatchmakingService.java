@@ -9,6 +9,7 @@ import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
+import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.model.GameType;
 
 public interface MatchmakingService {
@@ -32,6 +33,8 @@ public interface MatchmakingService {
 	LobbyStatusResponse getStatus(String lobbyToken);
 	
 	MatchmakingStatusResponse getMatchmakingStatus(String lobbyUUID);
+	
+	MatchmakingStopResponseCode stop(String authToken, String lobbyUUID);
 
 	void callback(String gamesessionUUID, CallbackCode code);
 	

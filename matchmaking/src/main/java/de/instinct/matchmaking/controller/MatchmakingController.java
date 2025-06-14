@@ -23,6 +23,7 @@ import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
+import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.matchmaking.service.MatchmakingService;
 import de.instinct.matchmaking.service.impl.MatchmakingServiceImpl;
@@ -103,6 +104,11 @@ public class MatchmakingController extends BaseServiceController {
 	@GetMapping("/matchmaking/{lobbyUUID}")
 	public ResponseEntity<MatchmakingStatusResponse> matchmaking(@PathVariable("lobbyUUID") String lobbyUUID) {
 		return ResponseEntity.ok(matchmakingService.getMatchmakingStatus(lobbyUUID));
+	}
+	
+	@PostMapping("/stop/{lobbyUUID}")
+	public ResponseEntity<MatchmakingStopResponseCode> stop(@RequestHeader("token") String authToken, @PathVariable String lobbyUUID) {
+		return ResponseEntity.ok(matchmakingService.stop(authToken, lobbyUUID));
 	}
 	
 	@PutMapping("/callback/{gamesessionUUID}")

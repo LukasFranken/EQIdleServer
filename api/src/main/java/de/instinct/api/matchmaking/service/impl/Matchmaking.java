@@ -14,6 +14,7 @@ import de.instinct.api.matchmaking.dto.LobbyStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
+import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.service.MatchmakingInterface;
 
@@ -153,6 +154,17 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 				.pathVariable(lobbyUUID)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, MatchmakingStatusResponse.class);
+	}
+	
+	@Override
+	public MatchmakingStopResponseCode stop(String lobbyUUID) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("stop")
+				.pathVariable(lobbyUUID)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, MatchmakingStopResponseCode.class);
 	}
 
 	@Override
