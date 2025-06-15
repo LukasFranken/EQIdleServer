@@ -4,13 +4,13 @@ import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
-import de.instinct.api.meta.dto.ModuleData;
-import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
+import de.instinct.api.meta.dto.modules.ModuleData;
+import de.instinct.api.meta.dto.modules.ModuleRegistrationResponseCode;
 
 public interface MetaInterface extends BaseServiceInterface {
 

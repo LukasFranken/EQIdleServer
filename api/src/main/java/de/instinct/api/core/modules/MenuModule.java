@@ -2,8 +2,7 @@ package de.instinct.api.core.modules;
 
 public enum MenuModule {
 	
-	PLAY("CONTRACTS"),
-	LOADOUT("LOADOUT"),
+	PLAY("PLAY"),
 	SETTINGS("SETTINGS"),
 	PROFILE("PROFILE"),
 	INVENTORY("INVENTORY"),

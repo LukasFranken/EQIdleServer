@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.API;
-import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
-import de.instinct.api.meta.dto.ModuleData;
-import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.api.meta.dto.ProfileData;
@@ -19,6 +17,7 @@ import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.UserRank;
+import de.instinct.meta.service.ModuleService;
 import de.instinct.meta.service.UserService;
 import de.instinct.meta.service.model.UserData;
 
@@ -26,6 +25,9 @@ import de.instinct.meta.service.model.UserData;
 public class UserServiceImpl implements UserService {
 	
 	private Map<String, UserData> users;
+	
+	@Autowired
+	private ModuleService moduleService;
 	
 	public UserServiceImpl() {
 		users = new HashMap<>();
@@ -39,26 +41,10 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public ModuleData getModules(String token) {
-		UserData user = users.get(token);
-		if (user == null) return null;
-		return user.getModules();
-	}
-	
-	@Override
 	public ResourceData getResources(String token) {
 		UserData user = users.get(token);
 		if (user == null) return null;
 		return user.getResources();
-	}
-	
-	@Override
-	public ModuleRegistrationResponseCode registerModule(String token, MenuModule module) {
-		UserData user = users.get(token);
-		if (user == null) return ModuleRegistrationResponseCode.INVALID_TOKEN;
-		if (user.getModules().getEnabledModules().contains(module)) return ModuleRegistrationResponseCode.ALREADY_REGISTERED;
-		user.getModules().getEnabledModules().add(module);
-		return ModuleRegistrationResponseCode.SUCCESS;
 	}
 
 	@Override
@@ -69,14 +55,9 @@ public class UserServiceImpl implements UserService {
 						.rank(PlayerRank.RECRUIT)
 						.userRank(UserRank.REGISTERED)
 						.build())
-				.modules(ModuleData.builder()
-						.enabledModules(new ArrayList<>())
-						.build())
 				.resources(ResourceData.builder().build())
 				.build();
-		newUser.getModules().getEnabledModules().add(MenuModule.PLAY);
-		newUser.getModules().getEnabledModules().add(MenuModule.PROFILE);
-		newUser.getModules().getEnabledModules().add(MenuModule.SETTINGS);
+		moduleService.init(token);
 		users.put(token, newUser);
 		API.shipyard().init(token);
 		API.construction().init(token);
@@ -168,15 +149,8 @@ public class UserServiceImpl implements UserService {
 		return ExperienceUpdateResponseCode.SUCCESS;
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	private void grantNewRankPriviledges(String token, UserData user) {
-		switch (user.getProfile().getRank()) {
-		case PRIVATE:
-			user.getModules().getEnabledModules().add(MenuModule.INVENTORY);
-			user.getModules().getEnabledModules().add(MenuModule.SHIPYARD);
-			user.getModules().getEnabledModules().add(MenuModule.CONSTRUCTION);
-			break;
-		}
+		moduleService.manageRankUp(token, user.getProfile().getRank());
 	}
 
 }

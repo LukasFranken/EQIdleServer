@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
-import de.instinct.api.core.modules.MenuModule;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
-import de.instinct.api.meta.dto.ModuleData;
-import de.instinct.api.meta.dto.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
@@ -50,16 +47,6 @@ public class MetaController extends BaseServiceController {
 	@GetMapping("/profile/{token}")
 	public ResponseEntity<ProfileData> profile(@PathVariable String token) {
 		return ResponseEntity.ok(userService.getProfile(token));
-	}
-	
-	@GetMapping("/modules/{token}")
-	public ResponseEntity<ModuleData> modules(@PathVariable String token) {
-		return ResponseEntity.ok(userService.getModules(token));
-	}
-	
-	@PostMapping("/modules/{token}")
-	public ResponseEntity<ModuleRegistrationResponseCode> registerModule(@PathVariable String token, @RequestBody MenuModule module) {
-		return ResponseEntity.ok(userService.registerModule(token, module));
 	}
 	
 	@GetMapping("/loadout/{token}")

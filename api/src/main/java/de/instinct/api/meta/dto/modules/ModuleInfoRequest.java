@@ -1,4 +1,4 @@
-package de.instinct.api.meta.dto;
+package de.instinct.api.meta.dto.modules;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ModuleData {
-	
-	private List<MenuModule> enabledModules;
+public class ModuleInfoRequest {
 
+	private List<MenuModule> requestedModuleInfos;
+	
 }
