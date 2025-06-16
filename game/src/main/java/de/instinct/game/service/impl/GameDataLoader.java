@@ -61,7 +61,7 @@ public class GameDataLoader {
 		PlanetData neutralPlanetData = new PlanetData();
 		Weapon neutralPlanetWeapon = new Weapon();
 		neutralPlanetWeapon.type = WeaponType.PROJECTILE;
-		neutralPlanetWeapon.damage = 5;
+		neutralPlanetWeapon.damage = 3;
 		neutralPlanetWeapon.range = 100f;
 		neutralPlanetWeapon.cooldown = 1000;
 		neutralPlanetWeapon.speed = 120f;
