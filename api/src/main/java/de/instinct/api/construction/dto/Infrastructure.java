@@ -1,5 +1,7 @@
 package de.instinct.api.construction.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +16,6 @@ public class Infrastructure {
 	private float resourceGenerationSpeed;
 	private float maxResourceCapacity;
 	private float percentOfArmorAfterCapture;
-	private PlanetDefense planetDefense;
-	private PlanetWeapon planetWeapon;
+	private List<PlanetTurretBlueprint> planetTurretBlueprints;
 
 }

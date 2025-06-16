@@ -16,6 +16,7 @@ import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.discovery.dto.ServiceInfoDTO;
 
 public class BaseService implements BaseServiceInterface {
+	
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     private OkHttpClient client;
@@ -82,10 +83,25 @@ public class BaseService implements BaseServiceInterface {
         if (!connected) API.loggingHook.log("Not connected to URL: " + baseUrl);
         return connected;
     }
+    
+    @Override
+	public long ping() {
+    	String url = baseUrl + "/ping";
+        Request.Builder builder = new Request.Builder()
+            .url(url)
+            .get();
+        long startTime = System.currentTimeMillis();
+        try (Response response = client.newCall(builder.build()).execute()) {
+            return response.isSuccessful() ? System.currentTimeMillis() - startTime : -1;
+        } catch (IOException e) {
+        	API.loggingHook.log("Error during request: " + e.getMessage());
+        }
+        return -1;
+	}
 
     public String sendRequest(RESTRequest request) {
     	setAuthToken(request);
-    	API.loggingHook.log("sending request: " + request);
+    	API.loggingHook.log("Request: " + request);
     	switch (request.getType()) {
             case GET:
             	return sendGetRequest(request);
@@ -112,6 +128,7 @@ public class BaseService implements BaseServiceInterface {
     }
 
     private String sendGetRequest(RESTRequest request) {
+    	if (request.getPayload() != null) API.loggingHook.log("Warning: GET request with payload is not standard practice. Payload will be ignored.");
         String url = baseUrl + buildURI(request);
         Request.Builder builder = new Request.Builder()
             .url(url)
@@ -153,6 +170,7 @@ public class BaseService implements BaseServiceInterface {
 
     private String executeRequest(Request.Builder builder) {
         try (Response response = client.newCall(builder.build()).execute()) {
+        	API.loggingHook.log("Response: " + response);
             if (response.body() != null) {
                 return response.body().string();
             }
@@ -176,4 +194,5 @@ public class BaseService implements BaseServiceInterface {
             }
         }
     }
+
 }

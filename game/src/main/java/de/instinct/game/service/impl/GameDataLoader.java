@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.PlanetDefense;
+import de.instinct.api.construction.dto.PlanetTurretBlueprint;
 import de.instinct.api.construction.dto.PlanetWeapon;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.VersusMode;
@@ -125,8 +126,16 @@ public class GameDataLoader {
 			planetData.maxResourceCapacity = infrastructure.getMaxResourceCapacity();
 			planetData.resourceGenerationSpeed = infrastructure.getResourceGenerationSpeed();
 			planetData.percentOfArmorAfterCapture = infrastructure.getPercentOfArmorAfterCapture();
-			planetData.defense = getDefense(infrastructure.getPlanetDefense());
-			planetData.weapon = getWeapon(infrastructure.getPlanetWeapon());
+			
+			PlanetTurretBlueprint planetTurretBlueprint = null;
+			for (PlanetTurretBlueprint currentPlanetTurretBlueprint : infrastructure.getPlanetTurretBlueprints()) {
+				if (currentPlanetTurretBlueprint.isInUse()) {
+					planetTurretBlueprint = currentPlanetTurretBlueprint;
+					break;
+				}
+			}
+			planetData.defense = getDefense(planetTurretBlueprint.getPlanetDefense());
+			planetData.weapon = getWeapon(planetTurretBlueprint.getPlanetWeapon());
 			return planetData;
 		}
 		return null;

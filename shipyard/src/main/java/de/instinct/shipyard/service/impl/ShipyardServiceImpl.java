@@ -47,8 +47,8 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.uuid(UUID.randomUUID().toString())
 				.type(ShipType.FIGHTER)
 				.model("hawk")
-				.movementSpeed(50f)
-				.cost(3)
+				.movementSpeed(70f)
+				.cost(4)
 				.commandPointsCost(1)
 				.defense(hawkDefense)
 				.weapon(hawkWeapon)
@@ -101,6 +101,29 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.weapon(sharkWeapon)
 				.build());
 		
+		ShipDefense eelDefense = ShipDefense.builder()
+				.shield(2)
+				.armor(2)
+				.shieldRegenerationSpeed(0.2f)
+				.build();
+		ShipWeapon eelWeapon = ShipWeapon.builder()
+				.type(WeaponType.BEAM)
+				.damage(2)
+				.range(110f)
+				.speed(250f)
+				.cooldown(3000)
+				.build();
+		ownedShips.add(ShipBlueprint.builder()
+				.uuid(UUID.randomUUID().toString())
+				.type(ShipType.FIGHTER)
+				.model("eel")
+				.movementSpeed(60f)
+				.cost(6)
+				.commandPointsCost(1)
+				.defense(eelDefense)
+				.weapon(eelWeapon)
+				.build());
+		
 		ShipDefense cheetahDefense = ShipDefense.builder()
 				.shield(5)
 				.armor(10)
@@ -108,7 +131,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build();
 		ShipWeapon cheetahWeapon = ShipWeapon.builder()
 				.type(WeaponType.BEAM)
-				.damage(5)
+				.damage(7)
 				.range(120f)
 				.speed(300f)
 				.cooldown(3000)
@@ -117,7 +140,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.uuid(UUID.randomUUID().toString())
 				.type(ShipType.FIGHTER)
 				.model("cheetah")
-				.movementSpeed(120f)
+				.movementSpeed(140f)
 				.cost(2)
 				.commandPointsCost(1)
 				.defense(cheetahDefense)

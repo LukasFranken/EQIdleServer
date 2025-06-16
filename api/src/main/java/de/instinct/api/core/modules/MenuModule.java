@@ -2,23 +2,13 @@ package de.instinct.api.core.modules;
 
 public enum MenuModule {
 	
-	PLAY("PLAY"),
-	SETTINGS("SETTINGS"),
-	PROFILE("PROFILE"),
-	INVENTORY("INVENTORY"),
-	MARKET("MARKET"),
-	SHOP("SHOP"),
-	SHIPYARD("SHIPYARD"),
-	CONSTRUCTION("CONSTRUCTION");
-	
-	String label;
-	
-	MenuModule(String label) {
-		this.label = label;
-	}
-	
-	public String getLabel() {
-		return this.label;
-	}
+	PLAY,
+	SETTINGS,
+	PROFILE,
+	INVENTORY,
+	SHIPYARD,
+	CONSTRUCTION,
+	MARKET,
+	SHOP
 
 }

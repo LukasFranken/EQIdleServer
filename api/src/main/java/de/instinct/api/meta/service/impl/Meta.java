@@ -13,6 +13,8 @@ import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.modules.ModuleData;
+import de.instinct.api.meta.dto.modules.ModuleInfoRequest;
+import de.instinct.api.meta.dto.modules.ModuleInfoResponse;
 import de.instinct.api.meta.dto.modules.ModuleRegistrationResponseCode;
 import de.instinct.api.meta.service.MetaInterface;
 
@@ -51,17 +53,6 @@ public class Meta extends BaseService implements MetaInterface {
 	}
 	
 	@Override
-	public ModuleData modules(String token) {
-		if (!isConnected()) return null;
-		String response = super.sendRequest(RESTRequest.builder()
-				.type(SupportedRequestType.GET)
-				.endpoint("modules")
-				.pathVariable(token)
-				.build());
-		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ModuleData.class);
-	}
-	
-	@Override
 	public ResourceData resources(String token) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
@@ -73,15 +64,37 @@ public class Meta extends BaseService implements MetaInterface {
 	}
 	
 	@Override
+	public ModuleData modules(String token) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("module")
+				.pathVariable(token)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ModuleData.class);
+	}
+	
+	@Override
 	public ModuleRegistrationResponseCode registerModule(String token, MenuModule module) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
-				.endpoint("modules")
+				.endpoint("module")
 				.payload(module)
 				.pathVariable(token)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ModuleRegistrationResponseCode.class);
+	}
+	
+	@Override
+	public ModuleInfoResponse moduleInfo(ModuleInfoRequest moduleInfoRequest) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("module/info")
+				.payload(moduleInfoRequest)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ModuleInfoResponse.class);
 	}
 
 	@Override

@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
 import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.InfrastructureInitializationResponseCode;
+import de.instinct.api.construction.dto.UseTurretResponseCode;
 import de.instinct.construction.service.ConstructionService;
 import de.instinct.construction.service.impl.ConstructionServiceImpl;
 
@@ -37,6 +39,11 @@ public class ConstructionController extends BaseServiceController {
 	@GetMapping("/data/{token}")
 	public ResponseEntity<Infrastructure> data(@PathVariable String token) {
 		return ResponseEntity.ok(service.getInfrastructure(token));
+	}
+	
+	@PostMapping("/use/{token}/{turretUUID}")
+	public ResponseEntity<UseTurretResponseCode> use(@PathVariable String token, @PathVariable String turretUUID) {
+		return ResponseEntity.ok(service.useTurret(token, turretUUID));
 	}
 
 }

@@ -7,5 +7,7 @@ public interface BaseServiceInterface {
 	void disconnect();
 	
 	boolean isConnected();
+	
+	long ping();
 
 }

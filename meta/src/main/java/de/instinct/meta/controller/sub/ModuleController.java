@@ -33,8 +33,8 @@ public class ModuleController {
 		return ResponseEntity.ok(moduleService.registerModule(token, module));
 	}
 	
-	@GetMapping("/info/{token}")
-	public ResponseEntity<ModuleInfoResponse> info(@PathVariable ModuleInfoRequest moduleInfoRequest) {
+	@PostMapping("/info")
+	public ResponseEntity<ModuleInfoResponse> info(@RequestBody ModuleInfoRequest moduleInfoRequest) {
 		return ResponseEntity.ok(moduleService.getInfo(moduleInfoRequest));
 	}
 

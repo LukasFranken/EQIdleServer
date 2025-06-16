@@ -203,7 +203,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	private int calculateTotalPlayersFound(GameType type) {
 		int count = 0;
 		for (Lobby lobby : lobbies) {
-			if (lobby.getType().matches(type) && lobby.getCode() == LobbyStatusCode.MATCHING) {
+			if (lobby.getType() != null && lobby.getType().matches(type) && lobby.getCode() == LobbyStatusCode.MATCHING) {
 				count += lobby.getUserUUIDs().size();
 			}
 		}

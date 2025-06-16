@@ -1,5 +1,6 @@
 package de.instinct.meta.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,17 +21,17 @@ import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.meta.service.UserService;
-import de.instinct.meta.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/meta")
 public class MetaController extends BaseServiceController {
 	
 	private final UserService userService;
-	
-	public MetaController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version) {
-		super("meta", serverPort, version);
-		userService = new UserServiceImpl();
+
+	@Autowired
+	public MetaController(@Value("${server.port}") int serverPort, @Value("${application.version}") String version, UserService userService) {
+	    super("meta", serverPort, version);
+	    this.userService = userService;
 	}
 	
 	@Override

@@ -10,6 +10,8 @@ import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.modules.ModuleData;
+import de.instinct.api.meta.dto.modules.ModuleInfoRequest;
+import de.instinct.api.meta.dto.modules.ModuleInfoResponse;
 import de.instinct.api.meta.dto.modules.ModuleRegistrationResponseCode;
 
 public interface MetaInterface extends BaseServiceInterface {
@@ -18,11 +20,13 @@ public interface MetaInterface extends BaseServiceInterface {
 	
 	ProfileData profile(String token);
 	
-	ModuleData modules(String token);
-	
 	ResourceData resources(String token);
 	
+	ModuleData modules(String token);
+	
 	ModuleRegistrationResponseCode registerModule(String token, MenuModule module);
+	
+	ModuleInfoResponse moduleInfo(ModuleInfoRequest moduleInfoRequest);
 	
 	RegisterResponseCode initialize(String token);
 

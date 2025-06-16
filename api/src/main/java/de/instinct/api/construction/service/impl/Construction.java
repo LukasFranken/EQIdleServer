@@ -2,6 +2,7 @@ package de.instinct.api.construction.service.impl;
 
 import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.InfrastructureInitializationResponseCode;
+import de.instinct.api.construction.dto.UseTurretResponseCode;
 import de.instinct.api.construction.service.ConstructionInterface;
 import de.instinct.api.core.model.RESTRequest;
 import de.instinct.api.core.model.SupportedRequestType;
@@ -40,6 +41,17 @@ public class Construction extends BaseService implements ConstructionInterface {
 				.pathVariable(token)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, Infrastructure.class);
+	}
+	
+	@Override
+	public UseTurretResponseCode use(String token, String turretUUID) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("use")
+				.pathVariable(token + "/" + turretUUID)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, UseTurretResponseCode.class);
 	}
 
 }
