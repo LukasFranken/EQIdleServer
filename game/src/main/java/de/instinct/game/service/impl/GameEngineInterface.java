@@ -40,8 +40,8 @@ public class GameEngineInterface {
 		}
 	}
 	
-	public boolean containsUnprocessedOrders() {
-		return engine.containsUnprocessedOrders();
+	public boolean containedValidOrders() {
+		return engine.containedValidOrders();
 	}
 
 }

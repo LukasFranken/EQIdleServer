@@ -3,6 +3,7 @@ package de.instinct.game.service.impl;
 import java.util.ArrayList;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 
 import de.instinct.engine.net.message.types.FleetMovementMessage;
@@ -24,19 +25,23 @@ public class ServerConnectionListener extends Listener {
 
 	@Override
     public void received(Connection c, Object o) {
-    	System.out.println("received: " + o);
-    	if (o instanceof JoinMessage) {
-    		JoinMessage joinMessage = (JoinMessage) o;
-            SessionManager.join(joinMessage, c);
-        }
-    	if (o instanceof LoadedMessage) {
-    		LoadedMessage loadedMessage = (LoadedMessage) o;
-            SessionManager.loaded(loadedMessage, c);
-        }
-        if (o instanceof FleetMovementMessage) {
-            FleetMovementMessage fleetMovement = (FleetMovementMessage) o;
-            SessionManager.process(fleetMovement);
-        }
+		if (o instanceof FrameworkMessage) {
+			
+		} else {
+			System.out.println("received: " + o);
+			if (o instanceof JoinMessage) {
+	    		JoinMessage joinMessage = (JoinMessage) o;
+	            SessionManager.join(joinMessage, c);
+	        }
+	    	if (o instanceof LoadedMessage) {
+	    		LoadedMessage loadedMessage = (LoadedMessage) o;
+	            SessionManager.loaded(loadedMessage, c);
+	        }
+	        if (o instanceof FleetMovementMessage) {
+	            FleetMovementMessage fleetMovement = (FleetMovementMessage) o;
+	            SessionManager.process(fleetMovement);
+	        }
+		}
     }
 
 	@Override

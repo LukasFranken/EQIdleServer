@@ -16,6 +16,7 @@ public class GameSession {
 	private List<User> users;
 	private GameState gameState;
 	private long lastUpdateTimeMS;
+	private long lastClientUpdateTimeMS;
 	private boolean active;
 
 }

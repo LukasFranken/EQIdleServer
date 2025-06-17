@@ -41,6 +41,7 @@ public class SessionManager {
 	private static AiEngine aiEngine;
 	
 	private static int PERIODIC_UPDATE_MS = 50;
+	private static int PERIODIC_CLIENT_UPDATE_MS = 500;
 	private static ScheduledExecutorService scheduler;
 	
 	public static void init() {
@@ -88,13 +89,16 @@ public class SessionManager {
 	}
 
 	private static void updateSession(GameSession session) {
-		boolean clientUpdateRequired = engineInterface.containsUnprocessedOrders();
 		engineInterface.updateGameState(session);
+		boolean clientUpdateRequired = engineInterface.containedValidOrders();
 		if (session.getGameState().winner != 0) {
 			clientUpdateRequired = true;
 			expiredSessions.add(session);
 			activeSessions.remove(session);
 			API.matchmaking().finish(session.getUuid());
+		}
+		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
+			clientUpdateRequired = true;
 		}
         if (clientUpdateRequired) {
         	updateClients(session);
@@ -107,6 +111,7 @@ public class SessionManager {
 				user.getConnection().sendTCP(session.getGameState());
 			}
 		}
+		session.setLastClientUpdateTimeMS(System.currentTimeMillis());
 	}
 
 	public static void process(FleetMovementMessage fleetMovement) {
