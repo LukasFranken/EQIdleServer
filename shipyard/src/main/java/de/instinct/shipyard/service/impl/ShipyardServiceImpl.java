@@ -32,16 +32,16 @@ public class ShipyardServiceImpl implements ShipyardService {
 		if (userShipyards.containsKey(token)) return ShipyardInitializationResponseCode.ALREADY_INITIALIZED;
 		List<ShipBlueprint> ownedShips = new ArrayList<>();
 		ShipDefense hawkDefense = ShipDefense.builder()
-				.shield(2)
+				.shield(4)
 				.armor(5)
 				.shieldRegenerationSpeed(0.2f)
 				.build();
 		ShipWeapon hawkWeapon = ShipWeapon.builder()
-				.type(WeaponType.LASER)
-				.damage(2)
+				.type(WeaponType.PROJECTILE)
+				.damage(3)
 				.range(80f)
 				.speed(100f)
-				.cooldown(2000)
+				.cooldown(500)
 				.build();
 		ownedShips.add(ShipBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
@@ -56,13 +56,13 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		
 		ShipDefense turtleDefense = ShipDefense.builder()
-				.shield(5)
-				.armor(7)
+				.shield(8)
+				.armor(12)
 				.shieldRegenerationSpeed(0.2f)
 				.build();
 		ShipWeapon turtleWeapon = ShipWeapon.builder()
-				.type(WeaponType.PROJECTILE)
-				.damage(2)
+				.type(WeaponType.LASER)
+				.damage(3)
 				.range(40f)
 				.speed(100f)
 				.cooldown(2000)
@@ -79,8 +79,8 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		
 		ShipDefense sharkDefense = ShipDefense.builder()
-				.shield(3)
-				.armor(3)
+				.shield(2)
+				.armor(6)
 				.shieldRegenerationSpeed(0.2f)
 				.build();
 		ShipWeapon sharkWeapon = ShipWeapon.builder()
@@ -102,8 +102,8 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		
 		ShipDefense eelDefense = ShipDefense.builder()
-				.shield(2)
-				.armor(2)
+				.shield(4)
+				.armor(4)
 				.shieldRegenerationSpeed(0.2f)
 				.build();
 		ShipWeapon eelWeapon = ShipWeapon.builder()
@@ -131,7 +131,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build();
 		ShipWeapon cheetahWeapon = ShipWeapon.builder()
 				.type(WeaponType.BEAM)
-				.damage(7)
+				.damage(10)
 				.range(120f)
 				.speed(300f)
 				.cooldown(3000)

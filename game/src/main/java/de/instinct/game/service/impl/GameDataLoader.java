@@ -61,13 +61,13 @@ public class GameDataLoader {
 		PlanetData neutralPlanetData = new PlanetData();
 		Weapon neutralPlanetWeapon = new Weapon();
 		neutralPlanetWeapon.type = WeaponType.PROJECTILE;
-		neutralPlanetWeapon.damage = 3;
+		neutralPlanetWeapon.damage = 4;
 		neutralPlanetWeapon.range = 100f;
 		neutralPlanetWeapon.cooldown = 1000;
 		neutralPlanetWeapon.speed = 120f;
 		neutralPlanetData.weapon = neutralPlanetWeapon;
 		Defense neutralPlanetDefense = new Defense();
-		neutralPlanetDefense.armor = 50;
+		neutralPlanetDefense.armor = 100;
 		neutralPlanetData.defense = neutralPlanetDefense;
 		neutralPlayer.planetData = neutralPlanetData;
 		neutralPlayer.ships = new ArrayList<>();
