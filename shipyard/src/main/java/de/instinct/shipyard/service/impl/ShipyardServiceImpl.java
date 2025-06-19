@@ -15,6 +15,7 @@ import de.instinct.api.shipyard.dto.ShipType;
 import de.instinct.api.shipyard.dto.ShipWeapon;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
+import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.shipyard.service.ShipyardService;
 
@@ -150,6 +151,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		ShipyardData shipyardData = ShipyardData.builder()
 				.ownedShips(ownedShips)
 				.slots(5)
+				.activeShipSlots(1)
 				.build();
 		userShipyards.put(token, shipyardData);
 		return ShipyardInitializationResponseCode.SUCCESS;
@@ -174,13 +176,36 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.findFirst()
 				.orElse(null);
 		if (ship == null) return UseShipResponseCode.INVALID_UUID;
-		//if (shipyard.getSlots() <= 0) return UseShipResponseCode.NO_SLOTS_AVAILABLE;
+		if (shipyard.getActiveShipSlots() > 1 && shipyard.getActiveShipSlots() <= getActiveShips(shipyard)) return UseShipResponseCode.NO_ACTIVE_SLOTS_AVAILABLE;
 		if (ship.isInUse()) return UseShipResponseCode.ALREADY_IN_USE;
-		for (ShipBlueprint s : shipyard.getOwnedShips()) {
-			s.setInUse(false);
+		if (shipyard.getActiveShipSlots() == 1) {
+			for (ShipBlueprint blueprint : shipyard.getOwnedShips()) {
+				blueprint.setInUse(false);
+			}
 		}
 		ship.setInUse(true);
 		return UseShipResponseCode.SUCCESS;
+	}
+	
+	@Override
+	public UnuseShipResponseCode unuseShip(String token, String shipUUID) {
+		ShipyardData shipyard = userShipyards.get(token);
+		if (shipyard == null) return UnuseShipResponseCode.NOT_INITIALIZED;
+		ShipBlueprint ship = shipyard.getOwnedShips().stream()
+				.filter(s -> s.getUuid().equals(shipUUID))
+				.findFirst()
+				.orElse(null);
+		if (ship == null) return UnuseShipResponseCode.INVALID_UUID;
+		if (!ship.isInUse()) return UnuseShipResponseCode.NOT_IN_USE;
+		ship.setInUse(false);
+		return UnuseShipResponseCode.SUCCESS;
+	}
+
+	private int getActiveShips(ShipyardData shipyard) {
+		return shipyard.getOwnedShips().stream()
+				.filter(ShipBlueprint::isInUse)
+				.toList()
+				.size();
 	}
 
 	

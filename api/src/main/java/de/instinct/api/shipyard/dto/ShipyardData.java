@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class ShipyardData {
 	
 	private int slots;
+	private int activeShipSlots;
 	private List<ShipBlueprint> ownedShips;
 
 }
