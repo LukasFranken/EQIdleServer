@@ -56,8 +56,8 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		
 		ShipDefense turtleDefense = ShipDefense.builder()
-				.shield(8)
-				.armor(12)
+				.shield(12)
+				.armor(20)
 				.shieldRegenerationSpeed(0.2f)
 				.build();
 		ShipWeapon turtleWeapon = ShipWeapon.builder()
@@ -79,14 +79,14 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		
 		ShipDefense sharkDefense = ShipDefense.builder()
-				.shield(2)
+				.shield(4)
 				.armor(6)
 				.shieldRegenerationSpeed(0.2f)
 				.build();
 		ShipWeapon sharkWeapon = ShipWeapon.builder()
 				.type(WeaponType.MISSILE)
-				.damage(5)
-				.range(90f)
+				.damage(6)
+				.range(100f)
 				.speed(60f)
 				.cooldown(2000)
 				.build();
@@ -108,7 +108,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build();
 		ShipWeapon eelWeapon = ShipWeapon.builder()
 				.type(WeaponType.BEAM)
-				.damage(2)
+				.damage(5)
 				.range(110f)
 				.speed(250f)
 				.cooldown(3000)
