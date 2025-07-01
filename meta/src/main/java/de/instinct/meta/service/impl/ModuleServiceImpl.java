@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,7 @@ public class ModuleServiceImpl implements ModuleService {
 		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.PRIVATE);
 		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.PRIVATE);
 		
-		unlockRanks.put(MenuModule.SHOP, PlayerRank.CAPTAIN1);
+		unlockRanks.put(MenuModule.SHOP, PlayerRank.SPECIALIST1);
 		unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
 	}
 	
@@ -65,16 +66,13 @@ public class ModuleServiceImpl implements ModuleService {
 	}
 
 	@Override
-	@SuppressWarnings("incomplete-switch")
 	public void manageRankUp(String token, PlayerRank rank) {
 		ModuleData moduleData = getModules(token);
 		if (moduleData == null) return;
-		switch (rank) {
-		case PRIVATE:
-			moduleData.getEnabledModules().add(MenuModule.INVENTORY);
-			moduleData.getEnabledModules().add(MenuModule.SHIPYARD);
-			moduleData.getEnabledModules().add(MenuModule.CONSTRUCTION);
-			break;
+		for (Entry<MenuModule, PlayerRank> entry : unlockRanks.entrySet()) {
+			if (rank.ordinal() >= entry.getValue().ordinal() && !moduleData.getEnabledModules().contains(entry.getKey())) {
+				moduleData.getEnabledModules().add(entry.getKey());
+			}
 		}
 	}
 

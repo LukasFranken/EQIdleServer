@@ -6,6 +6,7 @@ import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
+import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.api.shipyard.service.ShipyardInterface;
@@ -64,6 +65,28 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.pathVariable(token + "/" + shipUUID)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, UnuseShipResponseCode.class);
+	}
+
+	@Override
+	public StatChangeResponse hangar(String token, int count) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("hangar")
+				.pathVariable(token + "/" + count)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, StatChangeResponse.class);
+	}
+
+	@Override
+	public StatChangeResponse active(String token, int count) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("active")
+				.pathVariable(token + "/" + count)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, StatChangeResponse.class);
 	}
 
 }

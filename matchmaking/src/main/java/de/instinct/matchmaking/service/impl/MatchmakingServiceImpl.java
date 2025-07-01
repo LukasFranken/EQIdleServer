@@ -318,7 +318,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				lobby.getGameserverInfo().setGameSessionUUID(null);
 				lobby.setCode(LobbyStatusCode.IDLE);
 				for (String userUUID : lobby.getUserUUIDs()) {
-					API.meta().experience(userUUID, 40);
+					API.meta().experience(userUUID, 120);
 					API.meta().addResources(userUUID, ResourceData.builder()
 							.credits(500)
 							.iron(50)

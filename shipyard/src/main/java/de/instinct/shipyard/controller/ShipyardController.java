@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import base.controller.BaseServiceController;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
+import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.shipyard.service.ShipyardService;
@@ -50,6 +51,16 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/unuse/{token}/{shipUUID}")
 	public ResponseEntity<UnuseShipResponseCode> unuse(@PathVariable String token, @PathVariable String shipUUID) {
 		return ResponseEntity.ok(service.unuseShip(token, shipUUID));
+	}
+	
+	@PostMapping("/hangar/{token}/{count}")
+	public ResponseEntity<StatChangeResponse> hangar(@PathVariable String token, @PathVariable int count) {
+		return ResponseEntity.ok(service.changeHangarSpace(token, count));
+	}
+	
+	@PostMapping("/active/{token}/{count}")
+	public ResponseEntity<StatChangeResponse> active(@PathVariable String token, @PathVariable int count) {
+		return ResponseEntity.ok(service.changeActiveShips(token, count));
 	}
 
 }

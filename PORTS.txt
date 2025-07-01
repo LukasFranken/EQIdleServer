@@ -8,6 +8,7 @@ PORTMAP TCP 6000, 8080 - 9010
 
 9003 - Construction
 9004 - Game
+9005 - Shop
 9006 - Gameserver TCP
 9007 - Shipyard
 9008 - Meta

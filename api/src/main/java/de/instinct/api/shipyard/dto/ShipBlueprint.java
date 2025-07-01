@@ -1,5 +1,8 @@
 package de.instinct.api.shipyard.dto;
 
+import java.util.List;
+
+import de.instinct.api.meta.dto.ResourceAmount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +22,9 @@ public class ShipBlueprint {
 	private int commandPointsCost;
 	private ShipWeapon weapon;
 	private ShipDefense defense;
+	
+	private List<ResourceAmount> resources;
+	private boolean built;
 	
 	private boolean inUse;
 

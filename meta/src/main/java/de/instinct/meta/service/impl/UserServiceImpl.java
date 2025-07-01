@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
 			return ExperienceUpdateResponseCode.ERROR;
 		}
 		profile.setCurrentExp(profile.getCurrentExp() + exp);
-		if (profile.getRank().getNextRequiredExp() <= profile.getCurrentExp()) {
+		while (profile.getRank().getNextRequiredExp() <= profile.getCurrentExp()) {
 			profile.setRank(profile.getRank().getNextRank());
 			grantNewRankPriviledges(token, user);
 		}

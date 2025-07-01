@@ -16,6 +16,8 @@ import de.instinct.api.meta.service.MetaInterface;
 import de.instinct.api.meta.service.impl.Meta;
 import de.instinct.api.shipyard.service.ShipyardInterface;
 import de.instinct.api.shipyard.service.impl.Shipyard;
+import de.instinct.api.shop.service.ShopInterface;
+import de.instinct.api.shop.service.impl.Shop;
 
 public class API {
 	
@@ -38,6 +40,7 @@ public class API {
 	private static Game game;
 	private static Shipyard shipyard;
 	private static Construction construction;
+	private static Shop shop;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
@@ -48,6 +51,7 @@ public class API {
 		game = new Game();
 		shipyard = new Shipyard();
 		construction = new Construction();
+		shop = new Shop();
 		
 		if (newConfiguration != APIConfiguration.SERVER) {
 			discovery().connect();
@@ -57,6 +61,7 @@ public class API {
 			game().connect();
 			shipyard().connect();
 			construction().connect();
+			shop().connect();
 			printAPIStatus();
 		}
 	}
@@ -100,6 +105,11 @@ public class API {
 		return construction;
 	}
 	
+	public static ShopInterface shop() {
+		if (!apiReady()) return null;
+		return shop;
+	}
+	
 	private static boolean apiReady() {
 		if (isInitialized()) return true;
 		loggingHook.log("API not connected. Connect first via API.initialize()!");
@@ -117,6 +127,7 @@ public class API {
 		printServiceStatus("Game", game.isConnected());
 		printServiceStatus("Shipyard", shipyard.isConnected());
 		printServiceStatus("Construction", construction.isConnected());
+		printServiceStatus("Construction", shop.isConnected());
 	}
 	
 	private static void printServiceStatus(String serviceName, boolean connected) {

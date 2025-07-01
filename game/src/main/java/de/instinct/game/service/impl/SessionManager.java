@@ -121,7 +121,7 @@ public class SessionManager {
     		shipMovementOrder.playerId = getPlayerId(currentSession, fleetMovement.userUUID);
     		shipMovementOrder.fromPlanetId = fleetMovement.fromPlanetId;
     		shipMovementOrder.toPlanetId = fleetMovement.toPlanetId;
-    		shipMovementOrder.playerShipId = 0; //TODO support multiships
+    		shipMovementOrder.playerShipId = fleetMovement.shipId;
     		engineInterface.queue(currentSession.getGameState(), shipMovementOrder);
     		updateSession(currentSession);
     		break;

@@ -170,10 +170,9 @@ public class BaseService implements BaseServiceInterface {
 
     private String executeRequest(Request.Builder builder) {
         try (Response response = client.newCall(builder.build()).execute()) {
-        	API.loggingHook.log("Response: " + response);
-            if (response.body() != null) {
-                return response.body().string();
-            }
+        	String body = response.body() != null ? response.body().string() : null;
+        	API.loggingHook.log("Response: " + response + " - body: " + (body != null ? body : "null"));
+        	return body;
         } catch (IOException e) {
         	API.loggingHook.log("Error during request: " + e.getMessage());
         }

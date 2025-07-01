@@ -8,13 +8,16 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import base.file.FileManager;
 import de.instinct.api.construction.dto.WeaponType;
+import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.shipyard.dto.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ShipDefense;
 import de.instinct.api.shipyard.dto.ShipType;
 import de.instinct.api.shipyard.dto.ShipWeapon;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
+import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.shipyard.service.ShipyardService;
@@ -57,8 +60,8 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		
 		ShipDefense turtleDefense = ShipDefense.builder()
-				.shield(12)
-				.armor(20)
+				.shield(15)
+				.armor(25)
 				.shieldRegenerationSpeed(0.2f)
 				.build();
 		ShipWeapon turtleWeapon = ShipWeapon.builder()
@@ -72,7 +75,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.uuid(UUID.randomUUID().toString())
 				.type(ShipType.FIGHTER)
 				.model("turtle")
-				.movementSpeed(30f)
+				.movementSpeed(40f)
 				.cost(6)
 				.commandPointsCost(1)
 				.defense(turtleDefense)
@@ -150,10 +153,11 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		ShipyardData shipyardData = ShipyardData.builder()
 				.ownedShips(ownedShips)
-				.slots(5)
+				.slots(1)
 				.activeShipSlots(1)
 				.build();
 		userShipyards.put(token, shipyardData);
+		FileManager.saveFile("init.data", ObjectJSONMapper.mapObject(shipyardData));
 		return ShipyardInitializationResponseCode.SUCCESS;
 	}
 
@@ -206,6 +210,22 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.filter(ShipBlueprint::isInUse)
 				.toList()
 				.size();
+	}
+
+	@Override
+	public StatChangeResponse changeHangarSpace(String token, int count) {
+		ShipyardData shipyard = userShipyards.get(token);
+		if (shipyard == null) return StatChangeResponse.INVALID_TOKEN;
+		shipyard.setSlots(shipyard.getSlots() + count);
+		return StatChangeResponse.SUCCESS;
+	}
+
+	@Override
+	public StatChangeResponse changeActiveShips(String token, int count) {
+		ShipyardData shipyard = userShipyards.get(token);
+		if (shipyard == null) return StatChangeResponse.INVALID_TOKEN;
+		shipyard.setActiveShipSlots(shipyard.getActiveShipSlots() + count);
+		return StatChangeResponse.SUCCESS;
 	}
 
 	
