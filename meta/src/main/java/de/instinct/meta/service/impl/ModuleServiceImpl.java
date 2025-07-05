@@ -33,6 +33,7 @@ public class ModuleServiceImpl implements ModuleService {
 		unlockRanks.put(MenuModule.INVENTORY, PlayerRank.PRIVATE);
 		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.PRIVATE);
 		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.PRIVATE);
+		unlockRanks.put(MenuModule.STARMAP, PlayerRank.PRIVATE);
 		
 		unlockRanks.put(MenuModule.SHOP, PlayerRank.SPECIALIST1);
 		unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
