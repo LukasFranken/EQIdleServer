@@ -18,6 +18,8 @@ import de.instinct.api.shipyard.service.ShipyardInterface;
 import de.instinct.api.shipyard.service.impl.Shipyard;
 import de.instinct.api.shop.service.ShopInterface;
 import de.instinct.api.shop.service.impl.Shop;
+import de.instinct.api.starmap.service.StarmapInterface;
+import de.instinct.api.starmap.service.impl.Starmap;
 
 public class API {
 	
@@ -41,6 +43,7 @@ public class API {
 	private static Shipyard shipyard;
 	private static Construction construction;
 	private static Shop shop;
+	private static Starmap starmap;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
@@ -52,6 +55,7 @@ public class API {
 		shipyard = new Shipyard();
 		construction = new Construction();
 		shop = new Shop();
+		starmap = new Starmap();
 		
 		if (newConfiguration != APIConfiguration.SERVER) {
 			discovery().connect();
@@ -62,6 +66,7 @@ public class API {
 			shipyard().connect();
 			construction().connect();
 			shop().connect();
+			starmap().connect();
 			printAPIStatus();
 		}
 	}
@@ -110,6 +115,11 @@ public class API {
 		return shop;
 	}
 	
+	public static StarmapInterface starmap() {
+		if (!apiReady()) return null;
+		return starmap;
+	}
+	
 	private static boolean apiReady() {
 		if (isInitialized()) return true;
 		loggingHook.log("API not connected. Connect first via API.initialize()!");
@@ -127,7 +137,8 @@ public class API {
 		printServiceStatus("Game", game.isConnected());
 		printServiceStatus("Shipyard", shipyard.isConnected());
 		printServiceStatus("Construction", construction.isConnected());
-		printServiceStatus("Construction", shop.isConnected());
+		printServiceStatus("Shop", shop.isConnected());
+		printServiceStatus("Starmap", starmap.isConnected());
 	}
 	
 	private static void printServiceStatus(String serviceName, boolean connected) {

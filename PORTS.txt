@@ -6,6 +6,7 @@ PORTMAP TCP 6000, 8080 - 9010
 
 6000 - Discovery
 
+9002 - Starmap
 9003 - Construction
 9004 - Game
 9005 - Shop
