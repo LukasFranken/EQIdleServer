@@ -279,7 +279,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				.type(matchedLobbies.get(0).getType())
 				.users(userData)
 				.build());
-		System.out.println("creating session");
+		System.out.println("creating session on map " + "test");
 		for (Lobby lobby : matchedLobbies) {
 			lobby.getGameserverInfo().setStatus(GameserverStatus.IN_CREATION);
 			lobby.getGameserverInfo().setGameSessionUUID(gameSessionToken);

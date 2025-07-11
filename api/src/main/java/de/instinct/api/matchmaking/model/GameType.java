@@ -11,14 +11,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GameType {
 	
+	public String map;
 	public VersusMode versusMode;
 	public GameMode gameMode;
 	public FactionMode factionMode;
 	
 	public boolean matches(GameType otherGameType) {
+		if (!sameMapAs(otherGameType.map)) return false;
 		if (versusMode != otherGameType.versusMode) return false;
 		if (gameMode != otherGameType.gameMode) return false;
 		if (factionMode != otherGameType.factionMode) return false;
+		return true;
+	}
+
+	private boolean sameMapAs(String otherMap) {
+		if (map != null) {
+			if (otherMap == null) return false;
+			if (!map.equals(otherMap)) return false;
+		}
 		return true;
 	}
 
