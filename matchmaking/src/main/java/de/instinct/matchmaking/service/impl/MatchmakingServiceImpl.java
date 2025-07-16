@@ -1,7 +1,9 @@
 package de.instinct.matchmaking.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -12,6 +14,8 @@ import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
+import de.instinct.api.matchmaking.dto.FinishGameData;
+import de.instinct.api.matchmaking.dto.GameResult;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -23,10 +27,16 @@ import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
+import de.instinct.api.matchmaking.dto.PlayerReward;
+import de.instinct.api.matchmaking.model.GameMode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.Invite;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.api.meta.dto.ResourceData;
+import de.instinct.api.starmap.dto.CompletionRequest;
+import de.instinct.api.starmap.dto.GalaxyData;
+import de.instinct.api.starmap.dto.SectorData;
+import de.instinct.api.starmap.dto.StarsystemData;
 import de.instinct.matchmaking.service.MatchmakingMapper;
 import de.instinct.matchmaking.service.MatchmakingService;
 import de.instinct.matchmaking.service.model.GameserverInfo;
@@ -38,11 +48,13 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	
 	private List<Lobby> lobbies;
 	private List<Invite> invites;
+	private Map<String, GameResult> postGameResults;
 	private final MatchmakingMapper mapper;
 	
 	public MatchmakingServiceImpl() {
 		lobbies = new ArrayList<>();
 		invites = new ArrayList<>();
+		postGameResults = new HashMap<>();
 		mapper = new MatchmakingMapperImpl();
 	}
 	
@@ -309,7 +321,8 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	}
 	
 	@Override
-	public void finish(String gameSessionToken) {
+	public void finish(String gameSessionToken, FinishGameData finishGameData) {
+		List<PlayerReward> rewards = new ArrayList<>();
 		for (Lobby lobby : lobbies) {
 			if (lobby.getGameserverInfo().getGameSessionUUID() != null && lobby.getGameserverInfo().getGameSessionUUID().contentEquals(gameSessionToken)) {
 				lobby.getGameserverInfo().setStatus(GameserverStatus.NOT_CREATED);
@@ -317,21 +330,58 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				lobby.getGameserverInfo().setPort(0);
 				lobby.getGameserverInfo().setGameSessionUUID(null);
 				lobby.setCode(LobbyStatusCode.IDLE);
-				for (String userUUID : lobby.getUserUUIDs()) {
-					API.meta().experience(userUUID, 120);
-					API.meta().addResources(userUUID, ResourceData.builder()
-							.credits(500)
-							.iron(50)
-							.gold(25)
-							.quartz(10)
-							.deuterium(5)
-							.equilibrium(1)
-							.build());
+				if (lobby.getType().gameMode == GameMode.CONQUEST) {
+					int galaxyId = Integer.parseInt(lobby.getType().map.split("_")[1]);
+					int systemId = Integer.parseInt(lobby.getType().map.split("_")[2]);
+					SectorData sectorData = API.starmap().sector();
+					StarsystemData currentSystem = null;
+					for (GalaxyData galaxy : sectorData.getGalaxies()) {
+						if (galaxy.getId() == galaxyId) {
+							for (StarsystemData system : galaxy.getStarsystems()) {
+								if (system.getId() == systemId) {
+									currentSystem = system;
+								}
+							}
+						}
+					}
+					if (currentSystem == null) break;
+					
+					for (String userUUID : lobby.getUserUUIDs()) {
+						rewards.add(PlayerReward.builder()
+								.uuid(userUUID)
+								.experience(currentSystem.getExperience())
+								.resources(currentSystem.getResourceRewards())
+								.build());
+						API.meta().experience(userUUID, currentSystem.getExperience());
+						API.meta().addResources(userUUID, ResourceData.builder()
+								.resources(currentSystem.getResourceRewards())
+								.build());
+						API.starmap().complete(CompletionRequest.builder()
+								.userUUID(userUUID)
+								.galaxyId(galaxyId)
+								.systemId(systemId)
+								.build());
+					}
+				}
+				if (lobby.getType().gameMode == GameMode.KING_OF_THE_HILL) {
+					long defaultExp = 200;
+					for (String userUUID : lobby.getUserUUIDs()) {
+						rewards.add(PlayerReward.builder()
+								.uuid(userUUID)
+								.experience(defaultExp)
+								.resources(new ArrayList<>())
+								.build());
+						API.meta().experience(userUUID, defaultExp);
+					}
 				}
 			}
 		}
+		postGameResults.put(gameSessionToken, GameResult.builder()
+				.playedMS(finishGameData.getPlayedMS())
+				.rewards(rewards)
+				.build());
 	}
-	
+
 	@Override
 	public void dispose(String lobbyToken) {
 		Lobby disposeLobby = getLobby(lobbyToken);
@@ -368,6 +418,18 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				.filter(lobby -> lobby.getUserUUIDs().contains(playerAuthToken))
 				.findFirst()
 				.orElse(null);
+	}
+
+	@Override
+	public PlayerReward result(String authToken, String gamesessionUUID) {
+		GameResult postGameResult = postGameResults.get(gamesessionUUID);
+		if (postGameResult == null) return null;
+		for (PlayerReward playerReward : postGameResult.getRewards()) {
+			if (playerReward.getUuid().contentEquals(authToken)) {
+				return playerReward;
+			}
+		}
+		return null;
 	}
 
 }

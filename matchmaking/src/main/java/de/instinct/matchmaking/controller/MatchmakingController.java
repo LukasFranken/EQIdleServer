@@ -15,6 +15,7 @@ import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.core.model.GeneralRequestResponse;
 import de.instinct.api.matchmaking.dto.CallbackCode;
+import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -24,6 +25,7 @@ import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
+import de.instinct.api.matchmaking.dto.PlayerReward;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.matchmaking.service.MatchmakingService;
 import de.instinct.matchmaking.service.impl.MatchmakingServiceImpl;
@@ -43,6 +45,7 @@ public class MatchmakingController extends BaseServiceController {
 	protected void connectToAPIs() {
 		API.game().connect();
 		API.meta().connect();
+		API.starmap().connect();
 	}
 	
 	@PostMapping("/create")
@@ -118,8 +121,8 @@ public class MatchmakingController extends BaseServiceController {
 	}
 	
 	@PutMapping("/finish/{gamesessionUUID}")
-	public ResponseEntity<GeneralRequestResponse> finish(@PathVariable String gamesessionUUID) {
-		matchmakingService.finish(gamesessionUUID);
+	public ResponseEntity<GeneralRequestResponse> finish(@PathVariable String gamesessionUUID, @RequestBody FinishGameData finishGameData) {
+		matchmakingService.finish(gamesessionUUID, finishGameData);
 		return ResponseEntity.ok(GeneralRequestResponse.OK);
 	}
 	
@@ -127,6 +130,11 @@ public class MatchmakingController extends BaseServiceController {
 	public ResponseEntity<GeneralRequestResponse> dispose(@PathVariable String gamesessionUUID) {
 		matchmakingService.dispose(gamesessionUUID);
 		return ResponseEntity.ok(GeneralRequestResponse.OK);
+	}
+	
+	@GetMapping("/result/{gamesessionUUID}")
+	public ResponseEntity<PlayerReward> result(@RequestHeader("token") String authToken, @PathVariable("gamesessionUUID") String gamesessionUUID) {
+		return ResponseEntity.ok(matchmakingService.result(authToken, gamesessionUUID));
 	}
 	
 }

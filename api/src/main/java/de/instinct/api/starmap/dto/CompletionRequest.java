@@ -1,6 +1,4 @@
-package de.instinct.api.meta.dto;
-
-import java.util.List;
+package de.instinct.api.starmap.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResourceData {
+public class CompletionRequest {
 	
-	private List<ResourceAmount> resources;
+	private String userUUID;
+	private int galaxyId;
+	private int systemId;
 
 }

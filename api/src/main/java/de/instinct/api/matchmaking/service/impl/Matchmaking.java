@@ -6,6 +6,7 @@ import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.matchmaking.dto.CallbackCode;
+import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -15,6 +16,7 @@ import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
+import de.instinct.api.matchmaking.dto.PlayerReward;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.service.MatchmakingInterface;
 
@@ -168,12 +170,13 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 	}
 
 	@Override
-	public GeneralRequestResponse finish(String lobbyUUID) {
+	public GeneralRequestResponse finish(String lobbyUUID, FinishGameData finishGameData) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.PUT)
 				.endpoint("finish")
 				.pathVariable(lobbyUUID)
+				.payload(finishGameData)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, GeneralRequestResponse.class);
 	}
@@ -199,6 +202,17 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 				.pathVariable(lobbyUUID)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, GeneralRequestResponse.class);
+	}
+
+	@Override
+	public PlayerReward result(String gamesessionUUID) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("result")
+				.pathVariable(gamesessionUUID)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, PlayerReward.class);
 	}
 
 }

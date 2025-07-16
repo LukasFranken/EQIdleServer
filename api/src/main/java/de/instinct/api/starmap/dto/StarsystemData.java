@@ -21,7 +21,7 @@ public class StarsystemData {
 	private int planets;
 	private float ancientPoints;
 	private int threatLevel;
-	private boolean conquered;
+	private long experience;
 	private List<ResourceAmount> resourceRewards;
 
 }

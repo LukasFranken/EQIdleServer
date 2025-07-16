@@ -1,4 +1,4 @@
-package de.instinct.api.meta.dto;
+package de.instinct.api.starmap.dto;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResourceData {
+public class PlayerStarmapData {
 	
-	private List<ResourceAmount> resources;
+	private List<SystemCompletionData> completedSystems;
 
 }

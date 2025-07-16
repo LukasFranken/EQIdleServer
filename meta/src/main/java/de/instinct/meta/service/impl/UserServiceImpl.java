@@ -14,6 +14,7 @@ import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.UserRank;
@@ -55,7 +56,9 @@ public class UserServiceImpl implements UserService {
 						.rank(PlayerRank.RECRUIT)
 						.userRank(UserRank.REGISTERED)
 						.build())
-				.resources(ResourceData.builder().build())
+				.resources(ResourceData.builder()
+						.resources(new ArrayList<>())
+						.build())
 				.build();
 		moduleService.init(token);
 		users.put(token, newUser);
@@ -122,12 +125,18 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void updateResourceData(ResourceData resources, ResourceData resourceUpdate) {
-		resources.setCredits(resources.getCredits() + resourceUpdate.getCredits());
-		resources.setIron(resources.getIron() + resourceUpdate.getIron());
-		resources.setGold(resources.getGold() + resourceUpdate.getGold());
-		resources.setQuartz(resources.getQuartz() + resourceUpdate.getQuartz());
-		resources.setDeuterium(resources.getDeuterium() + resourceUpdate.getDeuterium());
-		resources.setEquilibrium(resources.getEquilibrium() + resourceUpdate.getEquilibrium());
+		for (ResourceAmount update : resourceUpdate.getResources()) {
+			for (ResourceAmount resource : resources.getResources()) {
+				if (resource.getType() == update.getType()) {
+					resource.setAmount(resource.getAmount() + update.getAmount());
+					break;
+				}
+				resources.getResources().add(ResourceAmount.builder()
+						.type(update.getType())
+						.amount(update.getAmount())
+						.build());
+			}
+		}
 	}
 
 	@Override

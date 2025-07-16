@@ -14,6 +14,7 @@ import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
+import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.initialization.GameStateInitialization;
@@ -95,7 +96,11 @@ public class SessionManager {
 			clientUpdateRequired = true;
 			expiredSessions.add(session);
 			activeSessions.remove(session);
-			API.matchmaking().finish(session.getUuid());
+			
+			API.matchmaking().finish(session.getUuid(), 
+					FinishGameData.builder()
+					.playedMS(session.getGameState().gameTimeMS)
+					.build());
 		}
 		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
 			clientUpdateRequired = true;

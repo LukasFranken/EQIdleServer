@@ -8,6 +8,8 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.API;
+import de.instinct.api.meta.dto.Resource;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.shop.dto.BuyResponse;
 import de.instinct.api.shop.dto.Purchase;
@@ -153,11 +155,16 @@ public class ShopServiceImpl implements ShopService {
 		if (stagesBought >= item.getStages().size()) return BuyResponse.ALREADY_BOUGHT;
 		ShopItemStage firstUnboughtStage = item.getStages().get(stagesBought);
 		ResourceData playerResources = API.meta().resources(token);
-		if (playerResources.getCredits() < firstUnboughtStage.getPrice()) return BuyResponse.NOT_ENOUGH_CURRENCY;
-		API.meta().addResources(token, 
-				ResourceData.builder()
-				.credits(-firstUnboughtStage.getPrice())
+		if (getPlayerResource(playerResources, Resource.CREDITS) < firstUnboughtStage.getPrice()) return BuyResponse.NOT_ENOUGH_CURRENCY;
+		
+		ResourceData resourceData = ResourceData.builder()
+				.resources(new ArrayList<>())
+				.build();
+		resourceData.getResources().add(ResourceAmount.builder()
+				.type(Resource.CREDITS)
+				.amount(-firstUnboughtStage.getPrice())
 				.build());
+		API.meta().addResources(token, resourceData);
 		shopItemEffects.get(item.getId()).applyEffect(token, stagesBought);
 		shop.getPurchaseHistory().add(Purchase.builder()
 				.userToken(token)
@@ -167,6 +174,15 @@ public class ShopServiceImpl implements ShopService {
 				.cost(firstUnboughtStage.getPrice())
 				.build());
 		return BuyResponse.SUCCESS;
+	}
+
+	private long getPlayerResource(ResourceData playerResources, Resource type) {
+		for (ResourceAmount resource : playerResources.getResources()) {
+			if (resource.getType() == type) {
+				return resource.getAmount();
+			}
+		}
+		return 0;
 	}
 
 }

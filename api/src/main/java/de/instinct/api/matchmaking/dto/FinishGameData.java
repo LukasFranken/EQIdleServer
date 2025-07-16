@@ -1,6 +1,4 @@
-package de.instinct.api.meta.dto;
-
-import java.util.List;
+package de.instinct.api.matchmaking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResourceData {
+public class FinishGameData {
 	
-	private List<ResourceAmount> resources;
+	private long playedMS;
 
 }

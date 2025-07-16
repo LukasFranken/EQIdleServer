@@ -1,6 +1,7 @@
 package de.instinct.matchmaking.service;
 
 import de.instinct.api.matchmaking.dto.CallbackCode;
+import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -10,6 +11,7 @@ import de.instinct.api.matchmaking.dto.LobbyTypeSetResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingRegistrationResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
+import de.instinct.api.matchmaking.dto.PlayerReward;
 import de.instinct.api.matchmaking.model.GameType;
 
 public interface MatchmakingService {
@@ -38,8 +40,10 @@ public interface MatchmakingService {
 
 	void callback(String gamesessionUUID, CallbackCode code);
 	
-	void finish(String gamesessionUUID);
+	void finish(String gamesessionUUID, FinishGameData finishGameData);
 
 	void dispose(String gamesessionUUID);
+
+	PlayerReward result(String authToken, String gamesessionUUID);
 
 }
