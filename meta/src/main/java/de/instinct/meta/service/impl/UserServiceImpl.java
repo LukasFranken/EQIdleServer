@@ -126,16 +126,18 @@ public class UserServiceImpl implements UserService {
 	
 	public void updateResourceData(ResourceData resources, ResourceData resourceUpdate) {
 		for (ResourceAmount update : resourceUpdate.getResources()) {
+			boolean found = false;
 			for (ResourceAmount resource : resources.getResources()) {
 				if (resource.getType() == update.getType()) {
 					resource.setAmount(resource.getAmount() + update.getAmount());
+					found = true;
 					break;
 				}
-				resources.getResources().add(ResourceAmount.builder()
-						.type(update.getType())
-						.amount(update.getAmount())
-						.build());
 			}
+			if (!found) resources.getResources().add(ResourceAmount.builder()
+					.type(update.getType())
+					.amount(update.getAmount())
+					.build());
 		}
 	}
 

@@ -376,6 +376,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				}
 			}
 		}
+		System.out.println("finalized game: " + gameSessionToken);
 		postGameResults.put(gameSessionToken, GameResult.builder()
 				.playedMS(finishGameData.getPlayedMS())
 				.rewards(rewards)

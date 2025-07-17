@@ -173,7 +173,7 @@ public class SessionManager {
 		session.setGameState(engineInterface.initializeGameState(initialization));
 		readyUpAI(session.getGameState());
 		inCreationSessions.add(session);
-		System.out.println("Starting session: " + uuid);
+		System.out.println("Starting session: " + initialization.gameUUID);
 		API.matchmaking().callback(session.getUuid(), CallbackCode.READY);
 	}
 

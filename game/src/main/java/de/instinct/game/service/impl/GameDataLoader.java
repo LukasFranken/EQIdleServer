@@ -2,7 +2,6 @@ package de.instinct.game.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import base.file.FileManager;
 import de.instinct.api.construction.dto.Infrastructure;
@@ -42,7 +41,7 @@ public class GameDataLoader {
 	
 	public GameStateInitialization generateGameStateInitialization(GameSession session) {
 		GameStateInitialization initialGameState = loadInitialMap(session);
-		initialGameState.gameUUID = UUID.randomUUID().toString();
+		initialGameState.gameUUID = session.getUuid();
 		initialGameState.players = loadPlayers(session);
 		initialGameState.ancientPlanetResourceDegradationFactor = 0.5f;
 		initialGameState.gameTimeLimitMS = 180_000;
