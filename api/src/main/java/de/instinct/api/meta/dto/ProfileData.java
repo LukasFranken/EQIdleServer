@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class ProfileData {
 	
 	private String username;
-	private PlayerRank rank;
 	private UserRank userRank;
+	private PlayerRank rank;
 	private long currentExp;
 
 }

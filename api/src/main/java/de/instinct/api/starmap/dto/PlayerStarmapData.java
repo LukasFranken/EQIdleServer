@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class PlayerStarmapData {
 	
 	private List<SystemCompletionData> completedSystems;
+	private SectorData sectorData;
 
 }
