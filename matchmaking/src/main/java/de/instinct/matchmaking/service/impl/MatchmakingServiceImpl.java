@@ -118,7 +118,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	@Override
 	public String respond(String authToken, String lobbyUUID, boolean accepted) {
-		Invite invite = getInviteByLobbyUUID(lobbyUUID);
+		Invite invite = getInvite(lobbyUUID, authToken);
 		Lobby lobby = getLobby(lobbyUUID);
 		if (invite == null) return null;
 		if (accepted) {
@@ -128,10 +128,10 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		return lobby.getLobbyUUID();
 	}
 
-	private Invite getInviteByLobbyUUID(String lobbyUUID) {
+	private Invite getInvite(String lobbyUUID, String authToken) {
 		return invites.stream()
+				.filter(invite -> invite.getLobbyUUID().contentEquals(lobbyUUID) && invite.getToUUID().contentEquals(authToken))
 				.findFirst()
-				.filter(invite -> invite.getLobbyUUID().contentEquals(lobbyUUID))
 				.orElse(null);
 	}
 
@@ -139,7 +139,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	public InvitesStatusResponse getInvites(String usertoken) {
 		return InvitesStatusResponse.builder()
 				.invites(invites.stream()
-					    .filter(invite -> usertoken.equals(invite.getToUUID()))
+					    .filter(invite -> usertoken.contentEquals(invite.getToUUID()))
 					    .collect(Collectors.toList()))
 				.build();
 	}
