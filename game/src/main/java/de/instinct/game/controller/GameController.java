@@ -2,6 +2,7 @@ package de.instinct.game.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
+import de.instinct.api.game.dto.MapPreview;
 import de.instinct.game.config.ApplicationConfig;
 import de.instinct.game.config.GameserverConfig;
 import de.instinct.game.service.GameserverManagerService;
@@ -55,6 +57,11 @@ public class GameController extends BaseServiceController {
 	@PostMapping("/create")
 	public ResponseEntity<String> createSession(@RequestBody GameSessionInitializationRequest request) {
 		return ResponseEntity.ok(service.createSession(request));
+	}
+	
+	@GetMapping("/preview/{map}")
+	public ResponseEntity<MapPreview> preview(@PathVariable("map") String map) {;
+		return ResponseEntity.ok(service.preview(map));
 	}
 
 }

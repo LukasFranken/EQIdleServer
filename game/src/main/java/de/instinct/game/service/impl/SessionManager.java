@@ -12,12 +12,16 @@ import com.esotericsoftware.kryonet.Connection;
 
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
+import de.instinct.api.game.dto.MapPreview;
+import de.instinct.api.game.dto.PreviewPlanet;
 import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.initialization.GameStateInitialization;
+import de.instinct.engine.initialization.PlanetInitialization;
+import de.instinct.engine.map.GameMap;
 import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Player;
@@ -283,6 +287,22 @@ public class SessionManager {
 				}
 			}
 		}
+	}
+
+	public static MapPreview preview(String map) {
+		GameMap gameMap = gameDataLoader.preview(map);
+		List<PreviewPlanet> planets = new ArrayList<>();
+		for (PlanetInitialization planetInit : gameMap.planets) {
+			planets.add(PreviewPlanet.builder()
+					.xPos(planetInit.position.x)
+					.yPos(planetInit.position.y)
+					.isAncient(planetInit.ancient)
+					.ownerId(planetInit.ownerId)
+					.build());
+		}
+		return MapPreview.builder()
+				.planets(planets)
+				.build();
 	}
 
 }

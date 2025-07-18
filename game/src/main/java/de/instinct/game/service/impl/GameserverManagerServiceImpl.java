@@ -8,6 +8,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Server;
 
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
+import de.instinct.api.game.dto.MapPreview;
 import de.instinct.engine.net.KryoRegistrator;
 import de.instinct.game.config.GameserverConfig;
 import de.instinct.game.service.GameserverManagerService;
@@ -48,6 +49,11 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 	@Override
 	public String createSession(GameSessionInitializationRequest request) {
 		return SessionManager.create(request);
+	}
+
+	@Override
+	public MapPreview preview(String map) {
+		return SessionManager.preview(map);
 	}
 
 }

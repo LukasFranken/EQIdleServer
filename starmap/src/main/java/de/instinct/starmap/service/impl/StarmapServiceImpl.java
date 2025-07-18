@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import base.file.FileManager;
+import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.CompletionResponse;
@@ -65,7 +66,13 @@ public class StarmapServiceImpl implements StarmapService {
 	
 	@Override
 	public SectorData getSectorData() {
-		if (baseSectorData == null) baseSectorData = ObjectJSONMapper.mapJSON(FileManager.loadFile("init.data"), SectorData.class);;
+		if (baseSectorData != null) return baseSectorData;
+		baseSectorData = ObjectJSONMapper.mapJSON(FileManager.loadFile("init.data"), SectorData.class);;
+		for (GalaxyData galaxy : baseSectorData.getGalaxies()) {
+			for (StarsystemData system : galaxy.getStarsystems()) {
+				system.setMapPreview(API.game().preview("conquest_" + galaxy.getId() + "_" + system.getId()));
+			}
+		}
 		return baseSectorData;
 	}
 

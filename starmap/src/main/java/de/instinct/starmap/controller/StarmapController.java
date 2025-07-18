@@ -34,6 +34,7 @@ public class StarmapController extends BaseServiceController {
 	@Override
 	protected void connectToAPIs() {
 		API.meta().connect();
+		API.game().connect();
 	}
 	
 	@GetMapping("/init/{token}")

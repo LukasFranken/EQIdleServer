@@ -54,6 +54,10 @@ public class GameDataLoader {
 		initialGameState.map = ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/" + session.getGameType().map + MAP_FILE_POSTFIX), GameMap.class);
 		return initialGameState;
 	}
+	
+	public GameMap preview(String map) {
+		return ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/" + map + MAP_FILE_POSTFIX), GameMap.class);
+	}
 
 	public List<Player> loadPlayers(GameSession session) {
 		List<Player> players = new ArrayList<>();
