@@ -83,7 +83,7 @@ public class SessionManager {
 	}
 	
 	private static void updateAi(GameSession session) {
-		if (session.getGameType().versusMode == VersusMode.AI) {
+		if (session.getGameType().getVersusMode() == VersusMode.AI) {
 			for (Player player : session.getGameState().players) {
 				if (player instanceof AiPlayer) {
 					List<GameOrder> aiOrders = aiEngine.act((AiPlayer)player, session.getGameState());

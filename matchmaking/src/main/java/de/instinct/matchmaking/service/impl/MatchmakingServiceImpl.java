@@ -330,9 +330,9 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				lobby.getGameserverInfo().setPort(0);
 				lobby.getGameserverInfo().setGameSessionUUID(null);
 				lobby.setCode(LobbyStatusCode.IDLE);
-				if (lobby.getType().gameMode == GameMode.CONQUEST) {
-					int galaxyId = Integer.parseInt(lobby.getType().map.split("_")[1]);
-					int systemId = Integer.parseInt(lobby.getType().map.split("_")[2]);
+				if (lobby.getType().getGameMode() == GameMode.CONQUEST) {
+					int galaxyId = Integer.parseInt(lobby.getType().getMap().split("_")[1]);
+					int systemId = Integer.parseInt(lobby.getType().getMap().split("_")[2]);
 					SectorData sectorData = API.starmap().sector();
 					StarsystemData currentSystem = null;
 					for (GalaxyData galaxy : sectorData.getGalaxies()) {
@@ -363,7 +363,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 								.build());
 					}
 				}
-				if (lobby.getType().gameMode == GameMode.KING_OF_THE_HILL) {
+				if (lobby.getType().getGameMode() == GameMode.KING_OF_THE_HILL) {
 					long defaultExp = 200;
 					for (String userUUID : lobby.getUserUUIDs()) {
 						rewards.add(PlayerReward.builder()

@@ -51,12 +51,17 @@ public class GameDataLoader {
 
 	private GameStateInitialization loadInitialMap(GameSession session) {
 		GameStateInitialization initialGameState = new GameStateInitialization();
-		initialGameState.map = ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/" + session.getGameType().map + MAP_FILE_POSTFIX), GameMap.class);
+		
+		initialGameState.map = ObjectJSONMapper.mapJSON(FileManager.loadFile(
+				MAP_FILE_SUBFOLDER 
+				+ "/" + session.getGameType().getGameMode().toString().toLowerCase() 
+				+ "/" + session.getGameType().getFactionMode().toString().toLowerCase() 
+				+ "/" + session.getGameType().getMap() + MAP_FILE_POSTFIX), GameMap.class);
 		return initialGameState;
 	}
 	
 	public GameMap preview(String map) {
-		return ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/" + map + MAP_FILE_POSTFIX), GameMap.class);
+		return ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/conquest/one_vs_one/" + map + MAP_FILE_POSTFIX), GameMap.class);
 	}
 
 	public List<Player> loadPlayers(GameSession session) {
@@ -92,8 +97,8 @@ public class GameDataLoader {
 			}
 		}
 		
-		if (session.getGameType().versusMode == VersusMode.AI) {
-			for (int i = 0; i < session.getGameType().factionMode.teamPlayerCount; i++) {
+		if (session.getGameType().getVersusMode() == VersusMode.AI) {
+			for (int i = 0; i < session.getGameType().getFactionMode().teamPlayerCount; i++) {
 				AiPlayer aiPlayer = aiEngine.initialize(AiDifficulty.RETARDED);
 				aiPlayer.id = id;
 				aiPlayer.teamId = 2;

@@ -70,7 +70,7 @@ public class StarmapServiceImpl implements StarmapService {
 		baseSectorData = ObjectJSONMapper.mapJSON(FileManager.loadFile("init.data"), SectorData.class);;
 		for (GalaxyData galaxy : baseSectorData.getGalaxies()) {
 			for (StarsystemData system : galaxy.getStarsystems()) {
-				system.setMapPreview(API.game().preview("conquest_" + galaxy.getId() + "_" + system.getId()));
+				system.setMapPreview(API.game().preview(galaxy.getId() + "_" + system.getId()));
 			}
 		}
 		return baseSectorData;

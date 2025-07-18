@@ -29,11 +29,11 @@ public class ModuleServiceImpl implements ModuleService {
 		unlockRanks.put(MenuModule.PLAY, PlayerRank.RECRUIT);
 		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT);
 		unlockRanks.put(MenuModule.PROFILE, PlayerRank.RECRUIT);
+		unlockRanks.put(MenuModule.STARMAP, PlayerRank.RECRUIT);
 		
 		unlockRanks.put(MenuModule.INVENTORY, PlayerRank.PRIVATE);
 		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.PRIVATE);
 		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.PRIVATE);
-		unlockRanks.put(MenuModule.STARMAP, PlayerRank.PRIVATE);
 		
 		unlockRanks.put(MenuModule.SHOP, PlayerRank.SPECIALIST1);
 		unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
@@ -44,9 +44,10 @@ public class ModuleServiceImpl implements ModuleService {
 		ModuleData newModuleData = ModuleData.builder()
 				.enabledModules(new ArrayList<>())
 				.build();
-		newModuleData.getEnabledModules().add(MenuModule.PLAY);
-		newModuleData.getEnabledModules().add(MenuModule.SETTINGS);
-		newModuleData.getEnabledModules().add(MenuModule.PROFILE);
+		for (MenuModule module : MenuModule.values()) {
+			if (unlockRanks.get(module) == null) continue;
+			if (unlockRanks.get(module) == PlayerRank.RECRUIT) newModuleData.getEnabledModules().add(module);
+		}
 		moduleDatas.put(token, newModuleData);
 	}
 	
