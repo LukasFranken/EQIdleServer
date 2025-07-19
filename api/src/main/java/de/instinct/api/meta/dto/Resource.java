@@ -4,7 +4,7 @@ public enum Resource {
 	
 	CREDITS,
 	METAL,
-	CRYSTALS,
+	CRYSTAL,
 	DEUTERIUM,
 	EQUILIBRIUM
 
