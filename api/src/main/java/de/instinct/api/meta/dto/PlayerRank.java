@@ -56,12 +56,14 @@ public enum PlayerRank {
 	GRAND_GENERAL2("grand_general2", "Grand General II", 2000000L),
 	GRAND_GENERAL3("grand_general3", "Grand General III", 3000000L),
 	GRAND_GENERAL4("grand_general4", "Grand General IV", 4000000L),
-	DIVINE_GENERAL1("divine_general1", "Divine General", 5000000L),
-	DIVINE_GENERAL2("divine_general2", "Divine General II", 6000000L),
-	DIVINE_GENERAL3("divine_general3", "Divine General III", 7000000L),
-	DIVINE_GENERAL4("divine_general4", "Divine General IV", 8000000L),
+	SURPREME_GENERAL1("surpreme_general1", "Surpreme General", 5000000L),
+	SURPREME_GENERAL2("surpreme_general2", "Surpreme General II", 6000000L),
+	SURPREME_GENERAL3("surpreme_general3", "Surpreme General III", 7000000L),
+	SURPREME_GENERAL4("surpreme_general4", "Surpreme General IV", 8000000L),
 	HERO("hero", "Hero", 10000000L),
 	LEGEND("legend", "Legend", 20000000L);
+	//sovereign ranks?
+	//Divine?
 	
 	private String fileName;
 	private String label;

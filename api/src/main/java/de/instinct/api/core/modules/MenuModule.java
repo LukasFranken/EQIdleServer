@@ -10,6 +10,7 @@ public enum MenuModule {
 	SHIPYARD,
 	CONSTRUCTION,
 	SHOP,
+	WORKSHOP,
 	MARKET
 
 }
