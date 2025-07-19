@@ -94,7 +94,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 			SectorData sectorData = API.starmap().sector();
 			for (GalaxyData galaxy : sectorData.getGalaxies()) {
 				for (StarsystemData system : galaxy.getStarsystems()) {
-					if (galaxy.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[1]) && system.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[2])) {
+					if (galaxy.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[0]) && system.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[1])) {
 						selectedGameType.setThreatLevel(system.getThreatLevel());
 						break;
 					}
@@ -342,8 +342,8 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				lobby.getGameserverInfo().setGameSessionUUID(null);
 				lobby.setCode(LobbyStatusCode.IDLE);
 				if (lobby.getType().getGameMode() == GameMode.CONQUEST) {
-					int galaxyId = Integer.parseInt(lobby.getType().getMap().split("_")[1]);
-					int systemId = Integer.parseInt(lobby.getType().getMap().split("_")[2]);
+					int galaxyId = Integer.parseInt(lobby.getType().getMap().split("_")[0]);
+					int systemId = Integer.parseInt(lobby.getType().getMap().split("_")[1]);
 					SectorData sectorData = API.starmap().sector();
 					StarsystemData currentSystem = null;
 					for (GalaxyData galaxy : sectorData.getGalaxies()) {

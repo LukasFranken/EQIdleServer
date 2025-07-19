@@ -61,7 +61,9 @@ public class GameDataLoader {
 	}
 	
 	public GameMap preview(String map) {
-		return ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/conquest/one_vs_one/" + map + MAP_FILE_POSTFIX), GameMap.class);
+		String mapFile = FileManager.loadFile(MAP_FILE_SUBFOLDER + "/conquest/one_vs_one/" + map + MAP_FILE_POSTFIX);
+		if (mapFile == null || mapFile.isEmpty()) return null;
+		return ObjectJSONMapper.mapJSON(mapFile, GameMap.class);
 	}
 
 	public List<Player> loadPlayers(GameSession session) {

@@ -291,6 +291,10 @@ public class SessionManager {
 
 	public static MapPreview preview(String map) {
 		GameMap gameMap = gameDataLoader.preview(map);
+		if (gameMap == null) return MapPreview.builder()
+				.planets(new ArrayList<>())
+				.build();
+		
 		List<PreviewPlanet> planets = new ArrayList<>();
 		for (PlanetInitialization planetInit : gameMap.planets) {
 			planets.add(PreviewPlanet.builder()
