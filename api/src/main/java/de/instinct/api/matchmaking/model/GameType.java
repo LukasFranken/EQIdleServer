@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 public class GameType {
 	
 	private String map;
+	private int threatLevel;
 	private VersusMode versusMode;
 	private GameMode gameMode;
 	private FactionMode factionMode;
 	
 	public boolean matches(GameType otherGameType) {
 		if (!sameMapAs(otherGameType.map)) return false;
+		if (threatLevel != otherGameType.threatLevel) return false;
 		if (versusMode != otherGameType.versusMode) return false;
 		if (gameMode != otherGameType.gameMode) return false;
 		if (factionMode != otherGameType.factionMode) return false;

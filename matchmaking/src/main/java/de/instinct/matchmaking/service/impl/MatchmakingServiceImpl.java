@@ -90,6 +90,17 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	public LobbyTypeSetResponse setType(String authToken, String lobbyUUID, GameType selectedGameType) {
 		Lobby lobby = getLobby(lobbyUUID);
 		if (lobby == null) return LobbyTypeSetResponse.LOBBY_DOESNT_EXIST;
+		if (selectedGameType.getGameMode() == GameMode.CONQUEST) {
+			SectorData sectorData = API.starmap().sector();
+			for (GalaxyData galaxy : sectorData.getGalaxies()) {
+				for (StarsystemData system : galaxy.getStarsystems()) {
+					if (galaxy.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[1]) && system.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[2])) {
+						selectedGameType.setThreatLevel(system.getThreatLevel());
+						break;
+					}
+				}
+			}
+		}
 		lobby.setType(selectedGameType);
 		return LobbyTypeSetResponse.SUCCESS;
 	}

@@ -13,8 +13,8 @@ import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.api.shipyard.dto.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ShipDefense;
 import de.instinct.api.shipyard.dto.ShipWeapon;
-import de.instinct.engine.ai.AiDifficulty;
 import de.instinct.engine.ai.AiEngine;
+import de.instinct.engine.ai.difficulty.AiDifficulty;
 import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.map.GameMap;
 import de.instinct.engine.model.AiPlayer;
@@ -99,7 +99,7 @@ public class GameDataLoader {
 		
 		if (session.getGameType().getVersusMode() == VersusMode.AI) {
 			for (int i = 0; i < session.getGameType().getFactionMode().teamPlayerCount; i++) {
-				AiPlayer aiPlayer = aiEngine.initialize(AiDifficulty.RETARDED);
+				AiPlayer aiPlayer = aiEngine.initialize(AiDifficulty.RETARDED, session.getGameType().getThreatLevel());
 				aiPlayer.id = id;
 				aiPlayer.teamId = 2;
 				players.add(aiPlayer);
