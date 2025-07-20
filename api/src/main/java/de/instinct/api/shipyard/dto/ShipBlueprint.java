@@ -23,8 +23,9 @@ public class ShipBlueprint {
 	private ShipWeapon weapon;
 	private ShipDefense defense;
 	
-	private List<ResourceAmount> resources;
+	private List<ResourceAmount> buildCost;
 	private boolean built;
+	private List<ShipLevel> levels;
 	
 	private boolean inUse;
 
