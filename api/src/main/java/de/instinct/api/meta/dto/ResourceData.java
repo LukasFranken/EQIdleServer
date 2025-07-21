@@ -14,5 +14,16 @@ import lombok.NoArgsConstructor;
 public class ResourceData {
 	
 	private List<ResourceAmount> resources;
+	
+	public boolean contains(ResourceAmount resource) {
+		for (ResourceAmount res : resources) {
+			if (res.getType() == resource.getType()) {
+				if (res.getAmount() >= resource.getAmount()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 }

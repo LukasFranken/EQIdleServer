@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ShipBlueprint {
 	
-	private String uuid;
+	private int id;
 	private ShipType type;
 	private String model;
 	private float movementSpeed;
@@ -22,11 +22,7 @@ public class ShipBlueprint {
 	private int commandPointsCost;
 	private ShipWeapon weapon;
 	private ShipDefense defense;
-	
 	private List<ResourceAmount> buildCost;
-	private boolean built;
 	private List<ShipLevel> levels;
-	
-	private boolean inUse;
 
 }

@@ -3,7 +3,7 @@ package de.instinct.api.meta.dto;
 import java.util.List;
 
 import de.instinct.api.construction.dto.Infrastructure;
-import de.instinct.api.shipyard.dto.ShipBlueprint;
+import de.instinct.api.shipyard.dto.PlayerShipData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +20,6 @@ public class LoadoutData {
 	private float startCommandPoints;
 	
 	private Infrastructure infrastructure;
-	private List<ShipBlueprint> ships;
+	private List<PlayerShipData> ships;
 
 }

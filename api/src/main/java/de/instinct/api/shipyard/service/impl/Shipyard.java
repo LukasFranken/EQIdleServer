@@ -4,6 +4,9 @@ import de.instinct.api.core.model.RESTRequest;
 import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.shipyard.dto.PlayerShipyardData;
+import de.instinct.api.shipyard.dto.ShipBuildResponse;
+import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
@@ -35,12 +38,22 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 	}
 	
 	@Override
-	public ShipyardData data(String token) {
+	public PlayerShipyardData data(String token) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.GET)
 				.endpoint("data")
 				.pathVariable(token)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, PlayerShipyardData.class);
+	}
+	
+	@Override
+	public ShipyardData shipyard() {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.GET)
+				.endpoint("shipyard")
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipyardData.class);
 	}
@@ -87,6 +100,28 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.pathVariable(token + "/" + count)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, StatChangeResponse.class);
+	}
+
+	@Override
+	public ShipBuildResponse build(String shiptoken) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("build")
+				.pathVariable(shiptoken)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipBuildResponse.class);
+	}
+
+	@Override
+	public ShipUpgradeResponse upgrade(String shiptoken) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("upgrade")
+				.pathVariable(shiptoken)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipUpgradeResponse.class);
 	}
 
 }

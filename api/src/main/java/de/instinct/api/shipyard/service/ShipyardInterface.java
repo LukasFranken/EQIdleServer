@@ -1,6 +1,9 @@
 package de.instinct.api.shipyard.service;
 
 import de.instinct.api.core.service.BaseServiceInterface;
+import de.instinct.api.shipyard.dto.PlayerShipyardData;
+import de.instinct.api.shipyard.dto.ShipBuildResponse;
+import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
@@ -11,7 +14,9 @@ public interface ShipyardInterface extends BaseServiceInterface {
 	
 	ShipyardInitializationResponseCode init(String token);
 	
-	ShipyardData data(String token);
+	PlayerShipyardData data(String token);
+	
+	ShipyardData shipyard();
 	
 	UseShipResponseCode use(String token, String shipUUID);
 	
@@ -20,5 +25,9 @@ public interface ShipyardInterface extends BaseServiceInterface {
 	StatChangeResponse hangar(String token, int count);
 
 	StatChangeResponse active(String token, int count);
+	
+	ShipBuildResponse build(String shiptoken);
+	
+	ShipUpgradeResponse upgrade(String shiptoken);
 
 }

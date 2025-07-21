@@ -1,13 +1,23 @@
 package de.instinct.shipyard.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import base.file.FileManager;
+import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.meta.dto.ResourceAmount;
+import de.instinct.api.meta.dto.ResourceData;
+import de.instinct.api.shipyard.dto.PlayerShipData;
+import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shipyard.dto.ShipBlueprint;
+import de.instinct.api.shipyard.dto.ShipBuildResponse;
+import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
@@ -18,7 +28,8 @@ import de.instinct.shipyard.service.ShipyardService;
 @Service
 public class ShipyardServiceImpl implements ShipyardService {
 	
-	private Map<String, ShipyardData> userShipyards;
+	private ShipyardData baseShipyardData;
+	private Map<String, PlayerShipyardData> userShipyards;
 	
 	public ShipyardServiceImpl() {
 		userShipyards = new HashMap<>();
@@ -27,35 +38,58 @@ public class ShipyardServiceImpl implements ShipyardService {
 	@Override
 	public ShipyardInitializationResponseCode init(String token) {
 		if (userShipyards.containsKey(token)) return ShipyardInitializationResponseCode.ALREADY_INITIALIZED;
-		ShipyardData shipyardData = ObjectJSONMapper.mapJSON(FileManager.loadFile("init.data"), ShipyardData.class);
-		userShipyards.put(token, shipyardData);
+		List<PlayerShipData> initShips = new ArrayList<>();
+		initShips.add(PlayerShipData.builder()
+				.uuid(UUID.randomUUID().toString())
+				.shipId(0)
+				.built(true)
+				.inUse(true)
+				.build());
+		initShips.add(PlayerShipData.builder()
+				.uuid(UUID.randomUUID().toString())
+				.shipId(1)
+				.built(false)
+				.inUse(false)
+				.build());
+		userShipyards.put(token, PlayerShipyardData.builder()
+				.slots(1)
+				.activeShipSlots(1)
+				.ships(initShips)
+				.build());
 		return ShipyardInitializationResponseCode.SUCCESS;
 	}
 
 	@Override
-	public ShipyardData getShipyardData(String token) {
-		ShipyardData shipyard = userShipyards.get(token);
+	public PlayerShipyardData getShipyardData(String token) {
+		PlayerShipyardData shipyard = userShipyards.get(token);
 		if (shipyard == null) {
 			init(token);
 			shipyard = userShipyards.get(token);
 		}
 		return shipyard;
 	}
+	
+	@Override
+	public ShipyardData getBaseData() {
+		if (baseShipyardData == null) baseShipyardData = ObjectJSONMapper.mapJSON(FileManager.loadFile("init.data"), ShipyardData.class);
+		return baseShipyardData;
+	}
 
 	@Override
 	public UseShipResponseCode useShip(String token, String shipUUID) {
-		ShipyardData shipyard = userShipyards.get(token);
-		if (shipyard == null) return UseShipResponseCode.NOT_INITIALIZED;
-		ShipBlueprint ship = shipyard.getOwnedShips().stream()
+		PlayerShipyardData playerShipyard = userShipyards.get(token);
+		if (playerShipyard == null) return UseShipResponseCode.NOT_INITIALIZED;
+		PlayerShipData ship = playerShipyard.getShips().stream()
 				.filter(s -> s.getUuid().equals(shipUUID))
 				.findFirst()
 				.orElse(null);
 		if (ship == null) return UseShipResponseCode.INVALID_UUID;
-		if (shipyard.getActiveShipSlots() > 1 && shipyard.getActiveShipSlots() <= getActiveShips(shipyard)) return UseShipResponseCode.NO_ACTIVE_SLOTS_AVAILABLE;
+		if (playerShipyard.getActiveShipSlots() > 1 && playerShipyard.getActiveShipSlots() <= getActiveShips(playerShipyard)) return UseShipResponseCode.NO_ACTIVE_SLOTS_AVAILABLE;
 		if (ship.isInUse()) return UseShipResponseCode.ALREADY_IN_USE;
-		if (shipyard.getActiveShipSlots() == 1) {
-			for (ShipBlueprint blueprint : shipyard.getOwnedShips()) {
-				blueprint.setInUse(false);
+		if (!ship.isBuilt()) return UseShipResponseCode.NOT_BUILT;
+		if (playerShipyard.getActiveShipSlots() == 1) {
+			for (PlayerShipData shipData : playerShipyard.getShips()) {
+				shipData.setInUse(false);
 			}
 		}
 		ship.setInUse(true);
@@ -64,9 +98,9 @@ public class ShipyardServiceImpl implements ShipyardService {
 	
 	@Override
 	public UnuseShipResponseCode unuseShip(String token, String shipUUID) {
-		ShipyardData shipyard = userShipyards.get(token);
-		if (shipyard == null) return UnuseShipResponseCode.NOT_INITIALIZED;
-		ShipBlueprint ship = shipyard.getOwnedShips().stream()
+		PlayerShipyardData playerShipyard = userShipyards.get(token);
+		if (playerShipyard == null) return UnuseShipResponseCode.NOT_INITIALIZED;
+		PlayerShipData ship = playerShipyard.getShips().stream()
 				.filter(s -> s.getUuid().equals(shipUUID))
 				.findFirst()
 				.orElse(null);
@@ -76,29 +110,84 @@ public class ShipyardServiceImpl implements ShipyardService {
 		return UnuseShipResponseCode.SUCCESS;
 	}
 
-	private int getActiveShips(ShipyardData shipyard) {
-		return shipyard.getOwnedShips().stream()
-				.filter(ShipBlueprint::isInUse)
+	private int getActiveShips(PlayerShipyardData playerShipyard) {
+		return playerShipyard.getShips().stream()
+				.filter(PlayerShipData::isInUse)
 				.toList()
 				.size();
 	}
 
 	@Override
 	public StatChangeResponse changeHangarSpace(String token, int count) {
-		ShipyardData shipyard = userShipyards.get(token);
-		if (shipyard == null) return StatChangeResponse.INVALID_TOKEN;
-		shipyard.setSlots(shipyard.getSlots() + count);
+		PlayerShipyardData playerShipyard = userShipyards.get(token);
+		if (playerShipyard == null) return StatChangeResponse.INVALID_TOKEN;
+		playerShipyard.setSlots(playerShipyard.getSlots() + count);
 		return StatChangeResponse.SUCCESS;
 	}
 
 	@Override
 	public StatChangeResponse changeActiveShips(String token, int count) {
-		ShipyardData shipyard = userShipyards.get(token);
-		if (shipyard == null) return StatChangeResponse.INVALID_TOKEN;
-		shipyard.setActiveShipSlots(shipyard.getActiveShipSlots() + count);
+		PlayerShipyardData playerShipyard = userShipyards.get(token);
+		if (playerShipyard == null) return StatChangeResponse.INVALID_TOKEN;
+		playerShipyard.setActiveShipSlots(playerShipyard.getActiveShipSlots() + count);
 		return StatChangeResponse.SUCCESS;
 	}
 
-	
+	@Override
+	public ShipBuildResponse build(String token, String shiptoken) {
+		PlayerShipyardData shipyard = userShipyards.get(token);
+		if (shipyard == null) return ShipBuildResponse.USER_DOESNT_EXIST;
+		PlayerShipData ship = shipyard.getShips().stream()
+				.filter(s -> s.getUuid().contentEquals(shiptoken))
+				.findFirst()
+				.orElse(null);
+		if (ship == null) return ShipBuildResponse.SHIP_DOESNT_EXIST;
+		if (ship.isBuilt()) return ShipBuildResponse.ALREADY_BUILT;
+		ShipBlueprint blueprint = getBaseData().getShipBlueprints().stream()
+				.filter(bp -> bp.getId() == ship.getShipId())
+				.findFirst()
+				.orElse(null);
+		if (blueprint == null) return ShipBuildResponse.BLUEPRINT_NOT_FOUND;
+		ResourceData playerResources = API.meta().resources(token);
+		for (ResourceAmount resourceCost : blueprint.getBuildCost()) {
+			if (!playerResources.contains(resourceCost)) {
+				return ShipBuildResponse.NOT_ENOUGH_RESOURCES;
+			}
+		}
+		API.meta().addResources(token, ResourceData.builder()
+				.resources(blueprint.getBuildCost())
+				.build());
+		ship.setBuilt(true);
+		return ShipBuildResponse.SUCCESS;
+	}
+
+	@Override
+	public ShipUpgradeResponse upgrade(String token, String shiptoken) {
+		PlayerShipyardData shipyard = userShipyards.get(token);
+		if (shipyard == null) return ShipUpgradeResponse.USER_DOESNT_EXIST;
+		PlayerShipData ship = shipyard.getShips().stream()
+				.filter(s -> s.getUuid().contentEquals(shiptoken))
+				.findFirst()
+				.orElse(null);
+		if (ship == null) return ShipUpgradeResponse.SHIP_DOESNT_EXIST;
+		if (!ship.isBuilt()) return ShipUpgradeResponse.NOT_BUILT;
+		ShipBlueprint blueprint = getBaseData().getShipBlueprints().stream()
+				.filter(bp -> bp.getId() == ship.getShipId())
+				.findFirst()
+				.orElse(null);
+		if (blueprint == null) return ShipUpgradeResponse.BLUEPRINT_NOT_FOUND;
+		if (ship.getLevel() >= blueprint.getLevels().size()) return ShipUpgradeResponse.MAX_LEVEL_REACHED;
+		ResourceData playerResources = API.meta().resources(token);
+		for (ResourceAmount resourceCost : blueprint.getLevels().get(ship.getLevel()).getCost()) {
+			if (!playerResources.contains(resourceCost)) {
+				return ShipUpgradeResponse.NOT_ENOUGH_RESOURCES;
+			}
+		}
+		API.meta().addResources(token, ResourceData.builder()
+				.resources(blueprint.getLevels().get(ship.getLevel()).getCost())
+				.build());
+		ship.setLevel(ship.getLevel() + 1);
+		return ShipUpgradeResponse.SUCCESS;
+	}
 	
 }

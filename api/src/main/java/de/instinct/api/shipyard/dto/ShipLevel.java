@@ -16,6 +16,5 @@ public class ShipLevel {
 	
 	private List<ResourceAmount> cost;
 	private List<ShipStatChange> statEffects;
-	private boolean unlocked;
 
 }

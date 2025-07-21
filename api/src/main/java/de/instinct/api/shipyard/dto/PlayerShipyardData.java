@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShipyardData {
+public class PlayerShipyardData {
 	
-	private int baseSlots;
-	private int baseActiveShipSlots;
-	private List<ShipBlueprint> shipBlueprints;
+	private int slots;
+	private int activeShipSlots;
+	private List<PlayerShipData> ships;
 
 }

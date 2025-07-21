@@ -42,7 +42,7 @@ private Map<String, Infrastructure> userInfrastructures;
 		List<PlanetTurretBlueprint> blueprints = new ArrayList<>();
 		blueprints.add(PlanetTurretBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
-				.name("Projectile Turret")
+				.name("Projectile")
 				.planetDefense(PlanetDefense.builder()
 						.shield(15)
 						.armor(15)
@@ -60,7 +60,7 @@ private Map<String, Infrastructure> userInfrastructures;
 		
 		blueprints.add(PlanetTurretBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
-				.name("Laser Turret")
+				.name("Laser")
 				.planetDefense(PlanetDefense.builder()
 						.shield(15)
 						.armor(15)
@@ -78,7 +78,7 @@ private Map<String, Infrastructure> userInfrastructures;
 		
 		blueprints.add(PlanetTurretBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
-				.name("Missile Turret")
+				.name("Missile")
 				.planetDefense(PlanetDefense.builder()
 						.shield(10)
 						.armor(10)
@@ -96,7 +96,7 @@ private Map<String, Infrastructure> userInfrastructures;
 		
 		blueprints.add(PlanetTurretBlueprint.builder()
 				.uuid(UUID.randomUUID().toString())
-				.name("Beam Turret")
+				.name("Beam")
 				.planetDefense(PlanetDefense.builder()
 						.shield(10)
 						.armor(10)

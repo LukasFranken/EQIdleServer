@@ -1,7 +1,5 @@
 package de.instinct.api.shipyard.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShipyardData {
+public class PlayerShipData {
 	
-	private int baseSlots;
-	private int baseActiveShipSlots;
-	private List<ShipBlueprint> shipBlueprints;
+	private String uuid;
+	private int shipId;
+	private int level;
+	private boolean built;
+	private boolean inUse;
 
 }

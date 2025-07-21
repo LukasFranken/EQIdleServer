@@ -1,4 +1,4 @@
-package de.instinct.api.shipyard.dto;
+ package de.instinct.api.shipyard.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

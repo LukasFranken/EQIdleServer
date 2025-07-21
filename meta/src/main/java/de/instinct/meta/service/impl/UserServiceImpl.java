@@ -93,16 +93,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public LoadoutData getLoadout(String token) {
 		LoadoutData loadout = LoadoutData.builder()
-				.ships(new ArrayList<>())
+				.ships(API.shipyard().data(token).getShips()
+						.stream()
+						.filter(ship -> ship.isInUse())
+						.toList())
 				.infrastructure(API.construction().data(token))
 				.commandPointsGenerationSpeed(0.1f)
 				.maxCommandPoints(10f)
 				.startCommandPoints(3f)
 				.build();
-		loadout.setShips(API.shipyard().data(token).getOwnedShips()
-				.stream()
-				.filter(ship -> ship.isInUse())
-				.toList());
 		return loadout;
 	}
 

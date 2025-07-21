@@ -5,10 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import base.controller.BaseServiceController;
+import de.instinct.api.core.API;
+import de.instinct.api.shipyard.dto.PlayerShipyardData;
+import de.instinct.api.shipyard.dto.ShipBuildResponse;
+import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
@@ -30,7 +35,7 @@ public class ShipyardController extends BaseServiceController {
 	
 	@Override
 	protected void connectToAPIs() {
-		
+		API.meta().connect();
 	}
 	
 	@GetMapping("/init/{token}")
@@ -39,8 +44,13 @@ public class ShipyardController extends BaseServiceController {
 	}
 	
 	@GetMapping("/data/{token}")
-	public ResponseEntity<ShipyardData> data(@PathVariable String token) {
+	public ResponseEntity<PlayerShipyardData> data(@PathVariable String token) {
 		return ResponseEntity.ok(service.getShipyardData(token));
+	}
+	
+	@GetMapping("/shipyard")
+	public ResponseEntity<ShipyardData> shipyard() {
+		return ResponseEntity.ok(service.getBaseData());
 	}
 	
 	@PostMapping("/use/{token}/{shipUUID}")
@@ -61,6 +71,16 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/active/{token}/{count}")
 	public ResponseEntity<StatChangeResponse> active(@PathVariable String token, @PathVariable int count) {
 		return ResponseEntity.ok(service.changeActiveShips(token, count));
+	}
+	
+	@PostMapping("/build/{shiptoken}")
+	public ResponseEntity<ShipBuildResponse> build(@RequestHeader String token, @PathVariable String shiptoken) {
+		return ResponseEntity.ok(service.build(token, shiptoken));
+	}
+	
+	@PostMapping("/upgrade/{shiptoken}")
+	public ResponseEntity<ShipUpgradeResponse> upgrade(@RequestHeader String token, @PathVariable String shiptoken) {
+		return ResponseEntity.ok(service.upgrade(token, shiptoken));
 	}
 
 }

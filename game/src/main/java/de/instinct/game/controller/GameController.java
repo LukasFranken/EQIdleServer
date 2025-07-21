@@ -34,6 +34,7 @@ public class GameController extends BaseServiceController {
 	protected void connectToAPIs() {
 		API.matchmaking().connect();
 		API.meta().connect();
+		API.shipyard().connect();
 		start();
 	}
 	
