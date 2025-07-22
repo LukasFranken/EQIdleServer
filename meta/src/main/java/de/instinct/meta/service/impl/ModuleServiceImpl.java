@@ -1,7 +1,7 @@
 package de.instinct.meta.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,19 +24,20 @@ public class ModuleServiceImpl implements ModuleService {
 	private Map<MenuModule, PlayerRank> unlockRanks;
 	
 	public ModuleServiceImpl() {
-		moduleDatas = new HashMap<>();
-		unlockRanks = new HashMap<>();
-		unlockRanks.put(MenuModule.PLAY, PlayerRank.RECRUIT);
-		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT);
-		unlockRanks.put(MenuModule.PROFILE, PlayerRank.RECRUIT);
+		moduleDatas = new LinkedHashMap<>();
+		unlockRanks = new LinkedHashMap<>();
 		unlockRanks.put(MenuModule.STARMAP, PlayerRank.RECRUIT);
-		
+		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT2);
+		unlockRanks.put(MenuModule.PROFILE, PlayerRank.RECRUIT2);
 		unlockRanks.put(MenuModule.INVENTORY, PlayerRank.PRIVATE);
-		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.PRIVATE);
-		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.PRIVATE);
 		
-		unlockRanks.put(MenuModule.SHOP, PlayerRank.SPECIALIST1);
-		unlockRanks.put(MenuModule.WORKSHOP, PlayerRank.SPECIALIST1);
+		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.SPECIALIST1);
+		unlockRanks.put(MenuModule.WORKSHOP, PlayerRank.SPECIALIST2);
+		unlockRanks.put(MenuModule.SHOP, PlayerRank.SPECIALIST3);
+		
+		unlockRanks.put(MenuModule.PLAY, PlayerRank.CORPORAL1);
+		
+		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.CORPORAL3);
 		unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
 	}
 	
