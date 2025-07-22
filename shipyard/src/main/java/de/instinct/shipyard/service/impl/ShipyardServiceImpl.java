@@ -15,6 +15,7 @@ import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.shipyard.dto.PlayerShipData;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
+import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
 import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
@@ -45,15 +46,9 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.built(true)
 				.inUse(true)
 				.build());
-		initShips.add(PlayerShipData.builder()
-				.uuid(UUID.randomUUID().toString())
-				.shipId(1)
-				.built(false)
-				.inUse(false)
-				.build());
 		userShipyards.put(token, PlayerShipyardData.builder()
-				.slots(1)
-				.activeShipSlots(1)
+				.slots(getBaseData().getBaseSlots())
+				.activeShipSlots(getBaseData().getBaseActiveShipSlots())
 				.ships(initShips)
 				.build());
 		return ShipyardInitializationResponseCode.SUCCESS;
@@ -188,6 +183,28 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.build());
 		ship.setLevel(ship.getLevel() + 1);
 		return ShipUpgradeResponse.SUCCESS;
+	}
+
+	@Override
+	public ShipAddResponse addBlueprint(String token, int shipid) {
+		PlayerShipyardData shipyard = userShipyards.get(token);
+		if (shipyard == null) return ShipAddResponse.USER_NOT_FOUND;
+		if (shipyard.getShips().stream().anyMatch(ship -> ship.getShipId() == shipid)) return ShipAddResponse.ALREADY_OWNED;
+		ShipBlueprint blueprint = getBaseData().getShipBlueprints().stream()
+				.filter(bp -> bp.getId() == shipid)
+				.findFirst()
+				.orElse(null);
+		if (blueprint == null) return ShipAddResponse.SHIP_NOT_FOUND;
+		if (shipyard.getShips().size() >= shipyard.getSlots()) return ShipAddResponse.HANGAR_FULL;
+		PlayerShipData newShip = PlayerShipData.builder()
+				.uuid(UUID.randomUUID().toString())
+				.shipId(shipid)
+				.built(false)
+				.inUse(false)
+				.level(0)
+				.build();
+		shipyard.getShips().add(newShip);
+		return ShipAddResponse.SUCCESS;
 	}
 	
 }

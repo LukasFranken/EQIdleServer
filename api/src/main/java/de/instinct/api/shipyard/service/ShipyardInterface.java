@@ -2,6 +2,7 @@ package de.instinct.api.shipyard.service;
 
 import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
+import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
 import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
 import de.instinct.api.shipyard.dto.ShipyardData;
@@ -29,5 +30,7 @@ public interface ShipyardInterface extends BaseServiceInterface {
 	ShipBuildResponse build(String shiptoken);
 	
 	ShipUpgradeResponse upgrade(String shiptoken);
+	
+	ShipAddResponse add(String token, int shipid);
 
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
+import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
 import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
 import de.instinct.api.shipyard.dto.ShipyardData;
@@ -81,6 +82,11 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/upgrade/{shiptoken}")
 	public ResponseEntity<ShipUpgradeResponse> upgrade(@RequestHeader String token, @PathVariable String shiptoken) {
 		return ResponseEntity.ok(service.upgrade(token, shiptoken));
+	}
+	
+	@PostMapping("/add/{token}/{shipid}")
+	public ResponseEntity<ShipAddResponse> add(@PathVariable String token, @PathVariable int shipid) {
+		return ResponseEntity.ok(service.addBlueprint(token, shipid));
 	}
 
 }

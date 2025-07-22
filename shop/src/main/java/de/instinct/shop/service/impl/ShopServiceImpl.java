@@ -11,7 +11,9 @@ import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
+import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shop.dto.BuyResponse;
+import de.instinct.api.shop.dto.BuyResponseCode;
 import de.instinct.api.shop.dto.Purchase;
 import de.instinct.api.shop.dto.ShopCategory;
 import de.instinct.api.shop.dto.ShopData;
@@ -37,6 +39,11 @@ public class ShopServiceImpl implements ShopService {
 		shopItemEffects.put(0, new ShopItemEffect() {
 			
 			@Override
+			public String preconditionMetMessage(String token, int stage) {
+				return null;
+			}
+			
+			@Override
 			public void applyEffect(String token, int stage) {
 				switch (stage) {
 				case 0: 
@@ -55,8 +62,73 @@ public class ShopServiceImpl implements ShopService {
 		shopItemEffects.put(1, new ShopItemEffect() {
 			
 			@Override
+			public String preconditionMetMessage(String token, int stage) {
+				return null;
+			}
+			
+			@Override
 			public void applyEffect(String token, int stage) {
 				API.shipyard().active(token, 1);
+			}
+			
+		});
+		shopItemEffects.put(2, new ShopItemEffect() {
+			
+			@Override
+			public String preconditionMetMessage(String token, int stage) {
+				PlayerShipyardData shipyard = API.shipyard().data(token);
+				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
+				return "Insufficient Hangar Space";
+			}
+			
+			@Override
+			public void applyEffect(String token, int stage) {
+				API.shipyard().add(token, 1);
+			}
+			
+		});
+		shopItemEffects.put(3, new ShopItemEffect() {
+			
+			@Override
+			public String preconditionMetMessage(String token, int stage) {
+				PlayerShipyardData shipyard = API.shipyard().data(token);
+				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
+				return "Insufficient Hangar Space";
+			}
+			
+			@Override
+			public void applyEffect(String token, int stage) {
+				API.shipyard().add(token, 2);
+			}
+			
+		});
+		shopItemEffects.put(4, new ShopItemEffect() {
+			
+			@Override
+			public String preconditionMetMessage(String token, int stage) {
+				PlayerShipyardData shipyard = API.shipyard().data(token);
+				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
+				return "Insufficient Hangar Space";
+			}
+			
+			@Override
+			public void applyEffect(String token, int stage) {
+				API.shipyard().add(token, 3);
+			}
+			
+		});
+		shopItemEffects.put(5, new ShopItemEffect() {
+			
+			@Override
+			public String preconditionMetMessage(String token, int stage) {
+				PlayerShipyardData shipyard = API.shipyard().data(token);
+				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
+				return "Insufficient Hangar Space";
+			}
+			
+			@Override
+			public void applyEffect(String token, int stage) {
+				API.shipyard().add(token, 4);
 			}
 			
 		});
@@ -117,8 +189,59 @@ public class ShopServiceImpl implements ShopService {
 				.items(shipyardItems)
 				.build();
 		
+		List<ShopItem> shipBlueprintItems = new ArrayList<>();
+		List<ShopItemStage> turtleStages = new ArrayList<>();
+		turtleStages.add(ShopItemStage.builder()
+				.description("")
+				.price(1000)
+				.build());
+		shipBlueprintItems.add(ShopItem.builder()
+				.id(2)
+				.name("Turtle")
+				.stages(turtleStages)
+				.build());
+		
+		List<ShopItemStage> sharkStages = new ArrayList<>();
+		sharkStages.add(ShopItemStage.builder()
+				.description("")
+				.price(1000)
+				.build());
+		shipBlueprintItems.add(ShopItem.builder()
+				.id(3)
+				.name("Shark")
+				.stages(sharkStages)
+				.build());
+		
+		List<ShopItemStage> eelStages = new ArrayList<>();
+		eelStages.add(ShopItemStage.builder()
+				.description("")
+				.price(1000)
+				.build());
+		shipBlueprintItems.add(ShopItem.builder()
+				.id(4)
+				.name("Eel")
+				.stages(eelStages)
+				.build());
+		
+		List<ShopItemStage> cheetahStages = new ArrayList<>();
+		cheetahStages.add(ShopItemStage.builder()
+				.description("")
+				.price(100)
+				.build());
+		shipBlueprintItems.add(ShopItem.builder()
+				.id(5)
+				.name("Cheetah")
+				.stages(cheetahStages)
+				.build());
+		
+		ShopCategory shipBlueprintsCategory = ShopCategory.builder()
+				.name("Ship Blueprints")
+				.items(shipBlueprintItems)
+				.build();
+		
 		List<ShopCategory> categories = new ArrayList<>();
 		categories.add(shipyardCategory);
+		categories.add(shipBlueprintsCategory);
 		return categories;
 	}
 
@@ -135,7 +258,9 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public BuyResponse buy(String token, int itemId) {
 		ShopData shop = shops.get(token);
-		if (shop == null) return BuyResponse.INVALID_TOKEN;
+		if (shop == null) return BuyResponse.builder()
+				.code(BuyResponseCode.INVALID_TOKEN)
+				.build();
 		ShopItem item = null;
 		for (ShopCategory category : shop.getCategories()) {
 			for (ShopItem shopItem : category.getItems()) {
@@ -146,16 +271,30 @@ public class ShopServiceImpl implements ShopService {
 			}
 			if (item != null) break;
 		}
-		if (item == null) return BuyResponse.ITEM_NOT_FOUND;
+		if (item == null) return BuyResponse.builder()
+				.code(BuyResponseCode.ITEM_NOT_FOUND)
+				.build();
 		
 		int stagesBought = shop.getPurchaseHistory().stream()
 				.filter(p -> p.getItemId() == itemId)
 				.toList()
 				.size();
-		if (stagesBought >= item.getStages().size()) return BuyResponse.ALREADY_BOUGHT;
+		if (stagesBought >= item.getStages().size()) return BuyResponse.builder()
+				.code(BuyResponseCode.ALREADY_BOUGHT)
+				.build();
+		
 		ShopItemStage firstUnboughtStage = item.getStages().get(stagesBought);
 		ResourceData playerResources = API.meta().resources(token);
-		if (getPlayerResource(playerResources, Resource.CREDITS) < firstUnboughtStage.getPrice()) return BuyResponse.NOT_ENOUGH_CURRENCY;
+		if (getPlayerResource(playerResources, Resource.CREDITS) < firstUnboughtStage.getPrice()) return BuyResponse.builder()
+				.code(BuyResponseCode.NOT_ENOUGH_CURRENCY)
+				.message("Insufficient credits")
+				.build();
+		
+		String preconditionMessage = shopItemEffects.get(item.getId()).preconditionMetMessage(token, stagesBought);
+		if (preconditionMessage != null) return BuyResponse.builder()
+				.code(BuyResponseCode.PRECONDITION_NOT_MET)
+				.message(preconditionMessage)
+				.build();
 		
 		ResourceData resourceData = ResourceData.builder()
 				.resources(new ArrayList<>())
@@ -173,7 +312,9 @@ public class ShopServiceImpl implements ShopService {
 				.timestamp(System.currentTimeMillis())
 				.cost(firstUnboughtStage.getPrice())
 				.build());
-		return BuyResponse.SUCCESS;
+		return BuyResponse.builder()
+				.code(BuyResponseCode.SUCCESS)
+				.build();
 	}
 
 	private long getPlayerResource(ResourceData playerResources, Resource type) {

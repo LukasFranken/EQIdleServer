@@ -1,11 +1,17 @@
 package de.instinct.api.shop.dto;
 
-public enum BuyResponse {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BuyResponse {
 	
-	SUCCESS,
-	NOT_ENOUGH_CURRENCY,
-	INVALID_TOKEN,
-	ITEM_NOT_FOUND,
-	ALREADY_BOUGHT
+	private BuyResponseCode code;
+	private String message;
 
 }
