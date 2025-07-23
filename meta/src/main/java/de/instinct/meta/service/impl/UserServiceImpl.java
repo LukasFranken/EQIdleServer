@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.API;
+import de.instinct.api.meta.dto.CommanderData;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
@@ -26,6 +27,7 @@ import de.instinct.meta.service.model.UserData;
 public class UserServiceImpl implements UserService {
 	
 	private Map<String, UserData> users;
+	private Map<String, CommanderData> commanders;
 	
 	@Autowired
 	private ModuleService moduleService;
@@ -62,6 +64,11 @@ public class UserServiceImpl implements UserService {
 				.build();
 		moduleService.init(token);
 		users.put(token, newUser);
+		commanders.put(token, CommanderData.builder()
+				.startCommandPoints(3)
+				.maxCommandPoints(10)
+				.commandPointsGenerationSpeed(0.1f)
+				.build());
 		API.shipyard().init(token);
 		API.construction().init(token);
 		return RegisterResponseCode.SUCCESS;
@@ -98,9 +105,7 @@ public class UserServiceImpl implements UserService {
 						.filter(ship -> ship.isInUse())
 						.toList())
 				.infrastructure(API.construction().data(token))
-				.commandPointsGenerationSpeed(0.1f)
-				.maxCommandPoints(10f)
-				.startCommandPoints(3f)
+				.commander(commanders.get(token))
 				.build();
 		return loadout;
 	}
@@ -154,6 +159,10 @@ public class UserServiceImpl implements UserService {
 		profile.setCurrentExp(profile.getCurrentExp() + exp);
 		while (profile.getRank().getNextRequiredExp() <= profile.getCurrentExp()) {
 			profile.setRank(profile.getRank().getNextRank());
+			CommanderData commander = commanders.get(token);
+			commander.setMaxCommandPoints(commander.getMaxCommandPoints() + 1);
+			commander.setStartCommandPoints(commander.getStartCommandPoints() + 1);
+			commander.setCommandPointsGenerationSpeed(commander.getCommandPointsGenerationSpeed() + 0.05f);
 			grantNewRankPriviledges(token, user);
 		}
 		return ExperienceUpdateResponseCode.SUCCESS;

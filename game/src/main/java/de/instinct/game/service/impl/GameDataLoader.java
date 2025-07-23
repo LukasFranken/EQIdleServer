@@ -119,9 +119,9 @@ public class GameDataLoader {
 		Player newPlayer = new Player();
 		newPlayer.teamId = user.getTeamid();
 		newPlayer.name = user.getName();
-		newPlayer.commandPointsGenerationSpeed = user.getLoadout().getCommandPointsGenerationSpeed();
-		newPlayer.startCommandPoints = user.getLoadout().getStartCommandPoints();
-		newPlayer.maxCommandPoints = user.getLoadout().getMaxCommandPoints();
+		newPlayer.commandPointsGenerationSpeed = user.getLoadout().getCommander().getCommandPointsGenerationSpeed();
+		newPlayer.startCommandPoints = user.getLoadout().getCommander().getStartCommandPoints();
+		newPlayer.maxCommandPoints = user.getLoadout().getCommander().getMaxCommandPoints();
 		newPlayer.planetData = EngineInterface.getPlanetData(user.getLoadout().getInfrastructure());
 		newPlayer.ships = EngineInterface.getShips(user.getLoadout().getShips(), API.shipyard().shipyard());
 		return newPlayer;

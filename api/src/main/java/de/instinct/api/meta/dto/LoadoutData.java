@@ -15,10 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoadoutData {
 	
-	private float commandPointsGenerationSpeed;
-	private float maxCommandPoints;
-	private float startCommandPoints;
-	
+	private CommanderData commander;
 	private Infrastructure infrastructure;
 	private List<PlayerShipData> ships;
 
