@@ -34,48 +34,54 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.instinct</groupId>
+			<artifactId>base</artifactId>
+			<version>0.0.1</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.graalvm.buildtools</groupId>
-				<artifactId>native-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
+  		<finalName>${project.artifactId}</finalName>
+  		<plugins>
+    		<plugin>
+      			<groupId>org.springframework.boot</groupId>
+      			<artifactId>spring-boot-maven-plugin</artifactId>
+      			<executions>
+       				<execution>
+          				<id>process-aot</id>
+          				<goals>
+           					<goal>process-aot</goal>
+          				</goals>
+          				<phase>process-classes</phase>
+        			</execution>
+        			<execution>
+          				<id>repackage-with-aot</id>
+          				<goals>
+            				<goal>repackage</goal>
+          				</goals>
+          				<configuration>
+            				<classesDirectory>${project.basedir}/target/spring-aot/main/classes</classesDirectory>
+            				<resourcesDirectory>${project.build.directory}/spring-aot/main/resources</resourcesDirectory>
+          				</configuration>
+        			</execution>
+      			</executions>
+    		</plugin>
+  		</plugins>
 	</build>
-	
-	<profiles>
-    	<profile>
-        	<id>native</id>
-       		<build>
-            	<plugins>
-                	<plugin>
-                    	<groupId>org.graalvm.buildtools</groupId>
-                    	<artifactId>native-maven-plugin</artifactId>
-                    	<executions>
-                        	<execution>
-                            	<id>build-native</id>
-                            	<goals>
-                                	<goal>compile-no-fork</goal>
-                            	</goals>
-                            	<phase>package</phase>
-                       		</execution>
-                    	</executions>
-                	</plugin>
-            	</plugins>
-        	</build>
-    	</profile>
-    </profiles>
 
 </project>
