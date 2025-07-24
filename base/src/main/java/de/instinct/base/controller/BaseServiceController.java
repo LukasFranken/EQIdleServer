@@ -1,4 +1,4 @@
-package base.controller;
+package de.instinct.base.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,14 +32,14 @@ public abstract class BaseServiceController extends BaseController {
 		API.initialize(APIConfiguration.SERVER);
 		API.discovery().connect();
 		try {
-			API.discovery().register(ServiceRegistrationDTO.builder()
-					.serviceTag(tag)
-					.serviceProtocol("http")
-					.serviceAddress("eqgame.dev")
-					.servicePort(port)
-					.serviceEndpoint(tag)
-					.serviceVersion(version)
-					.build());
+			ServiceRegistrationDTO registration = new ServiceRegistrationDTO();
+			registration.setServiceTag(tag);
+			registration.setServiceProtocol("http");
+			registration.setServiceAddress("eqgame.dev");
+			registration.setServicePort(port);
+			registration.setServiceEndpoint(tag);
+			registration.setServiceVersion(version);
+			API.discovery().register(registration);
 		} catch (Exception e) {
 			System.out.println("Failed to register service: " + tag + " to discovery server");
 		}

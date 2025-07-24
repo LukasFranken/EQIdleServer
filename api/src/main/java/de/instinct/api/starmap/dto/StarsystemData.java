@@ -2,17 +2,13 @@ package de.instinct.api.starmap.dto;
 
 import java.util.List;
 
+import de.instinct.api.core.annotation.Dto;
 import de.instinct.api.game.dto.MapPreview;
 import de.instinct.api.meta.dto.ResourceAmount;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+@Dto
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class StarsystemData {
 	
 	private int id;

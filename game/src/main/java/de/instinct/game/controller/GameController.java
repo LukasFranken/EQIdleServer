@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.MapPreview;
+import de.instinct.base.controller.BaseServiceController;
 import de.instinct.game.config.ApplicationConfig;
 import de.instinct.game.config.GameserverConfig;
 import de.instinct.game.service.GameserverManagerService;

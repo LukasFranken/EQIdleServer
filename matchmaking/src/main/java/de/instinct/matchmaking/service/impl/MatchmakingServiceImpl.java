@@ -66,9 +66,9 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 			lobby.getUserUUIDs().add(authToken);
 			lobbies.add(lobby);
 		}
-		return LobbyCreationResponse.builder()
-				.lobbyUUID(lobby.getLobbyUUID())
-				.build();
+		LobbyCreationResponse response = new LobbyCreationResponse();
+		response.setLobbyUUID(lobby.getLobbyUUID());
+		return response;
 	}
 	
 	@Override
@@ -148,11 +148,11 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	@Override
 	public InvitesStatusResponse getInvites(String usertoken) {
-		return InvitesStatusResponse.builder()
-				.invites(invites.stream()
-					    .filter(invite -> usertoken.contentEquals(invite.getToUUID()))
-					    .collect(Collectors.toList()))
-				.build();
+		InvitesStatusResponse response = new InvitesStatusResponse();
+		response.setInvites(invites.stream()
+				.filter(invite -> usertoken.contentEquals(invite.getToUUID()))
+				.collect(Collectors.toList()));
+		return response;
 	}
 	
 	@Override
@@ -184,13 +184,17 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	@Override
 	public LobbyStatusResponse getStatus(String lobbyToken) {
 		Lobby lobby = getLobby(lobbyToken);
-		if (lobby == null) return LobbyStatusResponse.builder().code(LobbyStatusCode.DOESNT_EXIST).build();
+		if (lobby == null) {
+			LobbyStatusResponse doesntExistResponse = new LobbyStatusResponse();
+			doesntExistResponse.setCode(LobbyStatusCode.DOESNT_EXIST);
+			return doesntExistResponse;
+		}
 		
-		return LobbyStatusResponse.builder()
-				.code(lobby.getCode())
-				.type(lobby.getType())
-				.userNames(loadUsernames(lobby.getUserUUIDs()))
-				.build();
+		LobbyStatusResponse response = new LobbyStatusResponse();
+		response.setCode(lobby.getCode());
+		response.setType(lobby.getType());
+		response.setUserNames(loadUsernames(lobby.getUserUUIDs()));
+		return response;
 	}
 
 	private List<String> loadUsernames(List<String> userUUIDs) {
@@ -202,24 +206,26 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	@Override
 	public MatchmakingStatusResponse getMatchmakingStatus(String lobbyToken) {
 		Lobby lobby = getLobby(lobbyToken);
-		if (lobby == null) return MatchmakingStatusResponse.builder()
-				.code(MatchmakingStatusResponseCode.LOBBY_DOESNT_EXIST)
-				.build();
-		if (lobby.getCode() != LobbyStatusCode.MATCHING && lobby.getCode() != LobbyStatusCode.IN_GAME) return MatchmakingStatusResponse.builder()
-				.code(MatchmakingStatusResponseCode.NOT_IN_MATCHMAKING)
-				.build();
 		
+		if (lobby == null) {
+			MatchmakingStatusResponse lobbyDoesntExistResponse = new MatchmakingStatusResponse();
+			lobbyDoesntExistResponse.setCode(MatchmakingStatusResponseCode.LOBBY_DOESNT_EXIST);
+			return lobbyDoesntExistResponse;
+		}
+		
+		if (lobby.getCode() != LobbyStatusCode.MATCHING && lobby.getCode() != LobbyStatusCode.IN_GAME) {
+			MatchmakingStatusResponse notInMatchmakingResponse  = new MatchmakingStatusResponse();
+			notInMatchmakingResponse.setCode(MatchmakingStatusResponseCode.NOT_IN_MATCHMAKING);
+			return notInMatchmakingResponse;
+		}
 		
 		int requiredPlayers = calculateRequiredPlayers(lobby.getType());
 		int foundPlayers = lobby.getCode() == LobbyStatusCode.MATCHING ? calculateTotalPlayersFound(lobby.getType()) : requiredPlayers;
 		
-		MatchmakingStatusResponseCode responseCode = MatchmakingStatusResponseCode.MATCHING;
-		MatchmakingStatusResponse response =  MatchmakingStatusResponse.builder()
-				.foundPlayers(foundPlayers)
-				.requiredPlayers(requiredPlayers)
-				.code(responseCode)
-				.build();
-		
+		MatchmakingStatusResponse response =  new MatchmakingStatusResponse();
+		response.setFoundPlayers(foundPlayers);
+		response.setRequiredPlayers(requiredPlayers);
+		response.setCode(MatchmakingStatusResponseCode.MATCHING);
 		return mapper.mapGameserverInfo(response, lobby.getGameserverInfo());
 	}
 	
@@ -252,9 +258,12 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	    if (type.getVersusMode() == VersusMode.AI) {
 	        matchedLobbies.forEach(lobby ->
-	            lobby.getUserUUIDs().forEach(uuid ->
-	                result.add(new UserTeamData(uuid, 1))
-	            )
+	            lobby.getUserUUIDs().forEach(uuid -> {
+		        	UserTeamData userTeamData = new UserTeamData();
+		        	userTeamData.setUuid(uuid);
+		        	userTeamData.setTeamId(1);
+		        	result.add(userTeamData);
+		        })
 	        );
 	        return result;
 	    }
@@ -270,9 +279,12 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 
 	    for (Lobby lobby : matchedLobbies) {
 	        int teamId = team1Ids.contains(lobby.getLobbyUUID()) ? 1 : 2;
-	        lobby.getUserUUIDs().forEach(uuid ->
-	            result.add(new UserTeamData(uuid, teamId))
-	        );
+	        lobby.getUserUUIDs().forEach(uuid -> {
+	        	UserTeamData userTeamData = new UserTeamData();
+	        	userTeamData.setUuid(uuid);
+	        	userTeamData.setTeamId(teamId);
+	        	result.add(userTeamData);
+	        });
 	    }
 
 	    return result;
@@ -298,10 +310,10 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	}
 	
 	private void createGameSession(List<Lobby> matchedLobbies, List<UserTeamData> userData) {
-		String gameSessionToken = API.game().create(GameSessionInitializationRequest.builder()
-				.type(matchedLobbies.get(0).getType())
-				.users(userData)
-				.build());
+		GameSessionInitializationRequest request = new GameSessionInitializationRequest();
+		request.setType(matchedLobbies.get(0).getType());
+		request.setUsers(userData);
+		String gameSessionToken = API.game().create(request);
 		System.out.println("creating session on map " + "test");
 		for (Lobby lobby : matchedLobbies) {
 			lobby.getGameserverInfo().setStatus(GameserverStatus.IN_CREATION);
@@ -358,40 +370,41 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 					if (currentSystem == null) break;
 					
 					for (String userUUID : lobby.getUserUUIDs()) {
-						rewards.add(PlayerReward.builder()
-								.uuid(userUUID)
-								.experience(currentSystem.getExperience())
-								.resources(currentSystem.getResourceRewards())
-								.build());
+						PlayerReward reward = new PlayerReward();
+						reward.setUuid(userUUID);
+						reward.setExperience(currentSystem.getExperience());
+						reward.setResources(currentSystem.getResourceRewards());
+						rewards.add(reward);
 						API.meta().experience(userUUID, currentSystem.getExperience());
-						API.meta().addResources(userUUID, ResourceData.builder()
-								.resources(currentSystem.getResourceRewards())
-								.build());
-						API.starmap().complete(CompletionRequest.builder()
-								.userUUID(userUUID)
-								.galaxyId(galaxyId)
-								.systemId(systemId)
-								.build());
+						ResourceData resourceData = new ResourceData();
+						resourceData.setResources(currentSystem.getResourceRewards());
+						API.meta().addResources(userUUID, resourceData);
+						CompletionRequest completionRequest = new CompletionRequest();
+						completionRequest.setUserUUID(userUUID);
+						completionRequest.setGalaxyId(galaxyId);
+						completionRequest.setSystemId(systemId);
+						API.starmap().complete(completionRequest);
 					}
 				}
 				if (lobby.getType().getGameMode() == GameMode.KING_OF_THE_HILL) {
 					long defaultExp = 200;
 					for (String userUUID : lobby.getUserUUIDs()) {
-						rewards.add(PlayerReward.builder()
-								.uuid(userUUID)
-								.experience(defaultExp)
-								.resources(new ArrayList<>())
-								.build());
+						PlayerReward reward = new PlayerReward();
+						reward.setUuid(userUUID);
+						reward.setExperience(defaultExp);
+						reward.setResources(new ArrayList<>());
+						rewards.add(reward);
+						rewards.add(reward);
 						API.meta().experience(userUUID, defaultExp);
 					}
 				}
 			}
 		}
 		System.out.println("finalized game: " + gameSessionToken);
-		postGameResults.put(gameSessionToken, GameResult.builder()
-				.playedMS(finishGameData.getPlayedMS())
-				.rewards(rewards)
-				.build());
+		GameResult postGameResult = new GameResult();
+		postGameResult.setPlayedMS(finishGameData.getPlayedMS());
+		postGameResult.setRewards(rewards);
+		postGameResults.put(gameSessionToken, postGameResult);
 	}
 
 	@Override

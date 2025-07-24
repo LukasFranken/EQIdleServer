@@ -1,15 +1,11 @@
 package de.instinct.api.shipyard.dto;
 
 import de.instinct.api.construction.dto.WeaponType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import de.instinct.api.core.annotation.Dto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+@Dto
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ShipWeapon {
 	
 	private WeaponType type;

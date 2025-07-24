@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.InfrastructureInitializationResponseCode;
 import de.instinct.api.construction.dto.UseTurretResponseCode;
+import de.instinct.base.controller.BaseServiceController;
 import de.instinct.construction.service.ConstructionService;
 import de.instinct.construction.service.impl.ConstructionServiceImpl;
 

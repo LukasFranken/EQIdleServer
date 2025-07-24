@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = { 
 		"de.instinct.auth", 
 		"de.instinct.eqspringutils",
-		"de.instinct.eqspringbase" })
+		"de.instinct.base" })
 public class EQlibriumAuthenticationApplication {
 
 	public static void main(String[] args) {

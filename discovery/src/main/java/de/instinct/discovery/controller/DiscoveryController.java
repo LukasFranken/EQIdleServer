@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseController;
 import de.instinct.api.discovery.dto.ServiceInfoDTO;
+import de.instinct.base.controller.BaseController;
 import de.instinct.discovery.service.DiscoveryService;
 import lombok.RequiredArgsConstructor;
 

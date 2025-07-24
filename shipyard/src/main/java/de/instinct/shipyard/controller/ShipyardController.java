@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shipyard.dto.ShipAddResponse;
@@ -20,6 +19,7 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.base.controller.BaseServiceController;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
 

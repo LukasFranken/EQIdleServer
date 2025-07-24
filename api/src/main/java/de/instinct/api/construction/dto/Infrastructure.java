@@ -2,15 +2,11 @@ package de.instinct.api.construction.dto;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import de.instinct.api.core.annotation.Dto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+@Dto
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class Infrastructure {
 	
 	private float resourceGenerationSpeed;

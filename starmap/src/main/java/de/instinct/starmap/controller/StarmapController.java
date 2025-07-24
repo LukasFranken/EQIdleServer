@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.CompletionResponse;
 import de.instinct.api.starmap.dto.PlayerStarmapData;
 import de.instinct.api.starmap.dto.SectorData;
 import de.instinct.api.starmap.dto.StarmapInitializationResponseCode;
+import de.instinct.base.controller.BaseServiceController;
 import de.instinct.starmap.service.StarmapService;
 import de.instinct.starmap.service.impl.StarmapServiceImpl;
 

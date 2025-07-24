@@ -1,4 +1,4 @@
-package base.controller;
+package de.instinct.base.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

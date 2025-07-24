@@ -3,11 +3,11 @@ package de.instinct.game.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import base.file.FileManager;
 import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.game.engine.EngineInterface;
 import de.instinct.api.matchmaking.model.VersusMode;
+import de.instinct.base.file.FileManager;
 import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.ai.difficulty.AiDifficulty;
 import de.instinct.engine.initialization.GameStateInitialization;

@@ -1,14 +1,10 @@
 package de.instinct.api.construction.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import de.instinct.api.core.annotation.Dto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+@Dto
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class PlanetWeapon {
 	
 	private WeaponType type;

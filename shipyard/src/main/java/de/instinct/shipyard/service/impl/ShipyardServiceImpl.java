@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import base.file.FileManager;
 import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.meta.dto.ResourceAmount;
@@ -24,6 +23,7 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.base.file.FileManager;
 import de.instinct.shipyard.service.ShipyardService;
 
 @Service
@@ -40,17 +40,18 @@ public class ShipyardServiceImpl implements ShipyardService {
 	public ShipyardInitializationResponseCode init(String token) {
 		if (userShipyards.containsKey(token)) return ShipyardInitializationResponseCode.ALREADY_INITIALIZED;
 		List<PlayerShipData> initShips = new ArrayList<>();
-		initShips.add(PlayerShipData.builder()
-				.uuid(UUID.randomUUID().toString())
-				.shipId(0)
-				.built(true)
-				.inUse(true)
-				.build());
-		userShipyards.put(token, PlayerShipyardData.builder()
-				.slots(getBaseData().getBaseSlots())
-				.activeShipSlots(getBaseData().getBaseActiveShipSlots())
-				.ships(initShips)
-				.build());
+		PlayerShipData initShipData = new PlayerShipData();
+		initShipData.setUuid(UUID.randomUUID().toString());
+		initShipData.setShipId(0);
+		initShipData.setBuilt(true);
+		initShipData.setInUse(true);
+		initShips.add(initShipData);
+		
+		PlayerShipyardData initShipyardData = new PlayerShipyardData();
+		initShipyardData.setSlots(getBaseData().getBaseSlots());
+		initShipyardData.setActiveShipSlots(getBaseData().getBaseActiveShipSlots());
+		initShipyardData.setShips(initShips);
+		userShipyards.put(token, initShipyardData);
 		return ShipyardInitializationResponseCode.SUCCESS;
 	}
 
@@ -149,9 +150,10 @@ public class ShipyardServiceImpl implements ShipyardService {
 				return ShipBuildResponse.NOT_ENOUGH_RESOURCES;
 			}
 		}
-		API.meta().addResources(token, ResourceData.builder()
-				.resources(blueprint.getBuildCost())
-				.build());
+		ResourceData resourceUpdate = new ResourceData();
+		resourceUpdate.setResources(blueprint.getBuildCost());
+		API.meta().addResources(token, resourceUpdate);
+		
 		ship.setBuilt(true);
 		return ShipBuildResponse.SUCCESS;
 	}
@@ -178,9 +180,9 @@ public class ShipyardServiceImpl implements ShipyardService {
 				return ShipUpgradeResponse.NOT_ENOUGH_RESOURCES;
 			}
 		}
-		API.meta().addResources(token, ResourceData.builder()
-				.resources(blueprint.getLevels().get(ship.getLevel()).getCost())
-				.build());
+		ResourceData resourceUpdate = new ResourceData();
+		resourceUpdate.setResources(blueprint.getLevels().get(ship.getLevel()).getCost());
+		API.meta().addResources(token, resourceUpdate);
 		ship.setLevel(ship.getLevel() + 1);
 		return ShipUpgradeResponse.SUCCESS;
 	}
@@ -196,13 +198,12 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.orElse(null);
 		if (blueprint == null) return ShipAddResponse.SHIP_NOT_FOUND;
 		if (shipyard.getShips().size() >= shipyard.getSlots()) return ShipAddResponse.HANGAR_FULL;
-		PlayerShipData newShip = PlayerShipData.builder()
-				.uuid(UUID.randomUUID().toString())
-				.shipId(shipid)
-				.built(false)
-				.inUse(false)
-				.level(0)
-				.build();
+		PlayerShipData newShip = new PlayerShipData();
+		newShip.setUuid(UUID.randomUUID().toString());
+		newShip.setShipId(shipid);
+		newShip.setBuilt(false);
+		newShip.setInUse(false);
+		newShip.setLevel(0);
 		shipyard.getShips().add(newShip);
 		return ShipAddResponse.SUCCESS;
 	}

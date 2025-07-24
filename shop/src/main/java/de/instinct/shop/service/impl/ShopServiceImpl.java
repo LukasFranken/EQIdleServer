@@ -137,111 +137,110 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public ShopInitializationResponseCode init(String token) {
 		if (shops.get(token) != null) return ShopInitializationResponseCode.ALREADY_INITIALIZED;
-		shops.put(token, ShopData.builder()
-				.purchaseHistory(new ArrayList<>())
-				.categories(loadInitialShopData())
-				.build());
+		ShopData initShopData = new ShopData();
+		initShopData.setPurchaseHistory(new ArrayList<>());
+		initShopData.setCategories(loadInitialShopCategories());
+		shops.put(token, initShopData);
 		return ShopInitializationResponseCode.SUCCESS;
 	}
 	
-	private List<ShopCategory> loadInitialShopData() {
+	private List<ShopCategory> loadInitialShopCategories() {
+		List<ShopCategory> categories = new ArrayList<>();
+		
 		List<ShopItem> shipyardItems = new ArrayList<>();
 		List<ShopItemStage> hangarStages = new ArrayList<>();
-		hangarStages.add(ShopItemStage.builder()
-				.description("1 -> 3")
-				.price(1000)
-				.build());
-		hangarStages.add(ShopItemStage.builder()
-				.description("3 -> 5")
-				.price(2000)
-				.build());
-		hangarStages.add(ShopItemStage.builder()
-				.description("5 -> 8")
-				.price(5000)
-				.build());
-		shipyardItems.add(ShopItem.builder()
-				.id(0)
-				.name("Hangar Space")
-				.stages(hangarStages)
-				.build());
+		ShopItemStage hangarStage1 = new ShopItemStage();
+		hangarStage1.setDescription("1 -> 3");
+		hangarStage1.setPrice(1000);
+		hangarStages.add(hangarStage1);
+		ShopItemStage hangarStage2 = new ShopItemStage();
+		hangarStage2.setDescription("3 -> 5");
+		hangarStage2.setPrice(2000);
+		hangarStages.add(hangarStage2);
+		ShopItemStage hangarStage3 = new ShopItemStage();
+		hangarStage3.setDescription("5 -> 8");
+		hangarStage3.setPrice(5000);
+		hangarStages.add(hangarStage3);
+		ShopItem hangarItem = new ShopItem();
+		hangarItem.setId(0);
+		hangarItem.setName("Hangar Space");
+		hangarItem.setStages(hangarStages);
+		shipyardItems.add(hangarItem);
 		
 		List<ShopItemStage> activeShipsStages = new ArrayList<>();
-		activeShipsStages.add(ShopItemStage.builder()
-				.description("1 -> 2")
-				.price(1000)
-				.build());
-		activeShipsStages.add(ShopItemStage.builder()
-				.description("2 -> 3")
-				.price(5000)
-				.build());
-		activeShipsStages.add(ShopItemStage.builder()
-				.description("3 -> 4")
-				.price(25000)
-				.build());
-		shipyardItems.add(ShopItem.builder()
-				.id(1)
-				.name("Active Ships")
-				.stages(activeShipsStages)
-				.build());
+		ShopItemStage activeShipsStage1 = new ShopItemStage();
+		activeShipsStage1.setDescription("1 -> 2");
+		activeShipsStage1.setPrice(1000);
+		activeShipsStages.add(activeShipsStage1);
+		ShopItemStage activeShipsStage2 = new ShopItemStage();
+		activeShipsStage2.setDescription("2 -> 3");
+		activeShipsStage2.setPrice(5000);
+		activeShipsStages.add(activeShipsStage2);
+		ShopItemStage activeShipsStage3 = new ShopItemStage();
+		activeShipsStage3.setDescription("3 -> 4");
+		activeShipsStage3.setPrice(25000);
+		activeShipsStages.add(activeShipsStage3);
+		ShopItem activeShipsItem = new ShopItem();
+		activeShipsItem.setId(1);
+		activeShipsItem.setName("Active Ships");
+		activeShipsItem.setStages(activeShipsStages);
+		shipyardItems.add(activeShipsItem);
 		
-		ShopCategory shipyardCategory = ShopCategory.builder()
-				.name("Shipyard")
-				.items(shipyardItems)
-				.build();
+		ShopCategory shipyardCategory = new ShopCategory();
+		shipyardCategory.setName("Shipyard");
+		shipyardCategory.setItems(shipyardItems);
+		categories.add(shipyardCategory);
 		
 		List<ShopItem> shipBlueprintItems = new ArrayList<>();
 		List<ShopItemStage> turtleStages = new ArrayList<>();
-		turtleStages.add(ShopItemStage.builder()
-				.description("")
-				.price(1000)
-				.build());
-		shipBlueprintItems.add(ShopItem.builder()
-				.id(2)
-				.name("Turtle")
-				.stages(turtleStages)
-				.build());
+		ShopItemStage turtleStage = new ShopItemStage();
+		turtleStage.setDescription("");
+		turtleStage.setPrice(1000);
+		turtleStages.add(turtleStage);
+		ShopItem turtleItem = new ShopItem();
+		turtleItem.setId(2);
+		turtleItem.setName("Turtle");
+		turtleItem.setStages(turtleStages);
+		shipBlueprintItems.add(turtleItem);
 		
 		List<ShopItemStage> sharkStages = new ArrayList<>();
-		sharkStages.add(ShopItemStage.builder()
-				.description("")
-				.price(1000)
-				.build());
-		shipBlueprintItems.add(ShopItem.builder()
-				.id(3)
-				.name("Shark")
-				.stages(sharkStages)
-				.build());
+		ShopItemStage sharkStage = new ShopItemStage();
+		sharkStage.setDescription("");
+		sharkStage.setPrice(1000);
+		sharkStages.add(sharkStage);
+		ShopItem sharkItem = new ShopItem();
+		sharkItem.setId(3);
+		sharkItem.setName("Shark");
+		sharkItem.setStages(sharkStages);
+		shipBlueprintItems.add(sharkItem);
 		
 		List<ShopItemStage> eelStages = new ArrayList<>();
-		eelStages.add(ShopItemStage.builder()
-				.description("")
-				.price(1000)
-				.build());
-		shipBlueprintItems.add(ShopItem.builder()
-				.id(4)
-				.name("Eel")
-				.stages(eelStages)
-				.build());
+		ShopItemStage eelStage = new ShopItemStage();
+		eelStage.setDescription("");
+		eelStage.setPrice(1000);
+		eelStages.add(eelStage);
+		ShopItem eelItem = new ShopItem();
+		eelItem.setId(4);
+		eelItem.setName("Eel");
+		eelItem.setStages(eelStages);
+		shipBlueprintItems.add(eelItem);
 		
 		List<ShopItemStage> cheetahStages = new ArrayList<>();
-		cheetahStages.add(ShopItemStage.builder()
-				.description("")
-				.price(100)
-				.build());
-		shipBlueprintItems.add(ShopItem.builder()
-				.id(5)
-				.name("Cheetah")
-				.stages(cheetahStages)
-				.build());
+		ShopItemStage cheetahStage = new ShopItemStage();
+		cheetahStage.setDescription("");
+		cheetahStage.setPrice(100);
+		cheetahStages.add(cheetahStage);
+		ShopItem cheetahItem = new ShopItem();
+		cheetahItem.setId(5);
+		cheetahItem.setName("Cheetah");
+		cheetahItem.setStages(cheetahStages);
+		shipBlueprintItems.add(cheetahItem);
 		
-		ShopCategory shipBlueprintsCategory = ShopCategory.builder()
-				.name("Ship Blueprints")
-				.items(shipBlueprintItems)
-				.build();
-		
-		List<ShopCategory> categories = new ArrayList<>();
-		categories.add(shipyardCategory);
+		ShopCategory shipBlueprintsCategory = new ShopCategory();
+		shipBlueprintsCategory.setName("Ship Blueprints");
+		shipBlueprintsCategory.setItems(shipBlueprintItems);
 		categories.add(shipBlueprintsCategory);
+		
 		return categories;
 	}
 
@@ -258,9 +257,11 @@ public class ShopServiceImpl implements ShopService {
 	@Override
 	public BuyResponse buy(String token, int itemId) {
 		ShopData shop = shops.get(token);
-		if (shop == null) return BuyResponse.builder()
-				.code(BuyResponseCode.INVALID_TOKEN)
-				.build();
+		if (shop == null) {
+			BuyResponse response = new BuyResponse();
+			response.setCode(BuyResponseCode.INVALID_TOKEN);
+			return response;
+		}
 		ShopItem item = null;
 		for (ShopCategory category : shop.getCategories()) {
 			for (ShopItem shopItem : category.getItems()) {
@@ -271,50 +272,58 @@ public class ShopServiceImpl implements ShopService {
 			}
 			if (item != null) break;
 		}
-		if (item == null) return BuyResponse.builder()
-				.code(BuyResponseCode.ITEM_NOT_FOUND)
-				.build();
+		if (item == null) {
+			BuyResponse response = new BuyResponse();
+			response.setCode(BuyResponseCode.ITEM_NOT_FOUND);
+			return response;
+		}
 		
 		int stagesBought = shop.getPurchaseHistory().stream()
 				.filter(p -> p.getItemId() == itemId)
 				.toList()
 				.size();
-		if (stagesBought >= item.getStages().size()) return BuyResponse.builder()
-				.code(BuyResponseCode.ALREADY_BOUGHT)
-				.build();
+		if (stagesBought >= item.getStages().size()) {
+			BuyResponse response = new BuyResponse();
+			response.setCode(BuyResponseCode.ALREADY_BOUGHT);
+			return response;
+		}
 		
 		ShopItemStage firstUnboughtStage = item.getStages().get(stagesBought);
 		ResourceData playerResources = API.meta().resources(token);
-		if (getPlayerResource(playerResources, Resource.CREDITS) < firstUnboughtStage.getPrice()) return BuyResponse.builder()
-				.code(BuyResponseCode.NOT_ENOUGH_CURRENCY)
-				.message("Insufficient credits")
-				.build();
+		if (getPlayerResource(playerResources, Resource.CREDITS) < firstUnboughtStage.getPrice()) {
+			BuyResponse response = new BuyResponse();
+			response.setCode(BuyResponseCode.NOT_ENOUGH_CURRENCY);
+			response.setMessage("Insufficient credits");
+			return response;
+		}
 		
 		String preconditionMessage = shopItemEffects.get(item.getId()).preconditionMetMessage(token, stagesBought);
-		if (preconditionMessage != null) return BuyResponse.builder()
-				.code(BuyResponseCode.PRECONDITION_NOT_MET)
-				.message(preconditionMessage)
-				.build();
+		if (preconditionMessage != null) {
+			BuyResponse response = new BuyResponse();
+			response.setCode(BuyResponseCode.PRECONDITION_NOT_MET);
+			response.setMessage(preconditionMessage);
+			return response;
+		}
 		
-		ResourceData resourceData = ResourceData.builder()
-				.resources(new ArrayList<>())
-				.build();
-		resourceData.getResources().add(ResourceAmount.builder()
-				.type(Resource.CREDITS)
-				.amount(-firstUnboughtStage.getPrice())
-				.build());
+		ResourceData resourceData = new ResourceData();
+		resourceData.setResources(new ArrayList<>());
+		ResourceAmount credits = new ResourceAmount();
+		credits.setType(Resource.CREDITS);
+		credits.setAmount(-firstUnboughtStage.getPrice());
+		resourceData.getResources().add(credits);
 		API.meta().addResources(token, resourceData);
 		shopItemEffects.get(item.getId()).applyEffect(token, stagesBought);
-		shop.getPurchaseHistory().add(Purchase.builder()
-				.userToken(token)
-				.itemId(itemId)
-				.stage(stagesBought)
-				.timestamp(System.currentTimeMillis())
-				.cost(firstUnboughtStage.getPrice())
-				.build());
-		return BuyResponse.builder()
-				.code(BuyResponseCode.SUCCESS)
-				.build();
+		Purchase purchase = new Purchase();
+		purchase.setUserToken(token);
+		purchase.setItemId(itemId);
+		purchase.setStage(stagesBought);
+		purchase.setTimestamp(System.currentTimeMillis());
+		purchase.setCost(firstUnboughtStage.getPrice());
+		shop.getPurchaseHistory().add(purchase);
+		
+		BuyResponse response = new BuyResponse();
+		response.setCode(BuyResponseCode.SUCCESS);
+		return response;
 	}
 
 	private long getPlayerResource(ResourceData playerResources, Resource type) {

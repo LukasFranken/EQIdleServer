@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = { 
 		"de.instinct.game", 
 		"de.instinct.eqspringutils",
-		"de.instinct.eqspringbase" })
+		"de.instinct.base" })
 public class GameApplication {
 
 	public static void main(String[] args) {

@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.shop.dto.BuyResponse;
 import de.instinct.api.shop.dto.ShopData;
 import de.instinct.api.shop.dto.ShopInitializationResponseCode;
+import de.instinct.base.controller.BaseServiceController;
 import de.instinct.shop.service.ShopService;
 import de.instinct.shop.service.impl.ShopServiceImpl;
 

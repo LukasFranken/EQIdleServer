@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
 	
 	public UserServiceImpl() {
 		users = new HashMap<>();
+		commanders = new HashMap<>();
 	}
 
 	@Override
@@ -53,22 +54,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public RegisterResponseCode initialize(String token) {
 		if (token == null || token.contentEquals("")) return RegisterResponseCode.BAD_TOKEN;
+		ProfileData newProfile = new ProfileData();
+		newProfile.setRank(PlayerRank.RECRUIT);
+		newProfile.setUserRank(UserRank.REGISTERED);
+		ResourceData newResources = new ResourceData();
+		newResources.setResources(new ArrayList<>());
 		UserData newUser = UserData.builder()
-				.profile(ProfileData.builder()
-						.rank(PlayerRank.RECRUIT)
-						.userRank(UserRank.REGISTERED)
-						.build())
-				.resources(ResourceData.builder()
-						.resources(new ArrayList<>())
-						.build())
+				.profile(newProfile)
+				.resources(newResources)
 				.build();
 		moduleService.init(token);
 		users.put(token, newUser);
-		commanders.put(token, CommanderData.builder()
-				.startCommandPoints(3)
-				.maxCommandPoints(10)
-				.commandPointsGenerationSpeed(0.1f)
-				.build());
+		CommanderData newCommander = new CommanderData();
+		newCommander.setStartCommandPoints(3);
+		newCommander.setMaxCommandPoints(10);
+		newCommander.setCommandPointsGenerationSpeed(0.1f);
+		commanders.put(token, newCommander);
 		API.shipyard().init(token);
 		API.construction().init(token);
 		return RegisterResponseCode.SUCCESS;
@@ -99,14 +100,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public LoadoutData getLoadout(String token) {
-		LoadoutData loadout = LoadoutData.builder()
-				.ships(API.shipyard().data(token).getShips()
-						.stream()
-						.filter(ship -> ship.isInUse())
-						.toList())
-				.infrastructure(API.construction().data(token))
-				.commander(commanders.get(token))
-				.build();
+		LoadoutData loadout = new LoadoutData();
+		loadout.setShips(API.shipyard().data(token).getShips()
+				.stream()
+				.filter(ship -> ship.isInUse())
+				.toList());
+		loadout.setInfrastructure(API.construction().data(token));
+		loadout.setCommander(commanders.get(token));
 		return loadout;
 	}
 
@@ -138,10 +138,13 @@ public class UserServiceImpl implements UserService {
 					break;
 				}
 			}
-			if (!found) resources.getResources().add(ResourceAmount.builder()
-					.type(update.getType())
-					.amount(update.getAmount())
-					.build());
+			
+			if (!found) {
+				ResourceAmount resourceAmount = new ResourceAmount();
+				resourceAmount.setType(update.getType());
+				resourceAmount.setAmount(update.getAmount());
+				resources.getResources().add(resourceAmount);
+			}
 		}
 	}
 

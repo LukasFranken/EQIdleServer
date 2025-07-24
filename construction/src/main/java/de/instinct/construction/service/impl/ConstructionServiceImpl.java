@@ -29,88 +29,88 @@ private Map<String, Infrastructure> userInfrastructures;
 	@Override
 	public InfrastructureInitializationResponseCode init(String token) {
 		if (userInfrastructures.containsKey(token)) return InfrastructureInitializationResponseCode.ALREADY_INITIALIZED;
-		userInfrastructures.put(token, Infrastructure.builder()
-				.maxResourceCapacity(20f)
-				.percentOfArmorAfterCapture(0.2f)
-				.resourceGenerationSpeed(1f)
-				.planetTurretBlueprints(getDefaultPlanetTurretBlueprints())
-				.build());
+		Infrastructure initInfrastructure = new Infrastructure();
+		initInfrastructure.setMaxResourceCapacity(20f);
+		initInfrastructure.setPercentOfArmorAfterCapture(0.2f);
+		initInfrastructure.setResourceGenerationSpeed(1f);
+		initInfrastructure.setPlanetTurretBlueprints(getDefaultPlanetTurretBlueprints());
+		userInfrastructures.put(token, initInfrastructure);
 		return InfrastructureInitializationResponseCode.SUCCESS;
 	}
 
 	private List<PlanetTurretBlueprint> getDefaultPlanetTurretBlueprints() {
 		List<PlanetTurretBlueprint> blueprints = new ArrayList<>();
-		blueprints.add(PlanetTurretBlueprint.builder()
-				.uuid(UUID.randomUUID().toString())
-				.name("Projectile")
-				.planetDefense(PlanetDefense.builder()
-						.shield(15)
-						.armor(15)
-						.shieldRegenerationSpeed(0.5f)
-						.build())
-				.planetWeapon(PlanetWeapon.builder()
-						.type(WeaponType.PROJECTILE)
-						.damage(3)
-						.range(80f)
-						.speed(120f)
-						.cooldown(500)
-						.build())
-				.inUse(true)
-				.build());
+		PlanetTurretBlueprint projectileTurretBlueprint = new PlanetTurretBlueprint();
+		projectileTurretBlueprint.setUuid(UUID.randomUUID().toString());
+		projectileTurretBlueprint.setName("Projectile");
+		PlanetDefense projectileDefense = new PlanetDefense();
+		projectileDefense.setShield(15);
+		projectileDefense.setArmor(15);
+		projectileDefense.setShieldRegenerationSpeed(0.5f);
+		projectileTurretBlueprint.setPlanetDefense(projectileDefense);
+		PlanetWeapon projectileWeapon = new PlanetWeapon();
+		projectileWeapon.setType(WeaponType.PROJECTILE);
+		projectileWeapon.setDamage(3);
+		projectileWeapon.setRange(80f);
+		projectileWeapon.setSpeed(120f);
+		projectileWeapon.setCooldown(500);
+		projectileTurretBlueprint.setPlanetWeapon(projectileWeapon);
+		projectileTurretBlueprint.setInUse(true);
+		blueprints.add(projectileTurretBlueprint);
 		
-		blueprints.add(PlanetTurretBlueprint.builder()
-				.uuid(UUID.randomUUID().toString())
-				.name("Laser")
-				.planetDefense(PlanetDefense.builder()
-						.shield(15)
-						.armor(15)
-						.shieldRegenerationSpeed(0.5f)
-						.build())
-				.planetWeapon(PlanetWeapon.builder()
-						.type(WeaponType.LASER)
-						.damage(5)
-						.range(100f)
-						.speed(120f)
-						.cooldown(1000)
-						.build())
-				.inUse(false)
-				.build());
+		PlanetTurretBlueprint laserTurretBlueprint = new PlanetTurretBlueprint();
+		laserTurretBlueprint.setUuid(UUID.randomUUID().toString());
+		laserTurretBlueprint.setName("Laser");
+		PlanetDefense laserDefense = new PlanetDefense();
+		laserDefense.setShield(15);
+		laserDefense.setArmor(15);
+		laserDefense.setShieldRegenerationSpeed(0.5f);
+		laserTurretBlueprint.setPlanetDefense(laserDefense);
+		PlanetWeapon laserWeapon = new PlanetWeapon();
+		laserWeapon.setType(WeaponType.LASER);
+		laserWeapon.setDamage(5);
+		laserWeapon.setRange(100f);
+		laserWeapon.setSpeed(120f);
+		laserWeapon.setCooldown(1000);
+		laserTurretBlueprint.setPlanetWeapon(laserWeapon);
+		laserTurretBlueprint.setInUse(false);
+		blueprints.add(laserTurretBlueprint);
+
+		PlanetTurretBlueprint missileTurretBlueprint = new PlanetTurretBlueprint();
+		missileTurretBlueprint.setUuid(UUID.randomUUID().toString());
+		missileTurretBlueprint.setName("Missile");
+		PlanetDefense missileDefense = new PlanetDefense();
+		missileDefense.setShield(10);
+		missileDefense.setArmor(10);
+		missileDefense.setShieldRegenerationSpeed(0.5f);
+		missileTurretBlueprint.setPlanetDefense(missileDefense);
+		PlanetWeapon missileWeapon = new PlanetWeapon();
+		missileWeapon.setType(WeaponType.MISSILE);
+		missileWeapon.setDamage(11);
+		missileWeapon.setRange(120f);
+		missileWeapon.setSpeed(60f);
+		missileWeapon.setCooldown(3000);
+		missileTurretBlueprint.setPlanetWeapon(missileWeapon);
+		missileTurretBlueprint.setInUse(false);
+		blueprints.add(missileTurretBlueprint);
 		
-		blueprints.add(PlanetTurretBlueprint.builder()
-				.uuid(UUID.randomUUID().toString())
-				.name("Missile")
-				.planetDefense(PlanetDefense.builder()
-						.shield(10)
-						.armor(10)
-						.shieldRegenerationSpeed(0.5f)
-						.build())
-				.planetWeapon(PlanetWeapon.builder()
-						.type(WeaponType.MISSILE)
-						.damage(11)
-						.range(120f)
-						.speed(60f)
-						.cooldown(3000)
-						.build())
-				.inUse(false)
-				.build());
-		
-		blueprints.add(PlanetTurretBlueprint.builder()
-				.uuid(UUID.randomUUID().toString())
-				.name("Beam")
-				.planetDefense(PlanetDefense.builder()
-						.shield(10)
-						.armor(10)
-						.shieldRegenerationSpeed(0.5f)
-						.build())
-				.planetWeapon(PlanetWeapon.builder()
-						.type(WeaponType.BEAM)
-						.damage(10)
-						.range(130f)
-						.speed(220f)
-						.cooldown(3000)
-						.build())
-				.inUse(false)
-				.build());
+		PlanetTurretBlueprint beamTurretBlueprint = new PlanetTurretBlueprint();
+		beamTurretBlueprint.setUuid(UUID.randomUUID().toString());
+		beamTurretBlueprint.setName("Beam");
+		PlanetDefense beamDefense = new PlanetDefense();
+		beamDefense.setShield(10);
+		beamDefense.setArmor(10);
+		beamDefense.setShieldRegenerationSpeed(0.5f);
+		beamTurretBlueprint.setPlanetDefense(beamDefense);
+		PlanetWeapon beamWeapon = new PlanetWeapon();
+		beamWeapon.setType(WeaponType.BEAM);
+		beamWeapon.setDamage(10);
+		beamWeapon.setRange(130f);
+		beamWeapon.setSpeed(220f);
+		beamWeapon.setCooldown(3000);
+		beamTurretBlueprint.setPlanetWeapon(beamWeapon);
+		beamTurretBlueprint.setInUse(false);
+		blueprints.add(beamTurretBlueprint);
 		return blueprints;
 	}
 

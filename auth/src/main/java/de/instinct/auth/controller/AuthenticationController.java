@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.auth.dto.TokenVerificationResponse;
 import de.instinct.api.core.API;
 import de.instinct.auth.service.AuthenticationService;
 import de.instinct.auth.service.impl.AuthenticationServiceImpl;
+import de.instinct.base.controller.BaseServiceController;
 
 @RestController
 @RequestMapping("/auth")

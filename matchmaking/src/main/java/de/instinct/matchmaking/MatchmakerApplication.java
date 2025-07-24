@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = { 
 		"de.instinct.matchmaking", 
 		"de.instinct.eqspringutils",
-		"de.instinct.eqspringbase" })
+		"de.instinct.base" })
 public class MatchmakerApplication {
 
 	public static void main(String[] args) {

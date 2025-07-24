@@ -5,6 +5,9 @@ import java.io.IOException;
 import org.springframework.stereotype.Service;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
+import com.esotericsoftware.kryonet.KryoSerialization;
 import com.esotericsoftware.kryonet.Server;
 
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
@@ -27,9 +30,14 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 	public void start() {
 		SessionManager.init();
 		connectionListener = new ServerConnectionListener();
-		server = new Server();
-		Kryo kryo = server.getKryo();
-        KryoRegistrator.registerAll(kryo);
+		Kryo customKryo = new Kryo() {
+			  @Override
+			  protected Serializer newDefaultSerializer (Class type) {
+			    return new FieldSerializer(this, type);
+			  }
+			};
+        KryoRegistrator.registerAll(customKryo);
+        server = new Server(16384, 2048, new KryoSerialization(customKryo));
 		server.addListener(connectionListener);
 		server.start();
 		try {

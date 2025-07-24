@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
@@ -20,6 +19,7 @@ import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
+import de.instinct.base.controller.BaseServiceController;
 import de.instinct.meta.service.UserService;
 
 @RestController

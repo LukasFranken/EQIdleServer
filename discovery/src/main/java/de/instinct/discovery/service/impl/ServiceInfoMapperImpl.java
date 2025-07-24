@@ -22,15 +22,18 @@ public class ServiceInfoMapperImpl implements ServiceInfoMapper {
 	
 	@Override
 	public ServiceInfoDTO map(String serviceTag, ServiceInfo serviceInfo) {
-		return ServiceInfoDTO.builder()
-				.serviceTag(serviceTag)
-				.serviceProtocol(serviceInfo.getProtocol())
-				.serviceAddress(serviceInfo.getAddress())
-				.servicePort(serviceInfo.getPort())
-				.serviceEndpoint(serviceInfo.getEndpoint())
-				.serviceVersion(serviceInfo.getVersion())
-				.lastAlivePingAgoMS(System.currentTimeMillis() - serviceInfo.getLastAlivePing())
-				.build();
+		ServiceInfoDTO serviceInfoDTO = new ServiceInfoDTO();
+		if (serviceInfo == null) {
+			return serviceInfoDTO;
+		}
+		serviceInfoDTO.setServiceTag(serviceTag);
+		serviceInfoDTO.setServiceProtocol(serviceInfo.getProtocol());
+		serviceInfoDTO.setServiceAddress(serviceInfo.getAddress());
+		serviceInfoDTO.setServicePort(serviceInfo.getPort());
+		serviceInfoDTO.setServiceEndpoint(serviceInfo.getEndpoint());
+		serviceInfoDTO.setServiceVersion(serviceInfo.getVersion());
+		serviceInfoDTO.setLastAlivePingAgoMS(System.currentTimeMillis() - serviceInfo.getLastAlivePing());
+		return serviceInfoDTO;
 	}
 
 }

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import base.controller.BaseServiceController;
 import de.instinct.api.core.API;
 import de.instinct.api.core.model.GeneralRequestResponse;
 import de.instinct.api.matchmaking.dto.CallbackCode;
@@ -27,6 +26,7 @@ import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.dto.PlayerReward;
 import de.instinct.api.matchmaking.model.GameType;
+import de.instinct.base.controller.BaseServiceController;
 import de.instinct.matchmaking.service.MatchmakingService;
 import de.instinct.matchmaking.service.impl.MatchmakingServiceImpl;
 

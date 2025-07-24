@@ -31,21 +31,20 @@ public class ModuleServiceImpl implements ModuleService {
 		unlockRanks.put(MenuModule.PROFILE, PlayerRank.RECRUIT2);
 		unlockRanks.put(MenuModule.INVENTORY, PlayerRank.PRIVATE);
 		
-		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.SPECIALIST1);
-		unlockRanks.put(MenuModule.WORKSHOP, PlayerRank.SPECIALIST2);
-		unlockRanks.put(MenuModule.SHOP, PlayerRank.SPECIALIST3);
+		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.PRIVATE2);
+		unlockRanks.put(MenuModule.WORKSHOP, PlayerRank.PRIVATE3);
+		unlockRanks.put(MenuModule.SHOP, PlayerRank.PRIVATE4);
 		
-		unlockRanks.put(MenuModule.PLAY, PlayerRank.CORPORAL1);
+		unlockRanks.put(MenuModule.PLAY, PlayerRank.SPECIALIST1);
 		
-		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.CORPORAL3);
+		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.SPECIALIST3);
 		unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
 	}
 	
 	@Override
 	public void init(String token) {
-		ModuleData newModuleData = ModuleData.builder()
-				.enabledModules(new ArrayList<>())
-				.build();
+		ModuleData newModuleData = new ModuleData();
+		newModuleData.setEnabledModules(new ArrayList<>());
 		for (MenuModule module : MenuModule.values()) {
 			if (unlockRanks.get(module) == null) continue;
 			if (unlockRanks.get(module) == PlayerRank.RECRUIT) newModuleData.getEnabledModules().add(module);
@@ -89,9 +88,9 @@ public class ModuleServiceImpl implements ModuleService {
 					.requiredRank(unlockRanks.get(menuModule))
 					.build());
 		}
-		return ModuleInfoResponse.builder()
-				.unlockRequirements(requestedUnlockRequirements)
-				.build();
+		ModuleInfoResponse response = new ModuleInfoResponse();
+		response.setUnlockRequirements(requestedUnlockRequirements);
+		return response;
 	}
 
 }

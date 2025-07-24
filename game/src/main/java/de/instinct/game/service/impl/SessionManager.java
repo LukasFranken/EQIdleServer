@@ -101,10 +101,9 @@ public class SessionManager {
 			expiredSessions.add(session);
 			activeSessions.remove(session);
 			
-			API.matchmaking().finish(session.getUuid(), 
-					FinishGameData.builder()
-					.playedMS(session.getGameState().gameTimeMS)
-					.build());
+			FinishGameData finishData = new FinishGameData();
+			finishData.setPlayedMS(session.getGameState().gameTimeMS);
+			API.matchmaking().finish(session.getUuid(), finishData);
 		}
 		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
 			clientUpdateRequired = true;
@@ -291,22 +290,21 @@ public class SessionManager {
 
 	public static MapPreview preview(String map) {
 		GameMap gameMap = gameDataLoader.preview(map);
-		if (gameMap == null) return MapPreview.builder()
-				.planets(new ArrayList<>())
-				.build();
+		MapPreview mapPreview = new MapPreview();
+		mapPreview.setPlanets(new ArrayList<>());
+		if (gameMap == null) return mapPreview;
 		
 		List<PreviewPlanet> planets = new ArrayList<>();
 		for (PlanetInitialization planetInit : gameMap.planets) {
-			planets.add(PreviewPlanet.builder()
-					.xPos(planetInit.position.x)
-					.yPos(planetInit.position.y)
-					.isAncient(planetInit.ancient)
-					.ownerId(planetInit.ownerId)
-					.build());
+			PreviewPlanet planet = new PreviewPlanet();
+			planet.setXPos(planetInit.position.x);
+			planet.setYPos(planetInit.position.y);
+			planet.setAncient(planetInit.ancient);
+			planet.setOwnerId(planetInit.ownerId);
+			planets.add(planet);
 		}
-		return MapPreview.builder()
-				.planets(planets)
-				.build();
+		mapPreview.setPlanets(planets);
+		return mapPreview;
 	}
 
 }

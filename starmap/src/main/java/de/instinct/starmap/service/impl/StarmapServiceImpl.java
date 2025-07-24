@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import base.file.FileManager;
 import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.starmap.dto.CompletionRequest;
@@ -18,6 +17,7 @@ import de.instinct.api.starmap.dto.SectorData;
 import de.instinct.api.starmap.dto.StarmapInitializationResponseCode;
 import de.instinct.api.starmap.dto.StarsystemData;
 import de.instinct.api.starmap.dto.SystemCompletionData;
+import de.instinct.base.file.FileManager;
 import de.instinct.starmap.service.StarmapService;
 
 @Service
@@ -36,21 +36,22 @@ public class StarmapServiceImpl implements StarmapService {
 		List<GalaxyData> initGalaxies = new ArrayList<>();
 		
 		getSectorData();
-		initGalaxies.add(GalaxyData.builder()
-				.id(baseSectorData.getGalaxies().get(0).getId())
-				.mapPosX(baseSectorData.getGalaxies().get(0).getMapPosX())
-				.mapPosY(baseSectorData.getGalaxies().get(0).getMapPosY())
-				.name(baseSectorData.getGalaxies().get(0).getName())
-				.starsystems(new ArrayList<>())
-				.build());
+		GalaxyData initGalaxy = new GalaxyData();
+		initGalaxy.setId(baseSectorData.getGalaxies().get(0).getId());
+		initGalaxy.setMapPosX(baseSectorData.getGalaxies().get(0).getMapPosX());
+		initGalaxy.setMapPosY(baseSectorData.getGalaxies().get(0).getMapPosY());
+		initGalaxy.setName(baseSectorData.getGalaxies().get(0).getName());
+		initGalaxy.setStarsystems(new ArrayList<>());
+		initGalaxies.add(initGalaxy);
+		
 		initGalaxies.get(0).getStarsystems().add(baseSectorData.getGalaxies().get(0).getStarsystems().get(0));
 		
-		starmaps.put(token, PlayerStarmapData.builder()
-				.completedSystems(new ArrayList<>())
-				.sectorData(SectorData.builder()
-						.galaxies(initGalaxies)
-						.build())
-				.build());
+		PlayerStarmapData initStarmap = new PlayerStarmapData();
+		initStarmap.setCompletedSystems(new ArrayList<>());
+		SectorData initSector = new SectorData();
+		initSector.setGalaxies(initGalaxies);
+		initStarmap.setSectorData(initSector);
+		starmaps.put(token, initStarmap);
 		return StarmapInitializationResponseCode.SUCCESS;
 	}
 
@@ -91,13 +92,14 @@ public class StarmapServiceImpl implements StarmapService {
 			systemCompletionData.setLastCompletedAt(System.currentTimeMillis());
 			systemCompletionData.setCompletedTimes(systemCompletionData.getCompletedTimes() + 1);
 		} else {
-			starmapData.getCompletedSystems().add(SystemCompletionData.builder()
-					.galaxyId(request.getGalaxyId())
-					.systemId(request.getSystemId())
-					.lastCompletedAt(System.currentTimeMillis())
-					.completedTimes(1)
-					.firstCompletedAt(System.currentTimeMillis())
-					.build());
+			systemCompletionData = new SystemCompletionData();
+			systemCompletionData.setGalaxyId(request.getGalaxyId());
+			systemCompletionData.setSystemId(request.getSystemId());
+			systemCompletionData.setLastCompletedAt(System.currentTimeMillis());
+			systemCompletionData.setCompletedTimes(1);
+			systemCompletionData.setFirstCompletedAt(System.currentTimeMillis());
+			
+			starmapData.getCompletedSystems().add(systemCompletionData);
 			unlockNextSystem(starmapData);
 		}
 		
@@ -134,13 +136,12 @@ public class StarmapServiceImpl implements StarmapService {
 	        if (currentGalaxyIndex >= 0 && currentGalaxyIndex + 1 < baseGalaxies.size()) {
 	            GalaxyData nextBaseGalaxy = baseGalaxies.get(currentGalaxyIndex + 1);
 	            
-	            GalaxyData newPlayerGalaxy = GalaxyData.builder()
-	                    .id(nextBaseGalaxy.getId())
-	                    .mapPosX(nextBaseGalaxy.getMapPosX())
-	                    .mapPosY(nextBaseGalaxy.getMapPosY())
-	                    .name(nextBaseGalaxy.getName())
-	                    .starsystems(new ArrayList<>())
-	                    .build();
+	            GalaxyData newPlayerGalaxy = new GalaxyData();
+	            newPlayerGalaxy.setId(nextBaseGalaxy.getId());
+	            newPlayerGalaxy.setMapPosX(nextBaseGalaxy.getMapPosX());
+	            newPlayerGalaxy.setMapPosY(nextBaseGalaxy.getMapPosY());
+	            newPlayerGalaxy.setName(nextBaseGalaxy.getName());
+	            newPlayerGalaxy.setStarsystems(new ArrayList<>());
 	            
 	            if (!nextBaseGalaxy.getStarsystems().isEmpty()) {
 	                newPlayerGalaxy.getStarsystems().add(nextBaseGalaxy.getStarsystems().get(0));

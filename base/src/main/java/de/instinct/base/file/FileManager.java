@@ -1,4 +1,4 @@
-package base.file;
+package de.instinct.base.file;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
