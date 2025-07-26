@@ -2,6 +2,7 @@ package de.instinct.api.core;
 
 import de.instinct.api.auth.service.AuthenticationInterface;
 import de.instinct.api.auth.service.impl.Authentication;
+import de.instinct.api.commander.service.impl.Commander;
 import de.instinct.api.construction.service.ConstructionInterface;
 import de.instinct.api.construction.service.impl.Construction;
 import de.instinct.api.core.config.APIConfiguration;
@@ -44,6 +45,7 @@ public class API {
 	private static Construction construction;
 	private static Shop shop;
 	private static Starmap starmap;
+	private static Commander commander;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
@@ -56,6 +58,7 @@ public class API {
 		construction = new Construction();
 		shop = new Shop();
 		starmap = new Starmap();
+		commander = new Commander();
 		
 		if (newConfiguration != APIConfiguration.SERVER) {
 			discovery().connect();
@@ -67,6 +70,7 @@ public class API {
 			construction().connect();
 			shop().connect();
 			starmap().connect();
+			commander().connect();
 			printAPIStatus();
 		}
 	}
@@ -120,6 +124,11 @@ public class API {
 		return starmap;
 	}
 	
+	public static Commander commander() {
+		if (!apiReady()) return null;
+		return commander;
+	}
+	
 	private static boolean apiReady() {
 		if (isInitialized()) return true;
 		loggingHook.log("API not connected. Connect first via API.initialize()!");
@@ -139,6 +148,7 @@ public class API {
 		printServiceStatus("Construction", construction.isConnected());
 		printServiceStatus("Shop", shop.isConnected());
 		printServiceStatus("Starmap", starmap.isConnected());
+		printServiceStatus("Commander", commander.isConnected());
 	}
 	
 	private static void printServiceStatus(String serviceName, boolean connected) {

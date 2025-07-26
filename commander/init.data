@@ -1,0 +1,26 @@
+{
+	"baseMaxCommandPoints": 10,
+	"baseStartCommandPoints": 3,
+	"baseCommandPointsPerSecond": 0.1,
+	"rankUpData":
+	[
+		{
+			"playerRank": "RECRUIT",
+			"upgrades": [
+				{
+					"stat": "MAX_CP",
+					"value": 0
+				}
+			]
+		},
+		{
+			"playerRank": "RECRUIT2",
+			"upgrades": [
+				{
+					"stat": "MAX_CP",
+					"value": 1.0
+				}
+			]
+		}
+	]
+}

@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.commander.dto.CommanderData;
 import de.instinct.api.core.API;
-import de.instinct.api.meta.dto.CommanderData;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
@@ -27,14 +27,12 @@ import de.instinct.meta.service.model.UserData;
 public class UserServiceImpl implements UserService {
 	
 	private Map<String, UserData> users;
-	private Map<String, CommanderData> commanders;
 	
 	@Autowired
 	private ModuleService moduleService;
 	
 	public UserServiceImpl() {
 		users = new HashMap<>();
-		commanders = new HashMap<>();
 	}
 
 	@Override
@@ -65,11 +63,7 @@ public class UserServiceImpl implements UserService {
 				.build();
 		moduleService.init(token);
 		users.put(token, newUser);
-		CommanderData newCommander = new CommanderData();
-		newCommander.setStartCommandPoints(3);
-		newCommander.setMaxCommandPoints(10);
-		newCommander.setCommandPointsGenerationSpeed(0.1f);
-		commanders.put(token, newCommander);
+		API.commander().init(token);
 		API.shipyard().init(token);
 		API.construction().init(token);
 		return RegisterResponseCode.SUCCESS;
@@ -106,7 +100,7 @@ public class UserServiceImpl implements UserService {
 				.filter(ship -> ship.isInUse())
 				.toList());
 		loadout.setInfrastructure(API.construction().data(token));
-		loadout.setCommander(commanders.get(token));
+		loadout.setCommander(API.commander().data(token));
 		return loadout;
 	}
 
@@ -162,17 +156,10 @@ public class UserServiceImpl implements UserService {
 		profile.setCurrentExp(profile.getCurrentExp() + exp);
 		while (profile.getRank().getNextRequiredExp() <= profile.getCurrentExp()) {
 			profile.setRank(profile.getRank().getNextRank());
-			CommanderData commander = commanders.get(token);
-			commander.setMaxCommandPoints(commander.getMaxCommandPoints() + 1);
-			commander.setStartCommandPoints(commander.getStartCommandPoints() + 1);
-			commander.setCommandPointsGenerationSpeed(commander.getCommandPointsGenerationSpeed() + 0.05f);
-			grantNewRankPriviledges(token, user);
+			API.commander().rankup(token, profile.getRank());
+			moduleService.manageRankUp(token, profile.getRank());
 		}
 		return ExperienceUpdateResponseCode.SUCCESS;
-	}
-
-	private void grantNewRankPriviledges(String token, UserData user) {
-		moduleService.manageRankUp(token, user.getProfile().getRank());
 	}
 
 }
