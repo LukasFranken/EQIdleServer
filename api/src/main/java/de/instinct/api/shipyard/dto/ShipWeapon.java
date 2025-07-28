@@ -11,6 +11,7 @@ public class ShipWeapon {
 	private WeaponType type;
 	private float damage;
 	private float range;
+	private float aoeRadius;
 	private float speed;
 	private long cooldown;
 

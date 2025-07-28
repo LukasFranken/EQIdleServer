@@ -26,10 +26,10 @@ public class ModuleServiceImpl implements ModuleService {
 	public ModuleServiceImpl() {
 		moduleDatas = new LinkedHashMap<>();
 		unlockRanks = new LinkedHashMap<>();
-		unlockRanks.put(MenuModule.STARMAP, PlayerRank.RECRUIT);
+		unlockRanks.put(MenuModule.STARMAP, PlayerRank.RECRUIT1);
 		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT2);
 		unlockRanks.put(MenuModule.PROFILE, PlayerRank.RECRUIT2);
-		unlockRanks.put(MenuModule.INVENTORY, PlayerRank.PRIVATE);
+		unlockRanks.put(MenuModule.INVENTORY, PlayerRank.PRIVATE1);
 		
 		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.PRIVATE2);
 		unlockRanks.put(MenuModule.WORKSHOP, PlayerRank.PRIVATE3);
@@ -47,7 +47,7 @@ public class ModuleServiceImpl implements ModuleService {
 		newModuleData.setEnabledModules(new ArrayList<>());
 		for (MenuModule module : MenuModule.values()) {
 			if (unlockRanks.get(module) == null) continue;
-			if (unlockRanks.get(module) == PlayerRank.RECRUIT) newModuleData.getEnabledModules().add(module);
+			if (unlockRanks.get(module) == PlayerRank.RECRUIT1) newModuleData.getEnabledModules().add(module);
 		}
 		moduleDatas.put(token, newModuleData);
 	}

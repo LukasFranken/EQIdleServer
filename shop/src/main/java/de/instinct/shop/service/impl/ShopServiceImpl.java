@@ -53,7 +53,13 @@ public class ShopServiceImpl implements ShopService {
 					API.shipyard().hangar(token, 2);
 					break;
 				case 2: 
+					API.shipyard().hangar(token, 2);
+					break;
+				case 3:
 					API.shipyard().hangar(token, 3);
+					break;
+				case 4:
+					API.shipyard().hangar(token, 4);
 					break;
 				}
 			}
@@ -151,16 +157,24 @@ public class ShopServiceImpl implements ShopService {
 		List<ShopItemStage> hangarStages = new ArrayList<>();
 		ShopItemStage hangarStage1 = new ShopItemStage();
 		hangarStage1.setDescription("1 -> 3");
-		hangarStage1.setPrice(1000);
+		hangarStage1.setPrice(200);
 		hangarStages.add(hangarStage1);
 		ShopItemStage hangarStage2 = new ShopItemStage();
 		hangarStage2.setDescription("3 -> 5");
-		hangarStage2.setPrice(2000);
+		hangarStage2.setPrice(1000);
 		hangarStages.add(hangarStage2);
 		ShopItemStage hangarStage3 = new ShopItemStage();
-		hangarStage3.setDescription("5 -> 8");
+		hangarStage3.setDescription("5 -> 7");
 		hangarStage3.setPrice(5000);
 		hangarStages.add(hangarStage3);
+		ShopItemStage hangarStage4 = new ShopItemStage();
+		hangarStage4.setDescription("7 -> 10");
+		hangarStage4.setPrice(25000);
+		hangarStages.add(hangarStage4);
+		ShopItemStage hangarStage5 = new ShopItemStage();
+		hangarStage5.setDescription("10 -> 14");
+		hangarStage5.setPrice(100000);
+		hangarStages.add(hangarStage5);
 		ShopItem hangarItem = new ShopItem();
 		hangarItem.setId(0);
 		hangarItem.setName("Hangar Space");
@@ -224,17 +238,6 @@ public class ShopServiceImpl implements ShopService {
 		eelItem.setName("Eel");
 		eelItem.setStages(eelStages);
 		shipBlueprintItems.add(eelItem);
-		
-		List<ShopItemStage> cheetahStages = new ArrayList<>();
-		ShopItemStage cheetahStage = new ShopItemStage();
-		cheetahStage.setDescription("");
-		cheetahStage.setPrice(100);
-		cheetahStages.add(cheetahStage);
-		ShopItem cheetahItem = new ShopItem();
-		cheetahItem.setId(5);
-		cheetahItem.setName("Cheetah");
-		cheetahItem.setStages(cheetahStages);
-		shipBlueprintItems.add(cheetahItem);
 		
 		ShopCategory shipBlueprintsCategory = new ShopCategory();
 		shipBlueprintsCategory.setName("Ship Blueprints");

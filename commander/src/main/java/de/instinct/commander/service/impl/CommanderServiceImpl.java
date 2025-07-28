@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import de.instinct.api.commander.dto.BaseCommanderData;
 import de.instinct.api.commander.dto.CommanderData;
 import de.instinct.api.commander.dto.CommanderInitializationResponseCode;
 import de.instinct.api.commander.dto.CommanderRankUpResponseCode;
@@ -14,7 +15,6 @@ import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.base.file.FileManager;
 import de.instinct.commander.service.CommanderService;
-import de.instinct.commander.service.model.BaseCommanderData;
 
 @Service
 public class CommanderServiceImpl implements CommanderService {

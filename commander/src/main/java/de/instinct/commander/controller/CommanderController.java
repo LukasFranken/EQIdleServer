@@ -50,7 +50,7 @@ public class CommanderController extends BaseServiceController {
 		return ResponseEntity.ok(service.rankup(token, rank));
 	}
 	
-	@GetMapping("/upgrade")
+	@PostMapping("/upgrade")
 	public ResponseEntity<RankUpCommanderUpgrade> upgrade(@RequestBody PlayerRank rank) {
 		return ResponseEntity.ok(service.upgrade(rank));
 	}

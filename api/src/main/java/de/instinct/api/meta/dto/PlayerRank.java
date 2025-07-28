@@ -2,9 +2,9 @@ package de.instinct.api.meta.dto;
 
 public enum PlayerRank {
 
-	RECRUIT("recruit1", "Recruit", 0L),
+	RECRUIT1("recruit1", "Recruit", 0L),
 	RECRUIT2("recruit2", "Recruit II", 50L),
-	PRIVATE("private1", "Private", 100L),
+	PRIVATE1("private1", "Private", 100L),
 	PRIVATE2("private2", "Private II", 200L),
 	PRIVATE3("private3", "Private III", 300L),
 	PRIVATE4("private4", "Private IV", 400L),
@@ -76,7 +76,7 @@ public enum PlayerRank {
 	}
 	
 	public static PlayerRank getByExp(long exp) {
-		PlayerRank current = RECRUIT;
+		PlayerRank current = RECRUIT1;
 		for (PlayerRank rank : PlayerRank.values()) {
 			if (rank.requiredExp <= exp) {
 				current = rank;

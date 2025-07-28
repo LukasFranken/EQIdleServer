@@ -1,17 +1,12 @@
-package de.instinct.commander.service.model;
+package de.instinct.api.commander.dto;
 
 import java.util.List;
 
-import de.instinct.api.commander.dto.RankUpCommanderUpgrade;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import de.instinct.api.core.annotation.Dto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+@Dto
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class BaseCommanderData {
 	
 	private List<RankUpCommanderUpgrade> rankUpData;

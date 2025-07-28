@@ -61,8 +61,8 @@ public class Commander extends BaseService implements CommanderInterface {
 	public RankUpCommanderUpgrade upgrade(PlayerRank rank) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
-				.type(SupportedRequestType.GET)
-				.endpoint("rankup")
+				.type(SupportedRequestType.POST)
+				.endpoint("upgrade")
 				.payload(rank)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, RankUpCommanderUpgrade.class);

@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 	public RegisterResponseCode initialize(String token) {
 		if (token == null || token.contentEquals("")) return RegisterResponseCode.BAD_TOKEN;
 		ProfileData newProfile = new ProfileData();
-		newProfile.setRank(PlayerRank.RECRUIT);
+		newProfile.setRank(PlayerRank.RECRUIT1);
 		newProfile.setUserRank(UserRank.REGISTERED);
 		ResourceData newResources = new ResourceData();
 		newResources.setResources(new ArrayList<>());

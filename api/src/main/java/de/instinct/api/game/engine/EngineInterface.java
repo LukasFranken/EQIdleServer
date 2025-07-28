@@ -74,8 +74,8 @@ public class EngineInterface {
 				ShipData shipData = new ShipData();
 				shipData.type = ShipType.valueOf(shipBlueprint.getType().toString());
 				shipData.model = shipBlueprint.getModel();
-				shipData.cost = shipBlueprint.getCost() + getModificationValue(ShipStat.COST, playerShip.getLevel(), shipBlueprint);
-				shipData.commandPointsCost = shipBlueprint.getCommandPointsCost() + getModificationValue(ShipStat.COMMAND_POINTS_COST, playerShip.getLevel(), shipBlueprint);
+				shipData.cost = (int)(shipBlueprint.getCost() + getModificationValue(ShipStat.COST, playerShip.getLevel(), shipBlueprint));
+				shipData.commandPointsCost = (int)(shipBlueprint.getCommandPointsCost() + getModificationValue(ShipStat.COMMAND_POINTS_COST, playerShip.getLevel(), shipBlueprint));
 				shipData.movementSpeed = shipBlueprint.getMovementSpeed() + getModificationValue(ShipStat.MOVEMENT_SPEED, playerShip.getLevel(), shipBlueprint);
 				shipData.weapon = getWeapon(shipBlueprint, playerShip.getLevel());
 				shipData.defense = getDefense(shipBlueprint, playerShip.getLevel());
@@ -85,8 +85,8 @@ public class EngineInterface {
 		return null;
 	}
 
-	private static int getModificationValue(ShipStat stat, int level, ShipBlueprint shipBlueprint) {
-		int modifierValue = 0;
+	private static float getModificationValue(ShipStat stat, int level, ShipBlueprint shipBlueprint) {
+		float modifierValue = 0;
 		for (int i = 0; i < shipBlueprint.getLevels().size(); i++) {
 			if (i < level) {
 				for (ShipStatChange effect : shipBlueprint.getLevels().get(i).getStatEffects()) {
@@ -111,8 +111,9 @@ public class EngineInterface {
 		Weapon weapon = new Weapon();
 		weapon.type = WeaponType.valueOf(shipBlueprint.getWeapon().getType().toString());
 		weapon.damage = shipBlueprint.getWeapon().getDamage() + getModificationValue(ShipStat.WEAPON_DAMAGE, level, shipBlueprint);
+		weapon.aoeRadius = shipBlueprint.getWeapon().getAoeRadius() + getModificationValue(ShipStat.WEAPON_AOE_RADIUS, level, shipBlueprint);
 		weapon.range = shipBlueprint.getWeapon().getRange() + getModificationValue(ShipStat.WEAPON_RANGE, level, shipBlueprint);
-		weapon.cooldown = shipBlueprint.getWeapon().getCooldown() + getModificationValue(ShipStat.WEAPON_COOLDOWN, level, shipBlueprint);
+		weapon.cooldown = (int)(shipBlueprint.getWeapon().getCooldown() + getModificationValue(ShipStat.WEAPON_COOLDOWN, level, shipBlueprint));
 		weapon.speed = shipBlueprint.getWeapon().getSpeed() + getModificationValue(ShipStat.WEAPON_PROJECTILE_SPEED, level, shipBlueprint);
 		return weapon;
 	}
