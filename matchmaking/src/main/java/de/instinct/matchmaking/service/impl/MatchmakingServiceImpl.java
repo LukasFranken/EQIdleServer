@@ -96,6 +96,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				for (StarsystemData system : galaxy.getStarsystems()) {
 					if (galaxy.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[0]) && system.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[1])) {
 						selectedGameType.setThreatLevel(system.getThreatLevel());
+						selectedGameType.setDuration(system.getDuration());
 						break;
 					}
 				}
@@ -370,20 +371,29 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 					if (currentSystem == null) break;
 					
 					for (String userUUID : lobby.getUserUUIDs()) {
-						PlayerReward reward = new PlayerReward();
-						reward.setUuid(userUUID);
-						reward.setExperience(currentSystem.getExperience());
-						reward.setResources(currentSystem.getResourceRewards());
-						rewards.add(reward);
-						API.meta().experience(userUUID, currentSystem.getExperience());
-						ResourceData resourceData = new ResourceData();
-						resourceData.setResources(currentSystem.getResourceRewards());
-						API.meta().addResources(userUUID, resourceData);
-						CompletionRequest completionRequest = new CompletionRequest();
-						completionRequest.setUserUUID(userUUID);
-						completionRequest.setGalaxyId(galaxyId);
-						completionRequest.setSystemId(systemId);
-						API.starmap().complete(completionRequest);
+						if (finishGameData.getWinnerTeamId() == 1) {
+							PlayerReward reward = new PlayerReward();
+							reward.setUuid(userUUID);
+							reward.setExperience(currentSystem.getExperience());
+							reward.setResources(currentSystem.getResourceRewards());
+							rewards.add(reward);
+							API.meta().experience(userUUID, currentSystem.getExperience());
+							ResourceData resourceData = new ResourceData();
+							resourceData.setResources(currentSystem.getResourceRewards());
+							API.meta().addResources(userUUID, resourceData);
+							CompletionRequest completionRequest = new CompletionRequest();
+							completionRequest.setUserUUID(userUUID);
+							completionRequest.setGalaxyId(galaxyId);
+							completionRequest.setSystemId(systemId);
+							API.starmap().complete(completionRequest);
+						} else {
+							PlayerReward reward = new PlayerReward();
+							reward.setUuid(userUUID);
+							reward.setExperience(currentSystem.getExperience() * (finishGameData.getPlayedMS() / currentSystem.getDuration()));
+							reward.setResources(new ArrayList<>());
+							rewards.add(reward);
+							API.meta().experience(userUUID, currentSystem.getExperience());
+						}
 					}
 				}
 				if (lobby.getType().getGameMode() == GameMode.KING_OF_THE_HILL) {

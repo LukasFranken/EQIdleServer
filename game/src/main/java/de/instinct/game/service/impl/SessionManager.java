@@ -27,11 +27,15 @@ import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Player;
 import de.instinct.engine.model.PlayerConnectionStatus;
 import de.instinct.engine.net.message.types.FleetMovementMessage;
+import de.instinct.engine.net.message.types.GamePauseMessage;
 import de.instinct.engine.net.message.types.JoinMessage;
 import de.instinct.engine.net.message.types.LoadedMessage;
 import de.instinct.engine.net.message.types.PlayerAssigned;
+import de.instinct.engine.net.message.types.SurrenderMessage;
 import de.instinct.engine.order.GameOrder;
+import de.instinct.engine.order.types.GamePauseOrder;
 import de.instinct.engine.order.types.ShipMovementOrder;
+import de.instinct.engine.order.types.SurrenderOrder;
 import de.instinct.engine.util.EngineUtility;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
@@ -103,6 +107,7 @@ public class SessionManager {
 			
 			FinishGameData finishData = new FinishGameData();
 			finishData.setPlayedMS(session.getGameState().gameTimeMS);
+			finishData.setWinnerTeamId(session.getGameState().winner);
 			API.matchmaking().finish(session.getUuid(), finishData);
 		}
 		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
@@ -124,17 +129,40 @@ public class SessionManager {
 
 	public static void process(FleetMovementMessage fleetMovement) {
 		for (GameSession currentSession : activeSessions) {
-    	if (currentSession.getGameState().gameUUID.contentEquals(fleetMovement.gameUUID)) {
-    		ShipMovementOrder shipMovementOrder = new ShipMovementOrder();
-    		shipMovementOrder.playerId = getPlayerId(currentSession, fleetMovement.userUUID);
-    		shipMovementOrder.fromPlanetId = fleetMovement.fromPlanetId;
-    		shipMovementOrder.toPlanetId = fleetMovement.toPlanetId;
-    		shipMovementOrder.playerShipId = fleetMovement.shipId;
-    		engineInterface.queue(currentSession.getGameState(), shipMovementOrder);
-    		updateSession(currentSession);
-    		break;
-    	}
-    }
+			if (currentSession.getGameState().gameUUID.contentEquals(fleetMovement.gameUUID)) {
+				ShipMovementOrder shipMovementOrder = new ShipMovementOrder();
+				shipMovementOrder.playerId = getPlayerId(currentSession, fleetMovement.userUUID);
+				shipMovementOrder.fromPlanetId = fleetMovement.fromPlanetId;
+				shipMovementOrder.toPlanetId = fleetMovement.toPlanetId;
+				shipMovementOrder.playerShipId = fleetMovement.shipId;
+				engineInterface.queue(currentSession.getGameState(), shipMovementOrder);
+				updateSession(currentSession);
+				break;
+			}
+		}
+	}
+	
+	public static void process(GamePauseMessage gamePause) {
+		for (GameSession currentSession : activeSessions) {
+			if (currentSession.getGameState().gameUUID.contentEquals(gamePause.gameUUID)) {
+				GamePauseOrder order = new GamePauseOrder();
+				order.playerId = getPlayerId(currentSession, gamePause.userUUID);
+				order.pause = gamePause.pause;
+				order.reason = gamePause.reason;
+				engineInterface.queue(currentSession.getGameState(), order);
+				updateSession(currentSession);
+			}
+		}
+	}
+	
+	public static void process(SurrenderMessage surrender) {
+		for (GameSession currentSession : activeSessions) {
+			if (currentSession.getGameState().gameUUID.contentEquals(surrender.gameUUID)) {
+				SurrenderOrder order = new SurrenderOrder();
+				order.playerId = getPlayerId(currentSession, surrender.userUUID);
+				engineInterface.queue(currentSession.getGameState(), order);
+			}
+		}
 	}
 
 	private static int getPlayerId(GameSession currentSession, String userUUID) {

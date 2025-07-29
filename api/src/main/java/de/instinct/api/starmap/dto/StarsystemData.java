@@ -19,6 +19,7 @@ public class StarsystemData {
 	private float ancientPoints;
 	private int threatLevel;
 	private long experience;
+	private long duration;
 	private List<ResourceAmount> resourceRewards;
 
 }

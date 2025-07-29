@@ -9,7 +9,6 @@ import de.instinct.api.game.engine.EngineInterface;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.ai.AiEngine;
-import de.instinct.engine.ai.difficulty.AiDifficulty;
 import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.map.GameMap;
 import de.instinct.engine.model.AiPlayer;
@@ -37,8 +36,10 @@ public class GameDataLoader {
 		initialGameState.gameUUID = session.getUuid();
 		initialGameState.players = loadPlayers(session);
 		initialGameState.ancientPlanetResourceDegradationFactor = 0.5f;
-		initialGameState.gameTimeLimitMS = 180_000;
+		initialGameState.gameTimeLimitMS = (int)session.getGameType().getDuration();
 		initialGameState.atpToWin = 50;
+		initialGameState.pauseTimeLimitMS = 20_000;
+		initialGameState.pauseCountLimit = 3;
 		return initialGameState;
 	}
 
@@ -94,7 +95,7 @@ public class GameDataLoader {
 		
 		if (session.getGameType().getVersusMode() == VersusMode.AI) {
 			for (int i = 0; i < session.getGameType().getFactionMode().teamPlayerCount; i++) {
-				AiPlayer aiPlayer = aiEngine.initialize(AiDifficulty.RETARDED, session.getGameType().getThreatLevel());
+				AiPlayer aiPlayer = aiEngine.initialize(session.getGameType().getThreatLevel());
 				aiPlayer.id = id;
 				aiPlayer.teamId = 2;
 				players.add(aiPlayer);

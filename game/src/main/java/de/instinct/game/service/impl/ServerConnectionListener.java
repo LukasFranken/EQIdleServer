@@ -7,8 +7,10 @@ import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 
 import de.instinct.engine.net.message.types.FleetMovementMessage;
+import de.instinct.engine.net.message.types.GamePauseMessage;
 import de.instinct.engine.net.message.types.JoinMessage;
 import de.instinct.engine.net.message.types.LoadedMessage;
+import de.instinct.engine.net.message.types.SurrenderMessage;
 
 public class ServerConnectionListener extends Listener {
 	
@@ -40,6 +42,14 @@ public class ServerConnectionListener extends Listener {
 	        if (o instanceof FleetMovementMessage) {
 	            FleetMovementMessage fleetMovement = (FleetMovementMessage) o;
 	            SessionManager.process(fleetMovement);
+	        }
+	        if (o instanceof SurrenderMessage) {
+	        	SurrenderMessage surrender = (SurrenderMessage) o;
+	            SessionManager.process(surrender);
+	        }
+	        if (o instanceof GamePauseMessage) {
+	        	GamePauseMessage gamePause = (GamePauseMessage) o;
+	            SessionManager.process(gamePause);
 	        }
 		}
     }
