@@ -161,6 +161,7 @@ public class SessionManager {
 				SurrenderOrder order = new SurrenderOrder();
 				order.playerId = getPlayerId(currentSession, surrender.userUUID);
 				engineInterface.queue(currentSession.getGameState(), order);
+				updateSession(currentSession);
 			}
 		}
 	}
