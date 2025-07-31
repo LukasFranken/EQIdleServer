@@ -369,7 +369,6 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 						}
 					}
 					if (currentSystem == null) break;
-					
 					for (String userUUID : lobby.getUserUUIDs()) {
 						if (finishGameData.getWinnerTeamId() == 1) {
 							PlayerReward reward = new PlayerReward();
@@ -389,7 +388,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 						} else {
 							PlayerReward reward = new PlayerReward();
 							reward.setUuid(userUUID);
-							reward.setExperience(currentSystem.getExperience() * (finishGameData.getPlayedMS() / currentSystem.getDuration()));
+							reward.setExperience((long)(currentSystem.getExperience() * ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration())));
 							reward.setResources(new ArrayList<>());
 							rewards.add(reward);
 							API.meta().experience(userUUID, currentSystem.getExperience());
