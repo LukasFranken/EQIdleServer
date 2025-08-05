@@ -15,7 +15,7 @@ public enum PlayerRank {
 	CORPORAL1("corporal1", "Corporal", 1700L),
 	CORPORAL2("corporal2", "Corporal II", 2200L),
 	CORPORAL3("corporal3", "Corporal III", 2700L),
-	CORPORAL4("corporal4", "Corporal III", 3200L),
+	CORPORAL4("corporal4", "Corporal IV", 3200L),
 	CORPORAL5("corporal5", "Senior Corporal", 3700L),
 	SEARGENT1("seargent1", "Seargent", 5000L),
 	SEARGENT2("seargent2", "Seargent II", 6000L),
