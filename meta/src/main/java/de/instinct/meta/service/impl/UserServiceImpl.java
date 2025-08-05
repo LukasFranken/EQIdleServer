@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.instinct.api.commander.dto.CommanderData;
 import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
@@ -122,23 +121,36 @@ public class UserServiceImpl implements UserService {
 		return ResourceUpdateResponseCode.SUCCESS;
 	}
 	
+	@Override
+	public ResourceUpdateResponseCode updateResource(String token, ResourceAmount resourceUpdate) {
+		UserData user = users.get(token);
+		if (user == null) return ResourceUpdateResponseCode.INVALID_TOKEN;
+		if (user.getResources() == null) return ResourceUpdateResponseCode.ERROR;
+		updateResourceData(user.getResources(), resourceUpdate);
+		return ResourceUpdateResponseCode.SUCCESS;
+	}
+	
 	public void updateResourceData(ResourceData resources, ResourceData resourceUpdate) {
 		for (ResourceAmount update : resourceUpdate.getResources()) {
-			boolean found = false;
-			for (ResourceAmount resource : resources.getResources()) {
-				if (resource.getType() == update.getType()) {
-					resource.setAmount(resource.getAmount() + update.getAmount());
-					found = true;
-					break;
-				}
+			updateResourceData(resources, update);
+		}
+	}
+
+	private void updateResourceData(ResourceData resources, ResourceAmount update) {
+		boolean found = false;
+		for (ResourceAmount resource : resources.getResources()) {
+			if (resource.getType() == update.getType()) {
+				resource.setAmount(resource.getAmount() + update.getAmount());
+				found = true;
+				break;
 			}
-			
-			if (!found) {
-				ResourceAmount resourceAmount = new ResourceAmount();
-				resourceAmount.setType(update.getType());
-				resourceAmount.setAmount(update.getAmount());
-				resources.getResources().add(resourceAmount);
-			}
+		}
+		
+		if (!found) {
+			ResourceAmount resourceAmount = new ResourceAmount();
+			resourceAmount.setType(update.getType());
+			resourceAmount.setAmount(update.getAmount());
+			resources.getResources().add(resourceAmount);
 		}
 	}
 

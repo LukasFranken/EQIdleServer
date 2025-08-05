@@ -5,6 +5,7 @@ import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 
@@ -23,6 +24,8 @@ public interface UserService {
 	String token(String username);
 
 	ResourceUpdateResponseCode updateResources(String token, ResourceData resourceUpdate);
+	
+	ResourceUpdateResponseCode updateResource(String token, ResourceAmount resourceUpdate);
 
 	ExperienceUpdateResponseCode addExperience(String token, String experience);
 

@@ -10,6 +10,7 @@ import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.api.meta.dto.modules.ModuleData;
@@ -135,6 +136,18 @@ public class Meta extends BaseService implements MetaInterface {
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
 				.endpoint("resources")
+				.pathVariable(token)
+				.payload(resourceUpdate)
+				.build());
+		return ObjectJSONMapper.mapJSON(response, ResourceUpdateResponseCode.class);
+	}
+	
+	@Override
+	public ResourceUpdateResponseCode addResource(String token, ResourceAmount resourceUpdate) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("resource")
 				.pathVariable(token)
 				.payload(resourceUpdate)
 				.build());

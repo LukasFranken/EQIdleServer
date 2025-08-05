@@ -17,6 +17,7 @@ import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
 import de.instinct.base.controller.BaseServiceController;
@@ -74,6 +75,11 @@ public class MetaController extends BaseServiceController {
 	@PostMapping("/resources/{token}")
 	public ResponseEntity<ResourceUpdateResponseCode> addResources(@PathVariable String token, @RequestBody ResourceData resourceUpdate) {
 		return ResponseEntity.ok(userService.updateResources(token, resourceUpdate));
+	}
+	
+	@PostMapping("/resource/{token}")
+	public ResponseEntity<ResourceUpdateResponseCode> addResource(@PathVariable String token, @RequestBody ResourceAmount resourceUpdate) {
+		return ResponseEntity.ok(userService.updateResource(token, resourceUpdate));
 	}
 	
 	@PostMapping("/experience/{token}/{experience}")
