@@ -12,8 +12,9 @@ import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.map.GameMap;
 import de.instinct.engine.model.AiPlayer;
-import de.instinct.engine.model.PlanetData;
 import de.instinct.engine.model.Player;
+import de.instinct.engine.model.planet.PlanetData;
+import de.instinct.engine.model.planet.TurretData;
 import de.instinct.engine.model.ship.Defense;
 import de.instinct.engine.model.ship.Weapon;
 import de.instinct.engine.model.ship.WeaponType;
@@ -45,7 +46,6 @@ public class GameDataLoader {
 
 	private GameStateInitialization loadInitialMap(GameSession session) {
 		GameStateInitialization initialGameState = new GameStateInitialization();
-		
 		initialGameState.map = ObjectJSONMapper.mapJSON(FileManager.loadFile(
 				MAP_FILE_SUBFOLDER 
 				+ "/" + session.getGameType().getGameMode().toString().toLowerCase() 
@@ -68,16 +68,21 @@ public class GameDataLoader {
 		neutralPlayer.teamId = 0;
 		neutralPlayer.name = "Neutral Player";
 		PlanetData neutralPlanetData = new PlanetData();
-		Weapon neutralPlanetWeapon = new Weapon();
-		neutralPlanetWeapon.type = WeaponType.PROJECTILE;
-		neutralPlanetWeapon.damage = 4;
-		neutralPlanetWeapon.range = 100f;
-		neutralPlanetWeapon.cooldown = 1000;
-		neutralPlanetWeapon.speed = 120f;
-		neutralPlanetData.weapon = neutralPlanetWeapon;
-		Defense neutralPlanetDefense = new Defense();
-		neutralPlanetDefense.armor = 100;
-		neutralPlanetData.defense = neutralPlanetDefense;
+		if (session.getGameType().getThreatLevel() >= 10) {
+			TurretData neutralPlanetTurretData = new TurretData();
+			neutralPlanetTurretData.rotationSpeed = 1f;
+			Weapon neutralPlanetWeapon = new Weapon();
+			neutralPlanetWeapon.type = WeaponType.PROJECTILE;
+			neutralPlanetWeapon.damage = 2 + (2 * ((float)session.getGameType().getThreatLevel()/100f));
+			neutralPlanetWeapon.range = 100f;
+			neutralPlanetWeapon.cooldown = 1000;
+			neutralPlanetWeapon.speed = 120f;
+			neutralPlanetTurretData.weapon = neutralPlanetWeapon;
+			Defense neutralPlanetDefense = new Defense();
+			neutralPlanetDefense.armor = 50 + session.getGameType().getThreatLevel();
+			neutralPlanetTurretData.defense = neutralPlanetDefense;
+			neutralPlanetData.turret = neutralPlanetTurretData;
+		}
 		neutralPlayer.planetData = neutralPlanetData;
 		neutralPlayer.ships = new ArrayList<>();
 		players.add(neutralPlayer);
@@ -123,7 +128,7 @@ public class GameDataLoader {
 		newPlayer.commandPointsGenerationSpeed = user.getLoadout().getCommander().getCommandPointsGenerationSpeed();
 		newPlayer.startCommandPoints = user.getLoadout().getCommander().getStartCommandPoints();
 		newPlayer.maxCommandPoints = user.getLoadout().getCommander().getMaxCommandPoints();
-		newPlayer.planetData = EngineInterface.getPlanetData(user.getLoadout().getInfrastructure());
+		newPlayer.planetData = EngineInterface.getPlanetData(user.getLoadout().getPlayerInfrastructure(), API.construction().construction());
 		newPlayer.ships = EngineInterface.getShips(user.getLoadout().getShips(), API.shipyard().shipyard());
 		return newPlayer;
 	}

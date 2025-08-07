@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class MapPreview {
 	
+	private float zoomFactor;
 	private List<PreviewPlanet> planets;
 
 }

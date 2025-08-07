@@ -7,12 +7,15 @@ import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.PlanetDefense;
 import de.instinct.api.construction.dto.PlanetTurretBlueprint;
 import de.instinct.api.construction.dto.PlanetWeapon;
+import de.instinct.api.construction.dto.PlayerInfrastructure;
+import de.instinct.api.construction.dto.PlayerTurretData;
 import de.instinct.api.shipyard.dto.PlayerShipData;
 import de.instinct.api.shipyard.dto.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ShipStat;
 import de.instinct.api.shipyard.dto.ShipStatChange;
 import de.instinct.api.shipyard.dto.ShipyardData;
-import de.instinct.engine.model.PlanetData;
+import de.instinct.engine.model.planet.PlanetData;
+import de.instinct.engine.model.planet.TurretData;
 import de.instinct.engine.model.ship.Defense;
 import de.instinct.engine.model.ship.ShipData;
 import de.instinct.engine.model.ship.ShipType;
@@ -21,25 +24,35 @@ import de.instinct.engine.model.ship.WeaponType;
 
 public class EngineInterface {
 	
-	public static PlanetData getPlanetData(Infrastructure infrastructure) {
+	public static PlanetData getPlanetData(PlayerInfrastructure playerInfrastructure, Infrastructure infrastructure) {
 		if (infrastructure != null) {
 			PlanetData planetData = new PlanetData();
-			planetData.maxResourceCapacity = infrastructure.getMaxResourceCapacity();
-			planetData.resourceGenerationSpeed = infrastructure.getResourceGenerationSpeed();
-			planetData.percentOfArmorAfterCapture = infrastructure.getPercentOfArmorAfterCapture();
-			
-			PlanetTurretBlueprint planetTurretBlueprint = null;
-			for (PlanetTurretBlueprint currentPlanetTurretBlueprint : infrastructure.getPlanetTurretBlueprints()) {
-				if (currentPlanetTurretBlueprint.isInUse()) {
-					planetTurretBlueprint = currentPlanetTurretBlueprint;
+			planetData.maxResourceCapacity = playerInfrastructure.getMaxResourceCapacity();
+			planetData.resourceGenerationSpeed = playerInfrastructure.getResourceGenerationSpeed();
+			for (PlayerTurretData currentPlayerTurret : playerInfrastructure.getPlayerTurrets()) {
+				if (currentPlayerTurret.isInUse()) {
+					planetData.turret = getPlayerTurretData(currentPlayerTurret, infrastructure);
 					break;
 				}
 			}
-			planetData.defense = getDefense(planetTurretBlueprint.getPlanetDefense());
-			planetData.weapon = getWeapon(planetTurretBlueprint.getPlanetWeapon());
 			return planetData;
 		}
 		return null;
+	}
+
+	public static TurretData getPlayerTurretData(PlayerTurretData currentPlayerTurret, Infrastructure infrastructure) {
+		TurretData turretData = new TurretData();
+		for (PlanetTurretBlueprint planetTurretBlueprint : infrastructure.getTurretBlueprints()) {
+			if (planetTurretBlueprint.getId() == currentPlayerTurret.getTurretId()) {
+				turretData.model = planetTurretBlueprint.getName();
+				turretData.cost = planetTurretBlueprint.getCost();
+				turretData.commandPointsCost = planetTurretBlueprint.getCommandPointsCost();
+				turretData.rotationSpeed = planetTurretBlueprint.getRotationSpeed();
+				turretData.defense = getDefense(planetTurretBlueprint.getPlanetDefense());
+				turretData.weapon = getWeapon(planetTurretBlueprint.getPlanetWeapon());
+			}
+		}
+		return turretData;
 	}
 
 	private static Weapon getWeapon(PlanetWeapon planetWeapon) {

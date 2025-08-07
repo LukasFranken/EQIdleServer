@@ -9,6 +9,8 @@ public enum MenuModule {
 	SHIPYARD,
 	WORKSHOP,
 	SHOP,
+	PLANET,
+	SOCIAL,
 	PLAY,
 	CONSTRUCTION,
 	MARKET

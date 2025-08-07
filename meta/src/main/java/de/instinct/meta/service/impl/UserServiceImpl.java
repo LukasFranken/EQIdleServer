@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
 				.stream()
 				.filter(ship -> ship.isInUse())
 				.toList());
-		loadout.setInfrastructure(API.construction().data(token));
+		loadout.setPlayerInfrastructure(API.construction().data(token));
 		loadout.setCommander(API.commander().data(token));
 		return loadout;
 	}

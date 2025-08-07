@@ -332,6 +332,7 @@ public class SessionManager {
 			planets.add(planet);
 		}
 		mapPreview.setPlanets(planets);
+		mapPreview.setZoomFactor(gameMap.zoomFactor);
 		return mapPreview;
 	}
 

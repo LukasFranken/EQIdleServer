@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.InfrastructureInitializationResponseCode;
+import de.instinct.api.construction.dto.PlayerInfrastructure;
 import de.instinct.api.construction.dto.UseTurretResponseCode;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.construction.service.ConstructionService;
@@ -37,8 +38,13 @@ public class ConstructionController extends BaseServiceController {
 	}
 	
 	@GetMapping("/data/{token}")
-	public ResponseEntity<Infrastructure> data(@PathVariable String token) {
+	public ResponseEntity<PlayerInfrastructure> data(@PathVariable String token) {
 		return ResponseEntity.ok(service.getInfrastructure(token));
+	}
+	
+	@GetMapping("/construction")
+	public ResponseEntity<Infrastructure> construction() {
+		return ResponseEntity.ok(service.getBaseData());
 	}
 	
 	@PostMapping("/use/{token}/{turretUUID}")
