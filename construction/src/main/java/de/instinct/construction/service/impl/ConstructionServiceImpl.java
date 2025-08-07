@@ -32,8 +32,8 @@ public class ConstructionServiceImpl implements ConstructionService {
 	public InfrastructureInitializationResponseCode init(String token) {
 		if (playerInfrastructures.containsKey(token)) return InfrastructureInitializationResponseCode.ALREADY_INITIALIZED;
 		PlayerInfrastructure initInfrastructure = new PlayerInfrastructure();
-		initInfrastructure.setMaxResourceCapacity(baseInfrastructure.getBaseMaxResourceCapacity());
-		initInfrastructure.setResourceGenerationSpeed(baseInfrastructure.getBaseResourceGenerationSpeed());
+		initInfrastructure.setMaxResourceCapacity(getBaseData().getBaseMaxResourceCapacity());
+		initInfrastructure.setResourceGenerationSpeed(getBaseData().getBaseResourceGenerationSpeed());
 		initInfrastructure.setPlayerTurrets(new ArrayList<>());
 		PlayerTurretData testPlayerTurretData = new PlayerTurretData();
 		testPlayerTurretData.setUuid("test-turret-uuid");
