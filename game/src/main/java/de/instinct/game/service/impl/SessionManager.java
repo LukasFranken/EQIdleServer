@@ -26,6 +26,7 @@ import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Player;
 import de.instinct.engine.model.PlayerConnectionStatus;
+import de.instinct.engine.net.message.types.BuildTurretMessage;
 import de.instinct.engine.net.message.types.FleetMovementMessage;
 import de.instinct.engine.net.message.types.GamePauseMessage;
 import de.instinct.engine.net.message.types.JoinMessage;
@@ -33,6 +34,7 @@ import de.instinct.engine.net.message.types.LoadedMessage;
 import de.instinct.engine.net.message.types.PlayerAssigned;
 import de.instinct.engine.net.message.types.SurrenderMessage;
 import de.instinct.engine.order.GameOrder;
+import de.instinct.engine.order.types.BuildTurretOrder;
 import de.instinct.engine.order.types.GamePauseOrder;
 import de.instinct.engine.order.types.ShipMovementOrder;
 import de.instinct.engine.order.types.SurrenderOrder;
@@ -136,6 +138,19 @@ public class SessionManager {
 				shipMovementOrder.toPlanetId = fleetMovement.toPlanetId;
 				shipMovementOrder.playerShipId = fleetMovement.shipId;
 				engineInterface.queue(currentSession.getGameState(), shipMovementOrder);
+				updateSession(currentSession);
+				break;
+			}
+		}
+	}
+	
+	public static void process(BuildTurretMessage buildTurret) {
+		for (GameSession currentSession : activeSessions) {
+			if (currentSession.getGameState().gameUUID.contentEquals(buildTurret.gameUUID)) {
+				BuildTurretOrder buildTurretOrder = new BuildTurretOrder();
+				buildTurretOrder.playerId = getPlayerId(currentSession, buildTurret.userUUID);
+				buildTurretOrder.planetId = buildTurret.planetId;
+				engineInterface.queue(currentSession.getGameState(), buildTurretOrder);
 				updateSession(currentSession);
 				break;
 			}

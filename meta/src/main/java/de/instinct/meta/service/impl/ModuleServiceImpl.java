@@ -27,7 +27,7 @@ public class ModuleServiceImpl implements ModuleService {
 		moduleDatas = new LinkedHashMap<>();
 		unlockRanks = new LinkedHashMap<>();
 		unlockRanks.put(MenuModule.STARMAP, PlayerRank.RECRUIT1);
-		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT2);
+		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT1);
 		unlockRanks.put(MenuModule.PROFILE, PlayerRank.RECRUIT2);
 		unlockRanks.put(MenuModule.INVENTORY, PlayerRank.PRIVATE1);
 		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.PRIVATE2);

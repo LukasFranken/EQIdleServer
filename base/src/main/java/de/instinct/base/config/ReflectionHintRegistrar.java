@@ -34,9 +34,7 @@ public class ReflectionHintRegistrar implements RuntimeHintsRegistrar {
                                    MemberCategory.PUBLIC_FIELDS,
                                    MemberCategory.INVOKE_PUBLIC_METHODS);
             }
-            catch (ClassNotFoundException e) {
-                // ignore or log warning
-            }
+            catch (ClassNotFoundException e) {}
         }
     }
 
