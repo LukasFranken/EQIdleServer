@@ -138,6 +138,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.findFirst()
 				.orElse(null);
 		if (ship == null) return ShipBuildResponse.SHIP_DOESNT_EXIST;
+		if (shipyard.getUsedSlots() >= shipyard.getSlots()) return ShipBuildResponse.HANGAR_FULL;
 		if (ship.isBuilt()) return ShipBuildResponse.ALREADY_BUILT;
 		ShipBlueprint blueprint = getBaseData().getShipBlueprints().stream()
 				.filter(bp -> bp.getId() == ship.getShipId())
@@ -197,7 +198,6 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.findFirst()
 				.orElse(null);
 		if (blueprint == null) return ShipAddResponse.SHIP_NOT_FOUND;
-		if (shipyard.getShips().size() >= shipyard.getSlots()) return ShipAddResponse.HANGAR_FULL;
 		PlayerShipData newShip = new PlayerShipData();
 		newShip.setUuid(UUID.randomUUID().toString());
 		newShip.setShipId(shipid);

@@ -11,7 +11,6 @@ import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
-import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shop.dto.BuyResponse;
 import de.instinct.api.shop.dto.BuyResponseCode;
 import de.instinct.api.shop.dto.Purchase;
@@ -82,9 +81,7 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				PlayerShipyardData shipyard = API.shipyard().data(token);
-				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
-				return "Insufficient Hangar Space";
+				return null;
 			}
 			
 			@Override
@@ -97,9 +94,7 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				PlayerShipyardData shipyard = API.shipyard().data(token);
-				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
-				return "Insufficient Hangar Space";
+				return null;
 			}
 			
 			@Override
@@ -112,9 +107,7 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				PlayerShipyardData shipyard = API.shipyard().data(token);
-				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
-				return "Insufficient Hangar Space";
+				return null;
 			}
 			
 			@Override
@@ -127,9 +120,10 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				PlayerShipyardData shipyard = API.shipyard().data(token);
+				/*PlayerShipyardData shipyard = API.shipyard().data(token);
 				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
-				return "Insufficient Hangar Space";
+				return "Insufficient Hangar Space";*/
+				return null;
 			}
 			
 			@Override
