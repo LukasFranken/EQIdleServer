@@ -6,7 +6,6 @@ import de.instinct.engine.FleetEngine;
 import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.order.GameOrder;
-import de.instinct.engine.util.VictoryCalculator;
 import de.instinct.game.service.model.GameSession;
 
 public class GameEngineInterface {
@@ -22,7 +21,6 @@ public class GameEngineInterface {
 		long currentTime = System.currentTimeMillis();
 		engine.update(session.getGameState(), currentTime - session.getLastUpdateTimeMS());
 		session.setLastUpdateTimeMS(currentTime);
-		VictoryCalculator.checkVictory(session.getGameState());
 	}
 	
 	public GameState initializeGameState(GameStateInitialization gameStateInitialization) {

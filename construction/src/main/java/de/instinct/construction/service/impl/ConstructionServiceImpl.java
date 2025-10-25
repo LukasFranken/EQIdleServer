@@ -15,7 +15,7 @@ import de.instinct.api.construction.dto.PlanetWeapon;
 import de.instinct.api.construction.dto.PlayerInfrastructure;
 import de.instinct.api.construction.dto.PlayerTurretData;
 import de.instinct.api.construction.dto.UseTurretResponseCode;
-import de.instinct.api.construction.dto.WeaponType;
+import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponType;
 import de.instinct.construction.service.ConstructionService;
 
 @Service

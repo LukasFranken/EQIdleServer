@@ -1,4 +1,4 @@
-package de.instinct.api.shipyard.dto;
+package de.instinct.api.shipyard.dto.ship;
 
 import java.util.List;
 
@@ -11,14 +11,8 @@ import lombok.Data;
 public class ShipBlueprint {
 	
 	private int id;
-	private ShipType type;
 	private String model;
-	private float movementSpeed;
-	private int cost;
-	private int commandPointsCost;
-	private ShipWeapon weapon;
-	private ShipDefense defense;
+	private List<ShipComponent> components;
 	private List<ResourceAmount> buildCost;
-	private List<ShipLevel> levels;
 
 }

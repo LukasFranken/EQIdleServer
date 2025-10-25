@@ -3,6 +3,7 @@ package de.instinct.api.shipyard.dto;
 import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
+import de.instinct.api.shipyard.dto.ship.PlayerShipData;
 import lombok.Data;
 
 @Dto
