@@ -1,0 +1,160 @@
+.modal-view-container {
+	position: relative;
+	overflow: hidden;
+	height: 100%;
+}
+
+.components-table-view,
+.component-overview-view {
+	transition: transform 0.3s ease-in-out;
+}
+
+.components-table-view {
+	transform: translateX(0);
+}
+
+.components-table-view.slide-out {
+	transform: translateX(-100%);
+}
+
+.component-overview-view {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	transform: translateX(100%);
+}
+
+.component-overview-view.slide-in {
+	transform: translateX(0);
+}
+
+.component-row {
+	cursor: pointer;
+}
+
+.component-row:hover {
+	background-color: #f5f5f5;
+}
+
+.level-details-view {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	transform: translateX(100%);
+	transition: transform 0.3s ease-in-out;
+	max-height: 100%;
+	overflow-y: auto;
+}
+
+.level-details-view.slide-in {
+	transform: translateX(0);
+}
+
+.component-overview-view.slide-out {
+	transform: translateX(-100%);
+}
+
+.level-row {
+	cursor: pointer;
+}
+
+.level-row:hover {
+	background-color: #f5f5f5;
+}
+
+.attribute-row {
+	height: 30px;
+}
+
+.attribute-row.edit-mode .edit-name {
+	width: 90%;
+}
+
+.attribute-row.edit-mode .edit-value {
+	width: 90%;
+}
+
+.attribute-row.edit-mode input {
+	background-color: #444;
+	color: #fff;
+	border: 1px solid #666;
+	padding: 2px;
+	font-size: 1em;
+}
+
+.attribute-actions {
+	display: flex;
+	gap: 4px;
+}
+
+.attribute-actions button {
+	margin: 0 2px;
+	padding: 4px 8px;
+}
+
+.cancel-btn, .confirm-btn {
+	width: 30px;
+	padding: 4px;
+	flex-shrink: 0;
+}
+
+.confirm-btn {
+	background-color: #2d5016;
+}
+
+.confirm-btn:hover {
+	background-color: #3d6b1f;
+}
+
+.cancel-btn {
+	background-color: #5d1f1f;
+}
+
+.cancel-btn:hover {
+	background-color: #7d2f2f;
+}
+
+.edit-btn {
+	width: auto;
+}
+
+.level-details-view table {
+	table-layout: fixed;
+	width: 100%;
+}
+
+.level-details-view thead th:nth-child(1),
+.level-details-view tbody td:nth-child(1) {
+	width: auto;
+}
+
+.level-details-view thead th:nth-child(2),
+.level-details-view tbody td:nth-child(2) {
+	width: 120px;
+}
+
+.level-details-view thead th:nth-child(3),
+.level-details-view tbody td:nth-child(3) {
+	width: 100px;
+	align-items: right;
+}
+
+.level-details-view h4 {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+
+.level-details-view .back-btn {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+}
+
+.level-details-view thead {
+	position: sticky;
+	top: 0;
+	z-index: 9;
+}

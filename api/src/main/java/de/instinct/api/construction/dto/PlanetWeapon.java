@@ -1,7 +1,7 @@
 package de.instinct.api.construction.dto;
 
 import de.instinct.api.core.annotation.Dto;
-import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponType;
+import de.instinct.engine.model.ship.components.types.WeaponType;
 import lombok.Data;
 
 @Dto

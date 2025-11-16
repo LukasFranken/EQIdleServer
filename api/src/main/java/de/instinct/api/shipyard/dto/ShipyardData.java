@@ -12,6 +12,7 @@ public class ShipyardData {
 	
 	private int baseSlots;
 	private int baseActiveShipSlots;
+	private int currentShipId;
 	private List<ShipBlueprint> shipBlueprints;
 
 }

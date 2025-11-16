@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
 import de.instinct.api.shipyard.dto.ship.component.level.EngineLevel;
-import de.instinct.api.shipyard.dto.ship.component.types.engine.EngineType;
+import de.instinct.engine.model.ship.components.types.EngineType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

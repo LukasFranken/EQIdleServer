@@ -1,0 +1,42 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="shipyard">
+		<div class="shipyard-container">
+			<div class="sidebar">
+				<div th:replace="~{component/navbar :: navbar(${types})}"></div>
+			</div>
+    		<div class="content-area">
+    			<div class="action-bar">
+    				<button id="create-ship-btn" modal="createshipmodal">Create Ship</button>
+    				<button id="refresh-btn" onclick="refresh()">Refresh</button>
+    			</div>
+                <div th:replace="~{component/table :: table(${shiptable})}"></div>
+    		</div>
+		</div>
+		<div th:replace="~{component/modal :: modal}"></div>
+	</div>
+</body>
+
+</html>
+
+<!-- 	       		 	
+				<table>
+                    <thead>
+                        <tr>
+                        	<th class="id-column">ID</th>
+                            <th>Name</th>
+                            <th>Created</th>
+                            <th>Last Modified</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="ship : ${ships}">
+                        	<td class="id-column" th:text="${ship.id}">ID</td>
+                            <td><a th:text="${ship.name}" href="#" class="ship-link" th:attr="param=${ship.name}" param-modal="shipyard-shipoverviewmodal">Name</a></td>
+                            <td th:text="${ship.created}">Created</td>
+                            <td th:text="${ship.lastModified}">Last Modified</td>
+                        </tr>
+                    </tbody>
+                </table> 
+-->

@@ -12,6 +12,8 @@ public class ShipBlueprint {
 	
 	private int id;
 	private String model;
+	private long created;
+	private long lastModified;
 	private List<ShipComponent> components;
 	private List<ResourceAmount> buildCost;
 

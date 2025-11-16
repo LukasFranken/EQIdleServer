@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,8 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
+import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
@@ -52,6 +55,12 @@ public class ShipyardController extends BaseServiceController {
 	@GetMapping("/shipyard")
 	public ResponseEntity<ShipyardData> shipyard() {
 		return ResponseEntity.ok(service.getBaseData());
+	}
+	
+	@GetMapping("/load")
+	public ResponseEntity<ShipyardData> load() {
+		service.loadBaseData();
+		return ResponseEntity.ok().build();
 	}
 	
 	@PostMapping("/use/{token}/{shipUUID}")
@@ -88,5 +97,10 @@ public class ShipyardController extends BaseServiceController {
 	public ResponseEntity<ShipAddResponse> add(@PathVariable String token, @PathVariable int shipid) {
 		return ResponseEntity.ok(service.addBlueprint(token, shipid));
 	}
-
+	
+	//admin
+	@PostMapping("/admin/ship/create")
+	public ResponseEntity<ShipCreateResponse> createShip(@RequestBody ShipCreateRequest request) {
+		return ResponseEntity.ok(service.createShip(request));
+	}
 }

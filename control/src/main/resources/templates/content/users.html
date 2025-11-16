@@ -1,0 +1,28 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="users">
+		<div class="users-container">
+    		<div class="content-area">
+        		<h2>User List</h2>
+				<table>
+    				<tr>
+  						<td>1</td>
+    					<td><a href="#" class="nav-link user-link" modal="usermodal">user2</a></td>
+    					<td>user1@example.com</td>
+    					<td>password1</td>
+					</tr>
+					<tr>
+    					<td>2</td>
+    					<td><a href="#" class="nav-link user-link" modal="usermodal">user3</a></td>
+    					<td>user2@example.com</td>
+    					<td>password2</td>
+					</tr>
+				</table>
+    		</div>
+		</div>
+		<div th:replace="~{component/modal :: modal}"></div>
+	</div>
+</body>
+
+</html>

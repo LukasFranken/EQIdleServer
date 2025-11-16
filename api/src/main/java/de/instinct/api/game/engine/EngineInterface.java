@@ -4,21 +4,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.instinct.api.construction.dto.Infrastructure;
-import de.instinct.api.construction.dto.PlanetDefense;
 import de.instinct.api.construction.dto.PlanetTurretBlueprint;
-import de.instinct.api.construction.dto.PlanetWeapon;
 import de.instinct.api.construction.dto.PlayerInfrastructure;
 import de.instinct.api.construction.dto.PlayerTurretData;
 import de.instinct.api.shipyard.dto.ShipyardData;
+import de.instinct.api.shipyard.dto.ship.PlayerShipComponentLevel;
 import de.instinct.api.shipyard.dto.ship.PlayerShipData;
 import de.instinct.api.shipyard.dto.ship.ShipBlueprint;
+import de.instinct.api.shipyard.dto.ship.ShipComponent;
+import de.instinct.api.shipyard.dto.ship.ShipCore;
+import de.instinct.api.shipyard.dto.ship.ShipEngine;
+import de.instinct.api.shipyard.dto.ship.ShipHull;
+import de.instinct.api.shipyard.dto.ship.ShipShield;
+import de.instinct.api.shipyard.dto.ship.ShipWeapon;
+import de.instinct.api.shipyard.dto.ship.component.attribute.CoreAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.EngineAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.HullAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.ShieldAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.WeaponAttribute;
+import de.instinct.api.shipyard.dto.ship.component.level.CoreLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.EngineLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.HullLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.ShieldLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
+import de.instinct.api.shipyard.dto.ship.component.types.core.CoreAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.engine.EngineAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.hull.HullAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
 import de.instinct.engine.model.planet.PlanetData;
-import de.instinct.engine.model.planet.TurretData;
-import de.instinct.engine.model.ship.Defense;
 import de.instinct.engine.model.ship.ShipData;
-import de.instinct.engine.model.ship.ShipType;
-import de.instinct.engine.model.ship.Weapon;
-import de.instinct.engine.model.ship.WeaponType;
+import de.instinct.engine.model.ship.components.CoreData;
+import de.instinct.engine.model.ship.components.EngineData;
+import de.instinct.engine.model.ship.components.HullData;
+import de.instinct.engine.model.ship.components.ShieldData;
+import de.instinct.engine.model.ship.components.WeaponData;
+import de.instinct.engine.model.ship.components.types.CoreType;
+import de.instinct.engine.model.ship.components.types.EngineType;
+import de.instinct.engine.model.ship.components.types.HullType;
+import de.instinct.engine.model.ship.components.types.ShieldType;
+import de.instinct.engine.model.ship.components.types.WeaponType;
+import de.instinct.engine.model.turret.PlatformData;
+import de.instinct.engine.model.turret.TurretData;
 
 public class EngineInterface {
 	
@@ -27,48 +54,33 @@ public class EngineInterface {
 			PlanetData planetData = new PlanetData();
 			planetData.maxResourceCapacity = playerInfrastructure.getMaxResourceCapacity();
 			planetData.resourceGenerationSpeed = playerInfrastructure.getResourceGenerationSpeed();
-			for (PlayerTurretData currentPlayerTurret : playerInfrastructure.getPlayerTurrets()) {
-				if (currentPlayerTurret.isInUse()) {
-					planetData.turret = getPlayerTurretData(currentPlayerTurret, infrastructure);
-					break;
-				}
-			}
 			return planetData;
 		}
 		return null;
 	}
 
-	public static TurretData getPlayerTurretData(PlayerTurretData currentPlayerTurret, Infrastructure infrastructure) {
-		TurretData turretData = new TurretData();
+	public static List<TurretData> getPlayerTurretData(PlayerTurretData currentPlayerTurret, Infrastructure infrastructure) {
+		List<TurretData> turrets = new ArrayList<>();
 		for (PlanetTurretBlueprint planetTurretBlueprint : infrastructure.getTurretBlueprints()) {
 			if (planetTurretBlueprint.getId() == currentPlayerTurret.getTurretId()) {
+				TurretData turretData = new TurretData();
 				turretData.model = planetTurretBlueprint.getName();
-				turretData.cost = planetTurretBlueprint.getCost();
-				turretData.commandPointsCost = planetTurretBlueprint.getCommandPointsCost();
-				turretData.rotationSpeed = planetTurretBlueprint.getRotationSpeed();
+				turretData.resourceCost = planetTurretBlueprint.getCost();
+				turretData.cpCost = planetTurretBlueprint.getCommandPointsCost();
+				
+				PlatformData platform = new PlatformData();
+				platform.rotationSpeed = planetTurretBlueprint.getRotationSpeed();
+				turretData.platform = platform;
+				
+				/*HullData hull = new HullData();
+				hull.strength = planetTurretBlueprint.getPlanetDefense().getArmor();
 				turretData.defense = getDefense(planetTurretBlueprint.getPlanetDefense());
-				turretData.weapon = getWeapon(planetTurretBlueprint.getPlanetWeapon());
+				turretData.weapon = getWeapon(planetTurretBlueprint.getPlanetWeapon());*/
+				
+				turrets.add(turretData);
 			}
 		}
-		return turretData;
-	}
-
-	private static Weapon getWeapon(PlanetWeapon planetWeapon) {
-		Weapon weapon = new Weapon();
-		weapon.type = WeaponType.valueOf(planetWeapon.getType().toString());
-		weapon.damage = planetWeapon.getDamage();
-		weapon.range = planetWeapon.getRange();
-		weapon.cooldown = planetWeapon.getCooldown();
-		weapon.speed = planetWeapon.getSpeed();
-		return weapon;
-	}
-
-	private static Defense getDefense(PlanetDefense planetDefense) {
-		Defense defense = new Defense();
-		defense.armor = planetDefense.getArmor();
-		defense.shield = planetDefense.getShield();
-		defense.shieldRegenerationSpeed = planetDefense.getShieldRegenerationSpeed();
-		return defense;
+		return turrets;
 	}
 	
 	public static List<ShipData> getShips(List<PlayerShipData> playerShips, ShipyardData shipyardData) {;
@@ -83,50 +95,139 @@ public class EngineInterface {
 		for (ShipBlueprint shipBlueprint : shipyardData.getShipBlueprints()) {
 			if (shipBlueprint.getId() == playerShip.getShipId()) {
 				ShipData shipData = new ShipData();
-				shipData.type = ShipType.valueOf(shipBlueprint.getType().toString());
 				shipData.model = shipBlueprint.getModel();
-				shipData.cost = (int)(shipBlueprint.getCost() + getModificationValue(ShipStat.COST, playerShip.getLevel(), shipBlueprint));
-				shipData.commandPointsCost = (int)(shipBlueprint.getCommandPointsCost() + getModificationValue(ShipStat.COMMAND_POINTS_COST, playerShip.getLevel(), shipBlueprint));
-				shipData.movementSpeed = shipBlueprint.getMovementSpeed() + getModificationValue(ShipStat.MOVEMENT_SPEED, playerShip.getLevel(), shipBlueprint);
-				shipData.weapon = getWeapon(shipBlueprint, playerShip.getLevel());
-				shipData.defense = getDefense(shipBlueprint, playerShip.getLevel());
+				shipData.shields = new ArrayList<>();
+				shipData.weapons = new ArrayList<>();
+				for (ShipComponent component : shipBlueprint.getComponents()) {
+					if (component instanceof ShipCore) {
+						ShipCore shipCore = (ShipCore) component;
+						CoreData core = new CoreData();
+						core.type = CoreType.valueOf(shipCore.getType().toString());
+						CoreLevel currentCoreLevel = null;
+						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
+							if (componentLevel.getId() == shipCore.getId()) {
+								currentCoreLevel = shipCore.getLevels().get(componentLevel.getLevel());
+								break;
+							}
+						}
+						if (currentCoreLevel != null) {
+							for (CoreAttribute attribute : currentCoreLevel.getAttributes()) {
+								if (attribute.getType() == CoreAttributeType.CP_COST) {
+									shipData.cpCost = (int) attribute.getValue();
+								}
+								if (attribute.getType() == CoreAttributeType.RESOURCE_COST) {
+									shipData.resourceCost = (float) attribute.getValue();
+								}
+							}
+						}
+						shipData.core = core;
+					}
+					if (component instanceof ShipEngine) {
+						ShipEngine shipEngine = (ShipEngine) component;
+						EngineData engine = new EngineData();	
+						engine.type = EngineType.valueOf(shipEngine.getType().toString());
+						EngineLevel currentEngineLevel = null;
+						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
+							if (componentLevel.getId() == shipEngine.getId()) {
+								currentEngineLevel = shipEngine.getLevels().get(componentLevel.getLevel());
+								break;
+							}
+						}
+						if (currentEngineLevel != null) {
+							for (EngineAttribute attribute : currentEngineLevel.getAttributes()) {
+								if (attribute.getType() == EngineAttributeType.SPEED) {
+									engine.speed = (float) attribute.getValue();
+								}
+								if (attribute.getType() == EngineAttributeType.ACCELERATION) {
+									engine.acceleration = (float) attribute.getValue();
+								}
+							}
+						}
+						shipData.engine = engine;
+					}
+					if (component instanceof ShipHull) {
+						ShipHull shipHull = (ShipHull) component;
+						HullData hull = new HullData();	
+						hull.type = HullType.valueOf(shipHull.getType().toString());
+						HullLevel currentHullLevel = null;
+						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
+							if (componentLevel.getId() == shipHull.getId()) {
+								currentHullLevel = shipHull.getLevels().get(componentLevel.getLevel());
+								break;
+							}
+						}
+						if (currentHullLevel != null) {
+							for (HullAttribute attribute : currentHullLevel.getAttributes()) {
+								if (attribute.getType() == HullAttributeType.STRENGTH) {
+									hull.strength = (float) attribute.getValue();
+								}
+								if (attribute.getType() == HullAttributeType.REPAIR_SPEED) {
+									hull.repairSpeed = (float) attribute.getValue();
+								}
+							}
+						}
+						shipData.hull = hull;
+					}
+					if (component instanceof ShipShield) {
+						ShipShield shipShield = (ShipShield) component;
+						ShieldData shield = new ShieldData();	
+						shield.type = ShieldType.valueOf(shipShield.getType().toString());
+						ShieldLevel currentShieldLevel = null;
+						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
+							if (componentLevel.getId() == shipShield.getId()) {
+								currentShieldLevel = shipShield.getLevels().get(componentLevel.getLevel());
+								break;
+							}
+						}
+						if (currentShieldLevel != null) {
+							for (ShieldAttribute attribute : currentShieldLevel.getAttributes()) {
+								if (attribute.getType() == ShieldAttributeType.STRENGTH) {
+									shield.strength = (float) attribute.getValue();
+								}
+								if (attribute.getType() == ShieldAttributeType.GENERATION) {
+									shield.generation = (float) attribute.getValue();
+								}
+							}
+						}
+						shipData.shields.add(shield);
+					}
+					if (component instanceof ShipWeapon) {
+						ShipWeapon shipWeapon = (ShipWeapon) component;
+						WeaponData weapon = new WeaponData();	
+						weapon.type = WeaponType.valueOf(shipWeapon.getType().toString());
+						WeaponLevel currentWeaponLevel = null;
+						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
+							if (componentLevel.getId() == shipWeapon.getId()) {
+								currentWeaponLevel = shipWeapon.getLevels().get(componentLevel.getLevel());
+								break;
+							}
+						}
+						if (currentWeaponLevel != null) {
+							for (WeaponAttribute attribute : currentWeaponLevel.getAttributes()) {
+								if (attribute.getType() == WeaponAttributeType.DAMAGE) {
+									weapon.damage = (float) attribute.getValue();
+								}
+								if (attribute.getType() == WeaponAttributeType.COOLDOWN) {
+									weapon.cooldown = (long) attribute.getValue();
+								}
+								if (attribute.getType() == WeaponAttributeType.EXPLOSION) {
+									weapon.aoeRadius = (float) attribute.getValue();
+								}
+								if (attribute.getType() == WeaponAttributeType.RANGE) {
+									weapon.range = (float) attribute.getValue();
+								}
+								if (attribute.getType() == WeaponAttributeType.SPEED) {
+									weapon.speed = (float) attribute.getValue();
+								}
+							}
+						}
+						shipData.weapons.add(weapon);
+					}
+				}
 				return shipData;
 			}
 		}
 		return null;
-	}
-
-	private static float getModificationValue(ShipStat stat, int level, ShipBlueprint shipBlueprint) {
-		float modifierValue = 0;
-		for (int i = 0; i < shipBlueprint.getLevels().size(); i++) {
-			if (i < level) {
-				for (ShipStatChange effect : shipBlueprint.getLevels().get(i).getStatEffects()) {
-					if (effect.getStat() == stat) {
-						modifierValue += effect.getValue();
-					}
-				}
-			}
-		}
-		return modifierValue;
-	}
-
-	private static Defense getDefense(ShipBlueprint shipBlueprint, int level) {
-		Defense defense = new Defense();
-		defense.armor = shipBlueprint.getDefense().getArmor() + getModificationValue(ShipStat.DEFENSE_ARMOR, level, shipBlueprint);
-		defense.shield = shipBlueprint.getDefense().getShield() + getModificationValue(ShipStat.DEFENSE_SHIELD, level, shipBlueprint);
-		defense.shieldRegenerationSpeed = shipBlueprint.getDefense().getShieldRegenerationSpeed() + getModificationValue(ShipStat.DEFENSE_SHIELD_REGENERATION_SPEED, level, shipBlueprint);
-		return defense;
-	}
-
-	private static Weapon getWeapon(ShipBlueprint shipBlueprint, int level) {
-		Weapon weapon = new Weapon();
-		weapon.type = WeaponType.valueOf(shipBlueprint.getWeapon().getType().toString());
-		weapon.damage = shipBlueprint.getWeapon().getDamage() + getModificationValue(ShipStat.WEAPON_DAMAGE, level, shipBlueprint);
-		weapon.aoeRadius = shipBlueprint.getWeapon().getAoeRadius() + getModificationValue(ShipStat.WEAPON_AOE_RADIUS, level, shipBlueprint);
-		weapon.range = shipBlueprint.getWeapon().getRange() + getModificationValue(ShipStat.WEAPON_RANGE, level, shipBlueprint);
-		weapon.cooldown = (int)(shipBlueprint.getWeapon().getCooldown() + getModificationValue(ShipStat.WEAPON_COOLDOWN, level, shipBlueprint));
-		weapon.speed = shipBlueprint.getWeapon().getSpeed() + getModificationValue(ShipStat.WEAPON_PROJECTILE_SPEED, level, shipBlueprint);
-		return weapon;
 	}
 
 }

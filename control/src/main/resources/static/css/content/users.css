@@ -1,0 +1,13 @@
+.user-link {
+    color: #cccccc;
+    text-decoration: none;
+}
+
+.user-link:hover {
+    color: #bb0000;
+    text-decoration: underline;
+}
+
+.user-link.active {
+    color: #bb0000; 
+}

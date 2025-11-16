@@ -1,0 +1,73 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="shipoverviewmodal">
+		<h2 th:text="${name}">Shipname</h2>
+		
+		<div class="modal-view-container">
+			<div class="components-table-view">
+				<table>
+					<thead>
+						<tr>
+							<th>Component</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="component : ${components}" class="component-row" th:attr="data-component=${component}">
+							<td th:text="${component}">Component Name</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="component-overview-view">
+				<button class="back-btn">&larr; Back</button>
+				<h3 class="component-title">Component Name</h3>
+				
+				<table>
+					<thead>
+						<tr>
+							<th>Level</th>
+							<th>Type</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="level : ${componentlevels}" class="level-row" th:attr="data-level=${level.level},data-type=${level.requirementType},data-value=${level.requirementValue}">
+							<td th:text="${level.level}">Level</td>
+							<td th:text="${level.requirementType}">Type</td>
+							<td th:text="${level.requirementValue}">Value</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="level-details-view">
+				<button class="back-btn">&larr; Back</button>
+				<h4 class="level-title">Level Details</h4>
+				
+				<table>
+					<thead>
+						<tr>
+							<th>Attribute</th>
+							<th>Value</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="attribute : ${attributes}" class="attribute-row" th:attr="data-attribute=${attribute.name},data-value=${attribute.value}">
+							<td class="attribute-name" th:text="${attribute.name}">Attribute</td>
+							<td class="attribute-value" th:text="${attribute.value}">Value</td>
+							<td class="attribute-actions">
+								<button class="edit-btn">Edit</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+</html>

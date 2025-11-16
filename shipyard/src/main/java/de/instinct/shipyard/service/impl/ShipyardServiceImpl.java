@@ -21,15 +21,20 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
+import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.ship.PlayerShipData;
 import de.instinct.api.shipyard.dto.ship.ShipBlueprint;
+import de.instinct.api.shipyard.dto.ship.ShipCore;
 import de.instinct.base.file.FileManager;
+import de.instinct.engine.model.ship.components.types.CoreType;
 import de.instinct.shipyard.service.ShipyardService;
+import de.instinct.shipyard.service.model.ShipyardBaseData;
 
 @Service
 public class ShipyardServiceImpl implements ShipyardService {
 	
-	private ShipyardData baseShipyardData;
+	private ShipyardData shipyardData;
 	private Map<String, PlayerShipyardData> userShipyards;
 	
 	public ShipyardServiceImpl() {
@@ -45,6 +50,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		initShipData.setShipId(0);
 		initShipData.setBuilt(true);
 		initShipData.setInUse(true);
+		initShipData.setComponentLevels(new ArrayList<>());
 		initShips.add(initShipData);
 		
 		PlayerShipyardData initShipyardData = new PlayerShipyardData();
@@ -67,8 +73,38 @@ public class ShipyardServiceImpl implements ShipyardService {
 	
 	@Override
 	public ShipyardData getBaseData() {
-		if (baseShipyardData == null) baseShipyardData = ObjectJSONMapper.mapJSON(FileManager.loadFile("init.data"), ShipyardData.class);
-		return baseShipyardData;
+		if (shipyardData == null) {
+			loadBaseData();
+		}
+		return shipyardData;
+	}
+	
+	@Override
+	public void loadBaseData() {
+		shipyardData = new ShipyardData();
+		ShipyardBaseData baseData = ObjectJSONMapper.mapJSON(FileManager.loadFile("base.data"), ShipyardBaseData.class);
+		shipyardData.setBaseActiveShipSlots(baseData.getBaseActiveShipSlots());
+		shipyardData.setBaseSlots(baseData.getBaseSlots());
+		shipyardData.setCurrentShipId(baseData.getCurrentShipId());
+		shipyardData.setShipBlueprints(new ArrayList<>());
+		for (String blueprintTag : baseData.getBlueprintTags()) {
+			ShipBlueprint shipBlueprint = ObjectJSONMapper.mapJSON(FileManager.loadFile("blueprints/" + blueprintTag + ".data"), ShipBlueprint.class);
+			shipyardData.getShipBlueprints().add(shipBlueprint);
+		}
+	}
+	
+	public void saveBaseData() {
+		ShipyardBaseData baseData = new ShipyardBaseData();
+		baseData.setBaseActiveShipSlots(shipyardData.getBaseActiveShipSlots());
+		baseData.setBaseSlots(shipyardData.getBaseSlots());
+		baseData.setCurrentShipId(shipyardData.getCurrentShipId());
+		List<String> blueprintTags = new ArrayList<>();
+		for (ShipBlueprint blueprint : shipyardData.getShipBlueprints()) {
+			blueprintTags.add(blueprint.getModel().toLowerCase());
+			FileManager.saveFile("blueprints/" + blueprint.getModel().toLowerCase() + ".data", ObjectJSONMapper.mapObject(blueprint));
+		}
+		baseData.setBlueprintTags(blueprintTags);
+		FileManager.saveFile("base.data", ObjectJSONMapper.mapObject(baseData));
 	}
 
 	@Override
@@ -161,7 +197,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 
 	@Override
 	public ShipUpgradeResponse upgrade(String token, String shiptoken) {
-		PlayerShipyardData shipyard = userShipyards.get(token);
+		/*PlayerShipyardData shipyard = userShipyards.get(token);
 		if (shipyard == null) return ShipUpgradeResponse.USER_DOESNT_EXIST;
 		PlayerShipData ship = shipyard.getShips().stream()
 				.filter(s -> s.getUuid().contentEquals(shiptoken))
@@ -184,7 +220,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		ResourceData resourceUpdate = new ResourceData();
 		resourceUpdate.setResources(blueprint.getLevels().get(ship.getLevel()).getCost());
 		API.meta().addResources(token, resourceUpdate);
-		ship.setLevel(ship.getLevel() + 1);
+		ship.setLevel(ship.getLevel() + 1);*/
 		return ShipUpgradeResponse.SUCCESS;
 	}
 
@@ -203,9 +239,34 @@ public class ShipyardServiceImpl implements ShipyardService {
 		newShip.setShipId(shipid);
 		newShip.setBuilt(false);
 		newShip.setInUse(false);
-		newShip.setLevel(0);
 		shipyard.getShips().add(newShip);
 		return ShipAddResponse.SUCCESS;
+	}
+
+	@Override
+	public ShipCreateResponse createShip(ShipCreateRequest request) {
+		if (request.getName() == null) return ShipCreateResponse.NAME_NULL;
+		if (request.getName().trim().contentEquals("")) return ShipCreateResponse.NAME_EMPTY;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getName())) {
+				return ShipCreateResponse.NAME_TAKEN;
+			}
+		}
+		ShipBlueprint newBlueprint = new ShipBlueprint();
+		newBlueprint.setId(shipyardData.getCurrentShipId());
+		shipyardData.setCurrentShipId(shipyardData.getCurrentShipId() + 1);
+		newBlueprint.setModel(request.getName());
+		newBlueprint.setCreated(System.currentTimeMillis());
+		newBlueprint.setLastModified(System.currentTimeMillis());
+		newBlueprint.setComponents(new ArrayList<>());
+		ShipCore coreComponent = new ShipCore();
+		coreComponent.setType(CoreType.valueOf(request.getType().toUpperCase()));
+		coreComponent.setId(0);
+		newBlueprint.getComponents().add(coreComponent);
+		newBlueprint.setBuildCost(new ArrayList<>());
+		shipyardData.getShipBlueprints().add(newBlueprint);
+		saveBaseData();
+		return ShipCreateResponse.SUCCESS;
 	}
 	
 }

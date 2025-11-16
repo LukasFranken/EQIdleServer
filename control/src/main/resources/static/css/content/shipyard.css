@@ -1,0 +1,53 @@
+.content-area ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.content-area li {
+    margin-bottom: 10px;
+}
+
+.shipyard-container {
+    display: flex;
+    height: 100%;
+    background-color: #121212;
+}
+
+.sidebar {
+    width: 150px;
+    background-color: #333;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #121212;
+    display: flex;
+    flex-direction: column;
+}
+
+.ship-link {
+    color: #cccccc;
+    text-decoration: none;
+}
+
+.ship-link:hover {
+    color: #bb0000;
+    text-decoration: underline;
+}
+
+.ship-link.active {
+    color: #bb0000; 
+}
+
+.action-bar {
+    height: 30px;
+    background-color: transparent;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}

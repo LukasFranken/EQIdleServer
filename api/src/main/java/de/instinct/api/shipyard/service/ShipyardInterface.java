@@ -10,6 +10,8 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
+import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 
 public interface ShipyardInterface extends BaseServiceInterface {
 	
@@ -32,5 +34,7 @@ public interface ShipyardInterface extends BaseServiceInterface {
 	ShipUpgradeResponse upgrade(String shiptoken);
 	
 	ShipAddResponse add(String token, int shipid);
+	
+	ShipCreateResponse createShip(ShipCreateRequest request);
 
 }

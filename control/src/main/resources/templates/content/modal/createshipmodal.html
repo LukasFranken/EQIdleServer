@@ -1,0 +1,22 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="createshipmodal">
+		<h2>Create Ship</h2>
+		<form id="create-ship-form" onsubmit="createShip(document.getElementById('ship-name').value, document.getElementById('ship-type').value); return false;">
+			<div style="display: flex; align-items: center;">
+				<button type="submit" style="margin-right: 10px;">Submit</button>
+				<input type="text" id="ship-name" name="name" placeholder="Enter ship name" required>
+				<select id="ship-type" name="type" style="margin-left: 10px;">
+					<option value="FIGHTER" selected>FIGHTER</option>
+					<option value="CRUISER">CRUISER</option>
+					<option value="DESTROYER">DESTROYER</option>
+					<option value="TITAN">TITAN</option>
+				</select>
+			</div>
+			<label id="response-label" style="display: block; margin-top: 10px; color: red;"></label>
+		</form>
+	</div>
+</body>
+
+</html>

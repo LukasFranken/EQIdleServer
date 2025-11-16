@@ -1,0 +1,23 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Control Panel</title>
+    <link rel="icon" href="/image/improvisedIcon.png" type="image/png">
+    <th:block th:replace="~{styles :: css-links}"></th:block>
+    <th:block th:replace="~{scripts :: script-links}"></th:block>
+</head>
+<body>
+	<div class="header-bar">
+        <div th:replace="~{component/header :: header}"></div>
+    </div>
+    <div class="nav-bar">
+    	<div th:replace="~{component/navbar :: navbar(${links})}"></div>
+    </div>
+    <div class="main-panel" id="main-content">
+    	<div th:replace="~{content/__${panel}__ :: __${panel}__}"></div>
+    </div>
+    <div class="footer-bar">
+    	<div th:replace="~{component/footer :: footer}"></div>
+    </div>
+</body>
+</html>

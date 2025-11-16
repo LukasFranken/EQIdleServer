@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
 import de.instinct.api.shipyard.dto.ship.component.level.ShieldLevel;
-import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldType;
+import de.instinct.engine.model.ship.components.types.ShieldType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

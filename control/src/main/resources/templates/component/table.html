@@ -1,0 +1,20 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="table(table)">
+		<table>
+			<thead>
+				<tr>
+					<th th:each="header : ${table.headers}" class="${header.className}" th:text="${header.label}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="row : ${table.rows}">
+					<td th:each="cell : ${row.cells}" th:text="${cell.value}" class="${cell.className}"  th:attr="__${cell.test}__"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>

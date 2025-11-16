@@ -9,6 +9,8 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
+import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 
 public interface ShipyardService {
 
@@ -17,6 +19,8 @@ public interface ShipyardService {
 	PlayerShipyardData getShipyardData(String token);
 	
 	ShipyardData getBaseData();
+	
+	void loadBaseData();
 
 	UseShipResponseCode useShip(String token, String shipUUID);
 	
@@ -31,5 +35,7 @@ public interface ShipyardService {
 	ShipUpgradeResponse upgrade(String token, String shiptoken);
 
 	ShipAddResponse addBlueprint(String token, int shipid);
+
+	ShipCreateResponse createShip(ShipCreateRequest request);
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
 import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
-import de.instinct.engine.model.ship.WeaponType;
+import de.instinct.engine.model.ship.components.types.WeaponType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
