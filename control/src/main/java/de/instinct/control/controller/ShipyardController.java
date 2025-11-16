@@ -54,7 +54,7 @@ public class ShipyardController {
 				.cells(List.of(TableCell.builder().value("0").attributes(new HashMap<>()).build(), TableCell.builder().value("hawk").attributes(new HashMap<>()).build()))
 				.build());*/
 		rows.add(TableRow.builder()
-				.cells(List.of(TableCell.builder().value("1").attributestring("turtle").test("param=${cell.attributestring}").attributes(Map.of("param", "turtle", "param-modal", "shipyard-shipoverviewmodal")).build(), TableCell.builder().value("turtle").attributestring("turtle").test("param=${cell.attributestring}").hasattributes(true).attributes(Map.of("param", "turtle", "param-modal", "shipyard-shipoverviewmodal")).build()))
+				.cells(List.of(TableCell.builder().value("1").build(), TableCell.builder().value("turtle").attributes("param=turtle").build()))
 				.build());
 		/*rows.add(TableRow.builder()
 				.cells(List.of(TableCell.builder().value("2").attributes(new HashMap<>()).build(), TableCell.builder().value("shark").attributes(new HashMap<>()).build()))

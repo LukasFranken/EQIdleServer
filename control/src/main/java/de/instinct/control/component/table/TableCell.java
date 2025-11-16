@@ -1,8 +1,7 @@
 package de.instinct.control.component.table;
 
-import java.util.Map;
-
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 
 @Data
@@ -10,9 +9,10 @@ import lombok.Data;
 public class TableCell {
 	
 	private String value;
-	private Map<String, String> attributes;
-	private String attributestring;
-	private boolean hasattributes;
-	private String test;
+	
+	@Default
+	private String attributes = "attributes=none";
+	
+	private String className;
 
 }

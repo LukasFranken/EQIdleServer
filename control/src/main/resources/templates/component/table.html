@@ -10,7 +10,7 @@
 			</thead>
 			<tbody>
 				<tr th:each="row : ${table.rows}">
-					<td th:each="cell : ${row.cells}" th:text="${cell.value}" class="${cell.className}"  th:attr="__${cell.test}__"></td>
+					<td th:each="cell : ${row.cells}" th:text="${cell.value}" th:class="${cell.className}"  th:attr="__${cell.attributes}__"></td>
 				</tr>
 			</tbody>
 		</table>
