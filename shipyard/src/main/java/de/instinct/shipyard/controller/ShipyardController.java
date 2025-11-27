@@ -20,12 +20,14 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
@@ -111,6 +113,11 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/admin/component/create")
 	public ResponseEntity<ComponentCreateResponse> createComponent(@RequestBody ComponentCreateRequest request) {
 		return ResponseEntity.ok(service.createComponent(request));
+	}
+	
+	@PostMapping("/admin/component/update")
+	public ResponseEntity<ComponentUpdateResponse> updateComponent(@RequestBody ComponentUpdateRequest request) {
+		return ResponseEntity.ok(service.updateComponent(request));
 	}
 	
 	@PostMapping("/admin/component/delete")

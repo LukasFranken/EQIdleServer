@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
 import de.instinct.control.service.base.BaseService;
 import de.instinct.control.service.shipyard.ShipyardService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +53,11 @@ public class ShipyardController {
     @PostMapping("/create/component")
     public ResponseEntity<ComponentCreateResponse> createComponent(@RequestBody ComponentCreateRequest request) {
     	return ResponseEntity.ok(shipyardService.createComponent(request));
+    }
+    
+    @PostMapping("/update/component")
+    public ResponseEntity<ComponentUpdateResponse> updateComponent(@RequestBody ComponentUpdateRequest request) {
+    	return ResponseEntity.ok(shipyardService.updateComponent(request));
     }
     
     @PostMapping("/delete/component")

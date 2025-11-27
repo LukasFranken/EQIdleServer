@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.ui.Model;
 
-import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
 import de.instinct.control.service.ModelService;
 
 public interface ShipyardService extends ModelService {
@@ -17,6 +19,8 @@ public interface ShipyardService extends ModelService {
 	ShipCreateResponse createShip(ShipCreateRequest request);
 	
 	ComponentCreateResponse createComponent(ComponentCreateRequest request);
+	
+	ComponentUpdateResponse updateComponent(ComponentUpdateRequest request);
 	
 	ComponentDeleteResponse deleteComponent(ComponentDeleteRequest request);
 	

@@ -9,12 +9,14 @@ import org.springframework.ui.Model;
 
 import de.instinct.api.core.API;
 import de.instinct.api.shipyard.dto.ShipyardData;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
 import de.instinct.api.shipyard.dto.ship.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ship.ShipComponent;
 import de.instinct.api.shipyard.dto.ship.ShipCore;
@@ -106,6 +108,13 @@ public class ShipyardServiceImpl implements ShipyardService {
 	}
 	
 	@Override
+	public ComponentUpdateResponse updateComponent(ComponentUpdateRequest request) {
+		ComponentUpdateResponse response = API.shipyard().updateComponent(request);
+		shipyardData = API.shipyard().shipyard();
+		return response;
+	}
+	
+	@Override
 	public ComponentDeleteResponse deleteComponent(ComponentDeleteRequest request) {
 		ComponentDeleteResponse response = API.shipyard().deleteComponent(request);
 		shipyardData = API.shipyard().shipyard();
@@ -130,6 +139,9 @@ public class ShipyardServiceImpl implements ShipyardService {
 		headers.add(TableHeader.builder()
 				.label("Type")
 				.build());
+		headers.add(TableHeader.builder()
+		        .label("")
+		        .build());
 		
 		List<TableRow> rows = new ArrayList<>();
 		for (ShipBlueprint shipBlueprint : shipyardData.getShipBlueprints()) {
@@ -141,6 +153,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 					cells.add(TableCell.builder().value(String.valueOf(component.getId())).className("id-column").build());
 					cells.add(TableCell.builder().value(componentType).build());
 					cells.add(TableCell.builder().value(componentSubtype).build());
+					cells.add(TableCell.builder().value("<button class=\"edit-btn\">Edit</button>").className("attribute-actions").build());
 					rows.add(TableRow.builder()
 							.cells(cells)
 							.className("component-row")

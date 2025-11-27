@@ -1,4 +1,4 @@
-package de.instinct.api.shipyard.dto.admin;
+package de.instinct.api.shipyard.dto.admin.component;
 
 public enum ComponentCreateResponse {
 	

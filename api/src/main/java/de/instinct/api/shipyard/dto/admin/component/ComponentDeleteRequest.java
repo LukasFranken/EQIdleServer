@@ -1,4 +1,4 @@
-package de.instinct.api.shipyard.dto.admin;
+package de.instinct.api.shipyard.dto.admin.component;
 
 import de.instinct.api.core.annotation.Dto;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class ComponentDeleteRequest {
 	
-	private String name;
+	private String shipname;
 	private int id;
 
 }

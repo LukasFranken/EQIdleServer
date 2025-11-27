@@ -13,12 +13,14 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
-import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
 import de.instinct.api.shipyard.service.ShipyardInterface;
 
 public class Shipyard extends BaseService implements ShipyardInterface {
@@ -162,6 +164,17 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.payload(request)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentCreateResponse.class);
+	}
+	
+	@Override
+	public ComponentUpdateResponse updateComponent(ComponentUpdateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/component/update")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentUpdateResponse.class);
 	}
 
 	@Override
