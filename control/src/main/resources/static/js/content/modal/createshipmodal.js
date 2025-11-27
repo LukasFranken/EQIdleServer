@@ -1,5 +1,5 @@
 function createShip(name, type) {
-	fetch('/shipyard/create', {
+	fetch('/shipyard/create/ship', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ name: name, type: type })

@@ -10,7 +10,24 @@ import de.instinct.api.shipyard.dto.ship.ShipEngine;
 import de.instinct.api.shipyard.dto.ship.ShipHull;
 import de.instinct.api.shipyard.dto.ship.ShipShield;
 import de.instinct.api.shipyard.dto.ship.ShipWeapon;
-import de.instinct.api.shipyard.service.model.ShipComponentType;
+import de.instinct.api.shipyard.dto.ship.component.ComponentAttribute;
+import de.instinct.api.shipyard.dto.ship.component.ComponentLevel;
+import de.instinct.api.shipyard.dto.ship.component.ShipComponentType;
+import de.instinct.api.shipyard.dto.ship.component.attribute.CoreAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.EngineAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.HullAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.ShieldAttribute;
+import de.instinct.api.shipyard.dto.ship.component.attribute.WeaponAttribute;
+import de.instinct.api.shipyard.dto.ship.component.level.CoreLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.EngineLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.HullLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.ShieldLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
+import de.instinct.api.shipyard.dto.ship.component.types.core.CoreAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.engine.EngineAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.hull.HullAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
 
 public class ShipyardUtility {
 	
@@ -59,6 +76,75 @@ public class ShipyardUtility {
 			}
 		}
 		return null;
+	}
+
+	public static String getShipComponentType(ShipComponent component) {
+		if (component instanceof ShipCore) return ShipComponentType.CORE.toString();
+		if (component instanceof ShipEngine) return ShipComponentType.ENGINE.toString();
+		if (component instanceof ShipHull) return ShipComponentType.HULL.toString();
+		if (component instanceof ShipShield) return ShipComponentType.SHIELD.toString();
+		if (component instanceof ShipWeapon) return ShipComponentType.WEAPON.toString();
+		return null;
+	}
+	
+	public static String getShipComponentSubtype(ShipComponent component) {
+		if (component instanceof ShipCore) return ((ShipCore) component).getType().toString();
+		if (component instanceof ShipEngine) return ((ShipEngine) component).getType().toString();
+		if (component instanceof ShipHull) return ((ShipHull) component).getType().toString();
+		if (component instanceof ShipShield) return ((ShipShield) component).getType().toString();
+		if (component instanceof ShipWeapon) return ((ShipWeapon) component).getType().toString();
+		return null;
+	}
+
+	public static String getComponentLevelType(ComponentLevel componentLevel) {
+		if (componentLevel == null) return null;
+		if (componentLevel instanceof CoreLevel) return ((CoreLevel)componentLevel).getRequirementType().toString();
+		if (componentLevel instanceof EngineLevel) return ((EngineLevel)componentLevel).getRequirementType().toString();
+		if (componentLevel instanceof HullLevel) return ((HullLevel)componentLevel).getRequirementType().toString();
+		if (componentLevel instanceof ShieldLevel) return ((ShieldLevel)componentLevel).getRequirementType().toString();
+		if (componentLevel instanceof WeaponLevel) return ((WeaponLevel)componentLevel).getRequirementType().toString();
+		return null;
+	}
+
+	public static String getAttributeName(ComponentAttribute attribute) {
+		if (attribute == null) return null;
+		if (attribute instanceof CoreAttribute) return ((CoreAttribute)attribute).getType().toString();
+		if (attribute instanceof EngineAttribute) return ((EngineAttribute)attribute).getType().toString();
+		if (attribute instanceof HullAttribute) return ((HullAttribute)attribute).getType().toString();
+		if (attribute instanceof ShieldAttribute) return ((ShieldAttribute)attribute).getType().toString();
+		if (attribute instanceof WeaponAttribute) return ((WeaponAttribute)attribute).getType().toString();
+		return null;
+	}
+
+	public static List<String> getAttributeOptions(ShipComponent component) {
+		List<String> options = new ArrayList<>();
+		if (component == null) return options;
+		if (component instanceof ShipCore) {
+			for (CoreAttributeType attribute : CoreAttributeType.values()) {
+				options.add(attribute.toString());
+			}
+		}
+		if (component instanceof ShipEngine) {
+			for (EngineAttributeType attribute : EngineAttributeType.values()) {
+				options.add(attribute.toString());
+			}
+		}
+		if (component instanceof ShipHull) {
+			for (HullAttributeType attribute : HullAttributeType.values()) {
+				options.add(attribute.toString());
+			}
+		}
+		if (component instanceof ShipShield) {
+			for (ShieldAttributeType attribute : ShieldAttributeType.values()) {
+				options.add(attribute.toString());
+			}
+		}
+		if (component instanceof ShipWeapon) {
+			for (WeaponAttributeType attribute : WeaponAttributeType.values()) {
+				options.add(attribute.toString());
+			}
+		}
+		return options;
 	}
 
 }

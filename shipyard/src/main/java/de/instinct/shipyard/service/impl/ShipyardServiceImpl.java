@@ -21,13 +21,27 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.ship.PlayerShipData;
 import de.instinct.api.shipyard.dto.ship.ShipBlueprint;
+import de.instinct.api.shipyard.dto.ship.ShipComponent;
 import de.instinct.api.shipyard.dto.ship.ShipCore;
+import de.instinct.api.shipyard.dto.ship.ShipEngine;
+import de.instinct.api.shipyard.dto.ship.ShipHull;
+import de.instinct.api.shipyard.dto.ship.ShipShield;
+import de.instinct.api.shipyard.dto.ship.ShipWeapon;
+import de.instinct.api.shipyard.dto.ship.component.ShipComponentType;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.model.ship.components.types.CoreType;
+import de.instinct.engine.model.ship.components.types.EngineType;
+import de.instinct.engine.model.ship.components.types.HullType;
+import de.instinct.engine.model.ship.components.types.ShieldType;
+import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.model.ShipyardBaseData;
 
@@ -258,15 +272,77 @@ public class ShipyardServiceImpl implements ShipyardService {
 		newBlueprint.setModel(request.getName());
 		newBlueprint.setCreated(System.currentTimeMillis());
 		newBlueprint.setLastModified(System.currentTimeMillis());
+		
 		newBlueprint.setComponents(new ArrayList<>());
-		ShipCore coreComponent = new ShipCore();
-		coreComponent.setType(CoreType.valueOf(request.getType().toUpperCase()));
-		coreComponent.setId(0);
-		newBlueprint.getComponents().add(coreComponent);
+		ComponentCreateRequest componentRequest = new ComponentCreateRequest();
+		componentRequest.setName(request.getName());
+		componentRequest.setType(ShipComponentType.CORE);
+		componentRequest.setComponentType(request.getType().toString());
+		createComponent(componentRequest);
+		
 		newBlueprint.setBuildCost(new ArrayList<>());
 		shipyardData.getShipBlueprints().add(newBlueprint);
 		saveBaseData();
 		return ShipCreateResponse.SUCCESS;
+	}
+	
+	@Override
+	public ComponentCreateResponse createComponent(ComponentCreateRequest request) {
+		if (request.getName() == null) return ComponentCreateResponse.NAME_NULL;
+		if (request.getName().trim().contentEquals("")) return ComponentCreateResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getName())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return ComponentCreateResponse.SHIP_NOT_FOUND;
+		ShipComponent component = null;
+		switch (request.getType()) {
+			case CORE:
+				component = new ShipCore();
+				((ShipCore)component).setType(CoreType.valueOf(request.getComponentType()));
+				break;
+			case WEAPON:
+				component = new ShipWeapon();
+				((ShipWeapon)component).setType(WeaponType.valueOf(request.getComponentType()));
+				break;
+			case SHIELD:
+				component = new ShipShield();
+				((ShipShield)component).setType(ShieldType.valueOf(request.getComponentType()));
+				break;
+			case ENGINE:
+				component = new ShipEngine();
+				((ShipEngine)component).setType(EngineType.valueOf(request.getComponentType()));
+				break;
+			case HULL:
+				component = new ShipHull();
+				((ShipHull)component).setType(HullType.valueOf(request.getComponentType()));
+				break;
+		}
+		component.setId(blueprint.getComponents().isEmpty() ? 0 : blueprint.getComponents().stream().mapToInt(ShipComponent::getId).max().getAsInt() + 1);
+		component.setLevels(new ArrayList<>());
+		blueprint.getComponents().add(component);
+		saveBaseData();
+		return ComponentCreateResponse.SUCCESS;
+	}
+
+	@Override
+	public ComponentDeleteResponse deleteComponent(ComponentDeleteRequest request) {
+		if (request.getName() == null) return ComponentDeleteResponse.NAME_NULL;
+		if (request.getName().trim().contentEquals("")) return ComponentDeleteResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getName())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return ComponentDeleteResponse.SHIP_NOT_FOUND;
+		
+		blueprint.getComponents().removeIf(c -> c.getId() == request.getId());
+		
+		saveBaseData();
+		return ComponentDeleteResponse.SUCCESS;
 	}
 	
 }

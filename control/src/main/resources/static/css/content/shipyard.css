@@ -33,6 +33,7 @@
 .ship-link {
     color: #cccccc;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .ship-link:hover {

@@ -17,6 +17,7 @@ import de.instinct.api.shipyard.dto.ship.ShipEngine;
 import de.instinct.api.shipyard.dto.ship.ShipHull;
 import de.instinct.api.shipyard.dto.ship.ShipShield;
 import de.instinct.api.shipyard.dto.ship.ShipWeapon;
+import de.instinct.api.shipyard.dto.ship.component.ComponentAttribute;
 import de.instinct.api.shipyard.dto.ship.component.attribute.CoreAttribute;
 import de.instinct.api.shipyard.dto.ship.component.attribute.EngineAttribute;
 import de.instinct.api.shipyard.dto.ship.component.attribute.HullAttribute;
@@ -106,16 +107,17 @@ public class EngineInterface {
 						CoreLevel currentCoreLevel = null;
 						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
 							if (componentLevel.getId() == shipCore.getId()) {
-								currentCoreLevel = shipCore.getLevels().get(componentLevel.getLevel());
+								currentCoreLevel = (CoreLevel)shipCore.getLevels().get(componentLevel.getLevel());
 								break;
 							}
 						}
 						if (currentCoreLevel != null) {
-							for (CoreAttribute attribute : currentCoreLevel.getAttributes()) {
-								if (attribute.getType() == CoreAttributeType.CP_COST) {
+							for (ComponentAttribute attribute : currentCoreLevel.getAttributes()) {
+								CoreAttribute coreAttribute = (CoreAttribute) attribute;
+								if (coreAttribute.getType() == CoreAttributeType.CP_COST) {
 									shipData.cpCost = (int) attribute.getValue();
 								}
-								if (attribute.getType() == CoreAttributeType.RESOURCE_COST) {
+								if (coreAttribute.getType() == CoreAttributeType.RESOURCE_COST) {
 									shipData.resourceCost = (float) attribute.getValue();
 								}
 							}
@@ -129,16 +131,17 @@ public class EngineInterface {
 						EngineLevel currentEngineLevel = null;
 						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
 							if (componentLevel.getId() == shipEngine.getId()) {
-								currentEngineLevel = shipEngine.getLevels().get(componentLevel.getLevel());
+								currentEngineLevel = (EngineLevel)shipEngine.getLevels().get(componentLevel.getLevel());
 								break;
 							}
 						}
 						if (currentEngineLevel != null) {
-							for (EngineAttribute attribute : currentEngineLevel.getAttributes()) {
-								if (attribute.getType() == EngineAttributeType.SPEED) {
+							for (ComponentAttribute attribute : currentEngineLevel.getAttributes()) {
+								EngineAttribute engineAttribute = (EngineAttribute) attribute;
+								if (engineAttribute.getType() == EngineAttributeType.SPEED) {
 									engine.speed = (float) attribute.getValue();
 								}
-								if (attribute.getType() == EngineAttributeType.ACCELERATION) {
+								if (engineAttribute.getType() == EngineAttributeType.ACCELERATION) {
 									engine.acceleration = (float) attribute.getValue();
 								}
 							}
@@ -152,16 +155,17 @@ public class EngineInterface {
 						HullLevel currentHullLevel = null;
 						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
 							if (componentLevel.getId() == shipHull.getId()) {
-								currentHullLevel = shipHull.getLevels().get(componentLevel.getLevel());
+								currentHullLevel = (HullLevel)shipHull.getLevels().get(componentLevel.getLevel());
 								break;
 							}
 						}
 						if (currentHullLevel != null) {
-							for (HullAttribute attribute : currentHullLevel.getAttributes()) {
-								if (attribute.getType() == HullAttributeType.STRENGTH) {
+							for (ComponentAttribute attribute : currentHullLevel.getAttributes()) {
+								HullAttribute hullAttribute = (HullAttribute) attribute;
+								if (hullAttribute.getType() == HullAttributeType.STRENGTH) {
 									hull.strength = (float) attribute.getValue();
 								}
-								if (attribute.getType() == HullAttributeType.REPAIR_SPEED) {
+								if (hullAttribute.getType() == HullAttributeType.REPAIR_SPEED) {
 									hull.repairSpeed = (float) attribute.getValue();
 								}
 							}
@@ -175,16 +179,17 @@ public class EngineInterface {
 						ShieldLevel currentShieldLevel = null;
 						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
 							if (componentLevel.getId() == shipShield.getId()) {
-								currentShieldLevel = shipShield.getLevels().get(componentLevel.getLevel());
+								currentShieldLevel = (ShieldLevel)shipShield.getLevels().get(componentLevel.getLevel());
 								break;
 							}
 						}
 						if (currentShieldLevel != null) {
-							for (ShieldAttribute attribute : currentShieldLevel.getAttributes()) {
-								if (attribute.getType() == ShieldAttributeType.STRENGTH) {
+							for (ComponentAttribute attribute : currentShieldLevel.getAttributes()) {
+								ShieldAttribute shieldAttribute = (ShieldAttribute) attribute;
+								if (shieldAttribute.getType() == ShieldAttributeType.STRENGTH) {
 									shield.strength = (float) attribute.getValue();
 								}
-								if (attribute.getType() == ShieldAttributeType.GENERATION) {
+								if (shieldAttribute.getType() == ShieldAttributeType.GENERATION) {
 									shield.generation = (float) attribute.getValue();
 								}
 							}
@@ -198,25 +203,26 @@ public class EngineInterface {
 						WeaponLevel currentWeaponLevel = null;
 						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
 							if (componentLevel.getId() == shipWeapon.getId()) {
-								currentWeaponLevel = shipWeapon.getLevels().get(componentLevel.getLevel());
+								currentWeaponLevel = (WeaponLevel)shipWeapon.getLevels().get(componentLevel.getLevel());
 								break;
 							}
 						}
 						if (currentWeaponLevel != null) {
-							for (WeaponAttribute attribute : currentWeaponLevel.getAttributes()) {
-								if (attribute.getType() == WeaponAttributeType.DAMAGE) {
+							for (ComponentAttribute attribute : currentWeaponLevel.getAttributes()) {
+								WeaponAttribute weaponAttribute = (WeaponAttribute) attribute;
+								if (weaponAttribute.getType() == WeaponAttributeType.DAMAGE) {
 									weapon.damage = (float) attribute.getValue();
 								}
-								if (attribute.getType() == WeaponAttributeType.COOLDOWN) {
+								if (weaponAttribute.getType() == WeaponAttributeType.COOLDOWN) {
 									weapon.cooldown = (long) attribute.getValue();
 								}
-								if (attribute.getType() == WeaponAttributeType.EXPLOSION) {
+								if (weaponAttribute.getType() == WeaponAttributeType.EXPLOSION) {
 									weapon.aoeRadius = (float) attribute.getValue();
 								}
-								if (attribute.getType() == WeaponAttributeType.RANGE) {
+								if (weaponAttribute.getType() == WeaponAttributeType.RANGE) {
 									weapon.range = (float) attribute.getValue();
 								}
-								if (attribute.getType() == WeaponAttributeType.SPEED) {
+								if (weaponAttribute.getType() == WeaponAttributeType.SPEED) {
 									weapon.speed = (float) attribute.getValue();
 								}
 							}

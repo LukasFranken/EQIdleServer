@@ -1,9 +1,12 @@
 package de.instinct.api.shipyard.dto.ship;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import de.instinct.api.core.annotation.Dto;
+import de.instinct.api.shipyard.dto.ship.component.ComponentLevel;
 import lombok.Data;
 
 @Dto
@@ -19,5 +22,6 @@ import lombok.Data;
 public abstract class ShipComponent {
 	
 	private int id;
+	private List<ComponentLevel> levels;
 
 }

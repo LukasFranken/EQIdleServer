@@ -1,0 +1,28 @@
+.table-wrapper {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.table-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: #696969;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #333333;
+}
+
+.table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #333333 #696969;
+}
+
+.table-wrapper table thead {
+    position: sticky;
+    top: 0;
+    background-color: #222222;
+    z-index: 1;
+}

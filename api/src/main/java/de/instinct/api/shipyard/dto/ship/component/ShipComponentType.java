@@ -1,4 +1,4 @@
-package de.instinct.api.shipyard.service.model;
+package de.instinct.api.shipyard.dto.ship.component;
 
 public enum ShipComponentType {
 	

@@ -1,0 +1,11 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="levelattributetable">
+    	<div th:if="${levelattributes != null and not #lists.isEmpty(levelattributes.rows)}">
+        	<div th:replace="~{component/table :: table(${levelattributes})}"></div>
+    	</div>
+	</div>
+</body>
+
+</html>

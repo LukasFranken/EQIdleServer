@@ -18,9 +18,9 @@ if (typeof window !== 'undefined') {
     });
 	
 	function loadParamModal(controller, modalName, param) {
-			var endpoint = `/${controller}/modal/${modalName}/${param}`;
-			fetchModal(endpoint);
-		}
+		var endpoint = `/${controller}/modal/${modalName}/${param}`;
+		fetchModal(endpoint);
+	}
 	
 	function loadDataModal(controller, modalName) {
 		var endpoint = `/${controller}/modal/${modalName}`;

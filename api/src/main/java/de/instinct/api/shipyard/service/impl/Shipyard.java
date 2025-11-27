@@ -13,6 +13,10 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.service.ShipyardInterface;
@@ -147,6 +151,28 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.payload(request)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipCreateResponse.class);
+	}
+	
+	@Override
+	public ComponentCreateResponse createComponent(ComponentCreateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/component/create")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentCreateResponse.class);
+	}
+
+	@Override
+	public ComponentDeleteResponse deleteComponent(ComponentDeleteRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/component/delete")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentDeleteResponse.class);
 	}
 
 }

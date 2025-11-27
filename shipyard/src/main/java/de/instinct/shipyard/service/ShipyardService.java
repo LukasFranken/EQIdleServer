@@ -9,6 +9,10 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.ComponentCreateRequest;
+import de.instinct.api.shipyard.dto.admin.ComponentCreateResponse;
+import de.instinct.api.shipyard.dto.admin.ComponentDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.ComponentDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 
@@ -37,5 +41,9 @@ public interface ShipyardService {
 	ShipAddResponse addBlueprint(String token, int shipid);
 
 	ShipCreateResponse createShip(ShipCreateRequest request);
+	
+	ComponentCreateResponse createComponent(ComponentCreateRequest request);
+
+	ComponentDeleteResponse deleteComponent(ComponentDeleteRequest request);
 
 }
