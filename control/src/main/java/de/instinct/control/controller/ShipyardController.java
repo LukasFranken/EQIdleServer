@@ -80,7 +80,7 @@ public class ShipyardController {
     @GetMapping("/modal/shipoverviewmodal/{shipname}/{componentID}")
     public String getComponentLevels(Model model, @PathVariable("shipname") String shipname, @PathVariable("componentID") int componentID) {
         shipyardService.prepareComponentLevelTable(model, shipname, componentID);
-        return "content/modal/shipoverviewmodalfragments/componentlevelstable :: componentlevelstable";
+        return "content/modal/shipoverviewmodalfragments/componentlevel :: componentlevel";
     }
     
     @GetMapping("/modal/shipoverviewmodal/{shipname}/{componentID}/{level}")

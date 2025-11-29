@@ -12,9 +12,9 @@
 					</div>
 				</div>
 				<div class="create-component-section">
-					<label id="component-response-label"> </label>
-           			<form id="create-component-form" onsubmit="createComponent(document.getElementById('shipname').textContent, document.getElementById('type').value, document.getElementById('component-type').value); return false;">
-               			<div class="create-component-form">
+					<label id="create-response-label"> </label>
+           			<form class="create-component-form" id="create-component-form" onsubmit="createComponent(document.getElementById('shipname').textContent, document.getElementById('type').value, document.getElementById('component-type').value); return false;">
+               			<div class="create-component-form-container">
                   			<select id="type" name="type" style="margin-left: 10px;">
                        			<option value="WEAPON">WEAPON</option>
                        			<option value="ENGINE">ENGINE</option>
@@ -28,21 +28,14 @@
 				</div>
 			</div>
 			
-			<div class="component-overview-view">
-				<button class="back-btn">&larr; Back</button>
-				<h3 class="component-title">Component Name</h3>
-				
-				<div class="component-level-table"></div>
-			</div>
+			<div class="component-level-view"></div>
 			
 			<div class="level-details-view">
-				<button class="back-btn">&larr; Back</button>
-				<h4 class="level-title">Level Details</h4>
-				
+				<button class="back-btn" target="level">&larr; Back</button>
 				<div class="level-attribute-table"></div>
 			</div>
 		</div>
-	</div>e
+	</div>
 </body>
 
 </html>

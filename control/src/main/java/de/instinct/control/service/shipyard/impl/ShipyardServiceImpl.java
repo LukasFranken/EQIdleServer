@@ -167,8 +167,6 @@ public class ShipyardServiceImpl implements ShipyardService {
     			.headers(headers)
     			.rows(rows)
 				.build());
-    	
-    	prepareComponentLevelTable(model, shipname, 0);
 	}
 	
 	@Override

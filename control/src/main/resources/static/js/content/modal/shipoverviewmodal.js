@@ -3,10 +3,8 @@ function initializeComponentRows() {
     if (!container) return;
 
     const componentsView = container.querySelector('.components-view');
-    const overviewView = container.querySelector('.component-overview-view');
+    const levelView = container.querySelector('.component-level-view');
     const levelDetailsView = container.querySelector('.level-details-view');
-    const componentTitle = overviewView.querySelector('.component-title');
-    const levelTitle = levelDetailsView.querySelector('.level-title');
     const backBtns = container.querySelectorAll('.back-btn');
 
 	// Component row click handler
@@ -21,7 +19,7 @@ function initializeComponentRows() {
 	        fetch(endpoint, { method: 'GET' })
 	            .then(response => response.text())
 	            .then(html => {
-	                const tableContent = document.querySelector('.component-level-table');
+	                const tableContent = document.querySelector('.component-level-view');
 	                tableContent.innerHTML = html;
 	                if (typeof initializeComponentRows === 'function') {
 	                    initializeComponentRows();
@@ -29,9 +27,8 @@ function initializeComponentRows() {
 	            })
 	            .catch(error => console.error('Error loading modal:', error));
 	            
-	        componentTitle.textContent = componentName;
 	        componentsView.classList.add('slide-out');
-	        overviewView.classList.add('slide-in');
+	        levelView.classList.add('slide-in');
 	    });
 	});
 
@@ -55,8 +52,7 @@ function initializeComponentRows() {
 						            })
 						            .catch(error => console.error('Error loading modal:', error));
 			
-            levelTitle.textContent = `Level ${level}`;
-            overviewView.classList.add('slide-out');
+            levelView.classList.add('slide-out');
             levelDetailsView.classList.add('slide-in');
         });
     });
@@ -162,12 +158,12 @@ function initializeComponentRows() {
     // Back button handlers
     backBtns.forEach(btn => {
         btn.addEventListener('click', function () {
-            const isFromOverview = this.parentElement.classList.contains('component-overview-view');
-            if (isFromOverview) {
+            if (this.getAttribute('target') === 'components') {
                 componentsView.classList.remove('slide-out');
-                overviewView.classList.remove('slide-in');
-            } else {
-                overviewView.classList.remove('slide-out');
+                levelView.classList.remove('slide-in');
+            } 
+            if (this.getAttribute('target') === 'level') {
+                levelView.classList.remove('slide-out');
                 levelDetailsView.classList.remove('slide-in');
             }
         });
@@ -191,17 +187,17 @@ function createComponent(shipname, type, componentType) {
     .then(response => response.json())
     .then(data => {
         if (data === 'SUCCESS') {
-            document.getElementById('component-response-label').textContent = 'Component created successfully!';
-            document.getElementById('component-response-label').style.color = 'green';
+            document.getElementById('create-response-label').textContent = 'Component created successfully!';
+            document.getElementById('create-response-label').style.color = 'green';
             reloadModal(shipname);
         } else {
-            document.getElementById('component-response-label').textContent = 'Error: ' + data;
-            document.getElementById('component-response-label').style.color = 'red';
+            document.getElementById('create-response-label').textContent = 'Error: ' + data;
+            document.getElementById('create-response-label').style.color = 'red';
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        document.getElementById('component-response-label').textContent = 'Failed to create component.';
+        document.getElementById('create-response-label').textContent = 'Failed to create component.';
     });
 	
 }

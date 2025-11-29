@@ -5,9 +5,13 @@
 }
 
 .components-view,
-.component-overview-view {
-	transition: transform 0.3s ease-in-out;
-	height: 100%;
+.component-level-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease-in-out;
 }
 
 .create-component-section {
@@ -16,6 +20,28 @@
 }
 
 .create-component-form {
+    margin-block-end: 0em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.create-component-form-container {
+    display: flex;
+    align-items: center;
+}
+
+.create-component-level-section {
+	flex-shrink: 0;
+    margin-top: 10px;
+}
+
+.create-component-level-form {
+    margin-block-end: 0em;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.create-component-level-form-container {
     display: flex;
     align-items: center;
 }
@@ -26,7 +52,7 @@
 	right: 0;
 }
 
-.component-response-label {
+.create-response-label {
     display: block;
     margin-bottom: 10px;
     color: red;
@@ -43,6 +69,12 @@
     overflow: hidden;
 }
 
+.component-level-table-view {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+}
+
 .components-table-view thead th:nth-child(2),
 .components-table-view tbody td:nth-child(2) {
 	width: 100px;
@@ -57,16 +89,24 @@
 	transform: translateX(-100%);
 }
 
-.component-overview-view {
+.component-level-view {
 	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
 	transform: translateX(100%);
 }
 
-.component-overview-view.slide-in {
+.component-level-view.slide-in {
 	transform: translateX(0);
+}
+
+.component-level-view.slide-out {
+	transform: translateX(-100%);
+}
+
+.component-level-view.slide-out-right {
+    transform: translateX(100%);
 }
 
 .component-row {
@@ -90,10 +130,6 @@
 
 .level-details-view.slide-in {
 	transform: translateX(0);
-}
-
-.component-overview-view.slide-out {
-	transform: translateX(-100%);
 }
 
 .level-row {
