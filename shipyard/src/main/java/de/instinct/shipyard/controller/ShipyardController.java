@@ -26,8 +26,20 @@ import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
@@ -123,6 +135,36 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/admin/component/delete")
 	public ResponseEntity<ComponentDeleteResponse> deleteComponent(@RequestBody ComponentDeleteRequest request) {
 		return ResponseEntity.ok(service.deleteComponent(request));
+	}
+	
+	@PostMapping("/admin/componentlevel/create")
+	public ResponseEntity<ComponentLevelCreateResponse> createComponentLevel(@RequestBody ComponentLevelCreateRequest request) {
+		return ResponseEntity.ok(service.createComponentLevel(request));
+	}
+	
+	@PostMapping("/admin/componentlevel/update")
+	public ResponseEntity<ComponentLevelUpdateResponse> updateComponentLevel(@RequestBody ComponentLevelUpdateRequest request) {
+		return ResponseEntity.ok(service.updateComponentLevel(request));
+	}
+	
+	@PostMapping("/admin/componentlevel/delete")
+	public ResponseEntity<ComponentLevelDeleteResponse> deleteComponentLevel(@RequestBody ComponentLevelDeleteRequest request) {
+		return ResponseEntity.ok(service.deleteComponentLevel(request));
+	}
+	
+	@PostMapping("/admin/levelattribute/create")
+	public ResponseEntity<LevelAttributeCreateResponse> createLevelAttribute(@RequestBody LevelAttributeCreateRequest request) {
+		return ResponseEntity.ok(service.createLevelAttribute(request));
+	}
+	
+	@PostMapping("/admin/levelattribute/update")
+	public ResponseEntity<LevelAttributeUpdateResponse> updateLevelAttribute(@RequestBody LevelAttributeUpdateRequest request) {
+		return ResponseEntity.ok(service.updateLevelAttribute(request));
+	}
+	
+	@PostMapping("/admin/levelattribute/delete")
+	public ResponseEntity<LevelAttributeDeleteResponse> deleteLevelAttribute(@RequestBody LevelAttributeDeleteRequest request) {
+		return ResponseEntity.ok(service.deleteLevelAttribute(request));
 	}
 	
 }

@@ -1,0 +1,21 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="shipoverviewmodal">
+		<div class="title-row">
+    		<h3 id="shipname" th:text="${name}"></h3>
+    		<h3 id="componentname"></h3>
+    		<h3 id="componentid"></h3>
+    		<h3 id="componenttype"></h3>
+    		<h3 id="componentlevel"></h3>
+		</div>
+
+		<div class="modal-view-container">
+			<div th:replace="~{content/modal/shipoverview/fragments/components :: components}"></div>
+			<div th:replace="~{content/modal/shipoverview/fragments/componentlevels :: componentlevels}"></div>
+			<div th:replace="~{content/modal/shipoverview/fragments/levelattributes :: levelattributes}"></div>
+		</div>
+	</div>
+</body>
+
+</html>

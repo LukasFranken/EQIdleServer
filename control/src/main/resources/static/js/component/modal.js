@@ -1,47 +1,48 @@
 if (typeof window !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', function () {
-		document.querySelectorAll('[modal]').forEach(btn => {
-			btn.addEventListener('click', function () {
-				loadModal(this.getAttribute('modal'));
-			});
-		});
-        document.querySelectorAll('[data-modal]').forEach(btn => {
-            btn.addEventListener('click', function () {
-                loadDataModal(this.getAttribute('data-modal').split('-')[0], this.getAttribute('data-modal').split('-')[1]);
-            });
-        });
-		document.querySelectorAll('[param-modal]').forEach(btn => {
-			btn.addEventListener('click', function () {
-				loadParamModal(this.getAttribute('param-modal').split('-')[0], this.getAttribute('param-modal').split('-')[1], this.getAttribute('param'));
-			});
-		});
-    });
-	
-	function loadParamModal(controller, modalName, param) {
-		var endpoint = `/${controller}/modal/${modalName}/${param}`;
-		fetchModal(endpoint);
-	}
-	
-	function loadDataModal(controller, modalName) {
-		var endpoint = `/${controller}/modal/${modalName}`;
-		fetchModal(endpoint);
-	}
-	
-	function loadModal(modalName) {
-		var endpoint = `/modal/${modalName}`;
-		fetchModal(endpoint);
+	document.querySelectorAll('[param-modal]').forEach(btn => {
+	    btn.addEventListener('click', function () {
+	        loadParamModal(this.getAttribute('param-modal').split('-')[0], this.getAttribute('param-modal').split('-')[1], this.getAttribute('param'), this.getAttribute('init-method'));
+	    });
+	});
+
+	document.querySelectorAll('[data-modal]').forEach(btn => {
+	    btn.addEventListener('click', function () {
+	        loadDataModal(this.getAttribute('data-modal').split('-')[0], this.getAttribute('data-modal').split('-')[1], this.getAttribute('init-method'));
+	    });
+	});
+
+	document.querySelectorAll('[modal]').forEach(btn => {
+	    btn.addEventListener('click', function () {
+	        loadModal(this.getAttribute('modal'), this.getAttribute('init-method'));
+	    });
+	});
+
+	function loadParamModal(controller, modalName, param, initMethod) {
+	    var endpoint = `/${controller}/modal/${modalName}/${param}`;
+	    fetchModal(endpoint, initMethod);
 	}
 
-	function fetchModal(endpoint) {
+	function loadDataModal(controller, modalName, initMethod) {
+	    var endpoint = `/${controller}/modal/${modalName}`;
+	    fetchModal(endpoint, initMethod);
+	}
+
+	function loadModal(modalName, initMethod) {
+	    var endpoint = `/modal/${modalName}`;
+	    fetchModal(endpoint, initMethod);
+	}
+
+	function fetchModal(endpoint, initMethod) {
         fetch(endpoint, { method: 'GET' })
-            .then(response => response.text())
+            .then(response => response.text()) 
             .then(html => {
 				const modalContent = document.querySelector('.modal-content');
 				const closeBtn = modalContent.querySelector('.close');
 				closeBtn.nextElementSibling.innerHTML = html;
 				toggleModal(true);
-				if (typeof initializeComponentRows === 'function') {
-					initializeComponentRows();
+				
+				if (initMethod && typeof window[initMethod] === 'function') {
+					window[initMethod]();
 				}
             })
             .catch(error => console.error('Error loading modal:', error));

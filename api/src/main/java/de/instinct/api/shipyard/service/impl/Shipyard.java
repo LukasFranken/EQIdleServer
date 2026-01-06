@@ -19,8 +19,20 @@ import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 import de.instinct.api.shipyard.service.ShipyardInterface;
 
 public class Shipyard extends BaseService implements ShipyardInterface {
@@ -186,6 +198,72 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.payload(request)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentDeleteResponse.class);
+	}
+
+	@Override
+	public ComponentLevelCreateResponse createComponentLevel(ComponentLevelCreateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/componentlevel/create")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentLevelCreateResponse.class);
+	}
+
+	@Override
+	public ComponentLevelUpdateResponse updateComponentLevel(ComponentLevelUpdateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/componentlevel/update")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentLevelUpdateResponse.class);
+	}
+
+	@Override
+	public ComponentLevelDeleteResponse deleteComponentLevel(ComponentLevelDeleteRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/componentlevel/delete")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ComponentLevelDeleteResponse.class);
+	}
+
+	@Override
+	public LevelAttributeCreateResponse createLevelAttribute(LevelAttributeCreateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/levelattribute/create")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, LevelAttributeCreateResponse.class);
+	}
+
+	@Override
+	public LevelAttributeUpdateResponse updateLevelAttribute(LevelAttributeUpdateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/levelattribute/update")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, LevelAttributeUpdateResponse.class);
+	}
+
+	@Override
+	public LevelAttributeDeleteResponse deleteLevelAttribute(LevelAttributeDeleteRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/levelattribute/delete")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, LevelAttributeDeleteResponse.class);
 	}
 
 }

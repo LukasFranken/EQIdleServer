@@ -1,21 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-	<div th:fragment="table(table)">
-		<div class="table-wrapper">
-			<table>
-				<thead>
-					<tr>
-						<th th:each="header : ${table.headers}" th:class="${header.className}" th:text="${header.label}"></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="row : ${table.rows}" th:class="${row.className}"  th:attr="__${row.attributes}__">
-						<td th:each="cell : ${row.cells}" th:utext="${cell.value}" th:class="${cell.className}"  th:attr="__${cell.attributes}__"></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
+	<div class="table-wrapper" th:fragment="table(table)">
+		<table>
+			<thead>
+				<tr>
+					<th th:each="header : ${table.headers}" th:class="${header.className}" th:text="${header.label}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="row : ${table.rows}" th:class="${row.className}" th:attr="__${row.attributes}__">
+					<td th:each="cell : ${row.cells}" th:utext="${cell.value}" th:class="${cell.className}" th:attr="__${cell.attributes}__"></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 </body>
 

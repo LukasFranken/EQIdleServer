@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div class="component-level-view" th:fragment="componentlevels">
+		<div class="component-level-table-view" th:if="${componentlevels != null and not #lists.isEmpty(componentlevels.rows)}">
+    		<div th:replace="~{component/table :: table(${componentlevels})}"></div>
+		</div>
+		<div class="create-component-level-section">
+    		<label id="component-level-response-label"> </label>
+    		<div class="component-level-buttons">
+        		<button class="back-btn" onclick="backToComponents()">&larr; Back</button>
+        		<button class="create-component-level-submit" onclick="addLevel(document.getElementById('shipname').textContent, document.getElementById('componentid').textContent)">Add Level</button>
+    		</div>
+		</div>
+	</div>
+</body>
+
+</html>

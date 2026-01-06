@@ -27,8 +27,20 @@ import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.ComponentLevelUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeCreateRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeCreateResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 import de.instinct.api.shipyard.dto.ship.PlayerShipData;
 import de.instinct.api.shipyard.dto.ship.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ship.ShipComponent;
@@ -37,6 +49,8 @@ import de.instinct.api.shipyard.dto.ship.ShipEngine;
 import de.instinct.api.shipyard.dto.ship.ShipHull;
 import de.instinct.api.shipyard.dto.ship.ShipShield;
 import de.instinct.api.shipyard.dto.ship.ShipWeapon;
+import de.instinct.api.shipyard.dto.ship.component.ComponentAttribute;
+import de.instinct.api.shipyard.dto.ship.component.ComponentLevel;
 import de.instinct.api.shipyard.dto.ship.component.ShipComponentType;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
 import de.instinct.base.file.FileManager;
@@ -371,6 +385,189 @@ public class ShipyardServiceImpl implements ShipyardService {
 		
 		saveBaseData();
 		return ComponentUpdateResponse.SUCCESS;
+	}
+
+	@Override
+	public ComponentLevelCreateResponse createComponentLevel(ComponentLevelCreateRequest request) {
+		if (request.getShipname() == null) return ComponentLevelCreateResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return ComponentLevelCreateResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return ComponentLevelCreateResponse.SHIP_NOT_FOUND;
+		
+		boolean updated = false;
+		for (ShipComponent component : blueprint.getComponents()) {
+			if (component.getId() == request.getComponentID()) {
+				ShipyardUtility.createShipComponentLevel(component);
+				updated = true;
+			}
+		}
+		if (!updated) return ComponentLevelCreateResponse.COMPONENT_NOT_FOUND; 
+		
+		saveBaseData();
+		return ComponentLevelCreateResponse.SUCCESS;
+	}
+
+	@Override
+	public ComponentLevelUpdateResponse updateComponentLevel(ComponentLevelUpdateRequest request) {
+		if (request.getShipname() == null) return ComponentLevelUpdateResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return ComponentLevelUpdateResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return ComponentLevelUpdateResponse.SHIP_NOT_FOUND;
+		
+		boolean foundComponent = false;
+		for (ShipComponent component : blueprint.getComponents()) {
+			if (component.getId() == request.getComponentId()) {
+				boolean foundLevel = false;
+				for (ComponentLevel level : component.getLevels()) {
+					if (level.getLevel() == request.getLevel()) {
+						ShipyardUtility.updateComponentLevel(level, request.getRequirementValue(), request.getRequirementType());
+						foundLevel = true;
+					}
+				}
+				if (!foundLevel) return ComponentLevelUpdateResponse.COMPONENT_LEVEL_NOT_FOUND; 
+				foundComponent = true;
+			}
+		}
+		if (!foundComponent) return ComponentLevelUpdateResponse.COMPONENT_NOT_FOUND; 
+		
+		saveBaseData();
+		return ComponentLevelUpdateResponse.SUCCESS;
+	}
+
+	@Override
+	public ComponentLevelDeleteResponse deleteComponentLevel(ComponentLevelDeleteRequest request) {
+		if (request.getShipname() == null) return ComponentLevelDeleteResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return ComponentLevelDeleteResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return ComponentLevelDeleteResponse.SHIP_NOT_FOUND;
+		
+		boolean updated = false;
+		for (ShipComponent component : blueprint.getComponents()) {
+			if (component.getId() == request.getComponentId()) {
+				if (!component.getLevels().removeIf(c -> c.getLevel() == request.getLevel())) return ComponentLevelDeleteResponse.COMPONENT_LEVEL_NOT_FOUND;
+				updated = true;
+			}
+		}
+		if (!updated) return ComponentLevelDeleteResponse.COMPONENT_NOT_FOUND; 
+		
+		saveBaseData();
+		return ComponentLevelDeleteResponse.SUCCESS;
+	}
+	
+	@Override
+	public LevelAttributeCreateResponse createLevelAttribute(LevelAttributeCreateRequest request) {
+		if (request.getShipname() == null) return LevelAttributeCreateResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return LevelAttributeCreateResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return LevelAttributeCreateResponse.SHIP_NOT_FOUND;
+		
+		boolean foundComponent = false;
+		boolean foundLevel = false;
+		for (ShipComponent component : blueprint.getComponents()) {
+			if (component.getId() == request.getComponentId()) {
+				for (ComponentLevel componentLevel : component.getLevels()) {
+					if (componentLevel.getLevel() == request.getLevel()) {
+						ShipyardUtility.createShipLevelAttribute(componentLevel);
+						foundLevel = true;
+					}
+				}
+				foundComponent = true;
+			}
+		}
+		if (!foundLevel) return LevelAttributeCreateResponse.LEVEL_INVALID;
+		if (!foundComponent) return LevelAttributeCreateResponse.COMPONENT_NOT_FOUND; 
+		
+		saveBaseData();
+		return LevelAttributeCreateResponse.SUCCESS;
+	}
+
+	@Override
+	public LevelAttributeUpdateResponse updateLevelAttribute(LevelAttributeUpdateRequest request) {
+		if (request.getShipname() == null) return LevelAttributeUpdateResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return LevelAttributeUpdateResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return LevelAttributeUpdateResponse.SHIP_NOT_FOUND;
+		
+		boolean foundComponent = false;
+		boolean foundLevel = false;
+		for (ShipComponent component : blueprint.getComponents()) {
+			if (component.getId() == request.getComponentId()) {
+				for (ComponentLevel componentLevel : component.getLevels()) {
+					if (componentLevel.getLevel() == request.getLevel()) {
+						for (ComponentAttribute attribute : componentLevel.getAttributes()) {
+							if (attribute.getId() == request.getAttributeId()) {
+								ShipyardUtility.updateLevelAttribute(attribute, request.getType(), request.getValue());
+								foundLevel = true;
+							}
+						}
+						foundLevel = true;
+					}
+				}
+				foundComponent = true;
+			}
+		}
+		if (!foundLevel) return LevelAttributeUpdateResponse.LEVEL_INVALID;
+		if (!foundComponent) return LevelAttributeUpdateResponse.COMPONENT_NOT_FOUND; 
+		
+		saveBaseData();
+		return LevelAttributeUpdateResponse.SUCCESS;
+	}
+
+	@Override
+	public LevelAttributeDeleteResponse deleteLevelAttribute(LevelAttributeDeleteRequest request) {
+		if (request.getShipname() == null) return LevelAttributeDeleteResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return LevelAttributeDeleteResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return LevelAttributeDeleteResponse.SHIP_NOT_FOUND;
+		
+		boolean foundComponent = false;
+		boolean foundLevel = false;
+		for (ShipComponent component : blueprint.getComponents()) {
+			if (component.getId() == request.getComponentId()) {
+				for (ComponentLevel componentLevel : component.getLevels()) {
+					if (componentLevel.getLevel() == request.getLevel()) {
+						if (!componentLevel.getAttributes().removeIf(c -> c.getId() == request.getAttributeId())) return LevelAttributeDeleteResponse.ATTRIBUTE_NOT_FOUND;
+						foundLevel = true;
+					}
+				}
+				foundComponent = true;
+			}
+		}
+		if (!foundLevel) return LevelAttributeDeleteResponse.LEVEL_INVALID;
+		if (!foundComponent) return LevelAttributeDeleteResponse.COMPONENT_NOT_FOUND; 
+		
+		saveBaseData();
+		return LevelAttributeDeleteResponse.SUCCESS;
 	}
 	
 }

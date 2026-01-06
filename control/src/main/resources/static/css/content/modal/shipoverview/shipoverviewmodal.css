@@ -1,0 +1,96 @@
+.modal-view-container {
+	position: relative;
+	overflow: hidden;
+	height: 300px;
+}
+
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.title-row h3 {
+    flex: 1;
+    text-align: center;
+}
+
+.title-row h3:first-child {
+    text-align: left;
+}
+
+.title-row h3:second-child {
+    text-align: right;
+}
+
+.title-row h3:third-child {
+    text-align: right;
+    width: 30px;
+}
+
+.title-row h3:fourth-child {
+    text-align: left;
+}
+
+.title-row h3:last-child {
+    text-align: center;
+}
+
+.response-label {
+    display: block;
+    margin-bottom: 10px;
+    color: red;
+}
+
+.table {
+	width: 100%;
+}
+
+.cancel-btn, .confirm-btn, .delete-btn {
+	width: 30px;
+	padding: 4px;
+	flex-shrink: 0;
+}
+
+.confirm-btn {
+	margin: 0 2px;
+	background-color: #2d5016;
+}
+
+.confirm-btn:hover {
+	background-color: #3d6b1f;
+}
+
+.cancel-btn {
+	margin: 0 2px;
+	background-color: #5d1f1f;
+}
+
+.cancel-btn:hover {
+	background-color: #7d2f2f;
+}
+
+.edit-btn {
+	width: auto;
+}
+
+.delete-btn {
+    background-color: #8b0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 0px;
+}
+
+.delete-btn:hover {
+    background-color: #a00000;
+}
+
+.edit-type {
+	width: 120px;
+}
+
+.edit-value {
+	width: 70px;
+}

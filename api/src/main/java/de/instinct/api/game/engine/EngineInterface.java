@@ -84,7 +84,7 @@ public class EngineInterface {
 		return turrets;
 	}
 	
-	public static List<ShipData> getShips(List<PlayerShipData> playerShips, ShipyardData shipyardData) {;
+	public static List<ShipData> getShips(List<PlayerShipData> playerShips, ShipyardData shipyardData) {
 		List<ShipData> ships = new ArrayList<>();
 		for (PlayerShipData playerShip : playerShips) {
 			ships.add(getShipData(playerShip, shipyardData));

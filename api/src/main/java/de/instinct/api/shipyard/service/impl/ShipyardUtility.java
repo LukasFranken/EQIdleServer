@@ -25,10 +25,15 @@ import de.instinct.api.shipyard.dto.ship.component.level.HullLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.ShieldLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
 import de.instinct.api.shipyard.dto.ship.component.types.core.CoreAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.core.CoreRequirementType;
 import de.instinct.api.shipyard.dto.ship.component.types.engine.EngineAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.engine.EngineRequirementType;
 import de.instinct.api.shipyard.dto.ship.component.types.hull.HullAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.hull.HullRequirementType;
 import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldRequirementType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
+import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponRequirementType;
 import de.instinct.engine.model.ship.components.types.CoreType;
 import de.instinct.engine.model.ship.components.types.EngineType;
 import de.instinct.engine.model.ship.components.types.HullType;
@@ -159,6 +164,125 @@ public class ShipyardUtility {
 		if (component instanceof ShipHull) ((ShipHull) component).setType(HullType.valueOf(request.getType()));
 		if (component instanceof ShipShield) ((ShipShield) component).setType(ShieldType.valueOf(request.getType()));
 		if (component instanceof ShipWeapon) ((ShipWeapon) component).setType(WeaponType.valueOf(request.getType()));
+	}
+
+	public static void createShipComponentLevel(ShipComponent component) {
+		int newLevel = component.getLevels().size() > 0 ? component.getLevels().get(component.getLevels().size() - 1).getLevel() + 1 : 0;
+		if (component instanceof ShipCore) {
+			CoreLevel level = new CoreLevel();
+			level.setRequirementType(CoreRequirementType.CP_USED);
+			level.setLevel(newLevel);
+			level.setAttributes(new ArrayList<>());
+			((ShipCore) component).getLevels().add(level);
+		}
+		if (component instanceof ShipEngine) {
+			EngineLevel level = new EngineLevel();
+			level.setRequirementType(EngineRequirementType.DISTANCE_TRAVELED);
+			level.setLevel(newLevel);
+			level.setAttributes(new ArrayList<>());
+			((ShipEngine) component).getLevels().add(level);
+		}
+		if (component instanceof ShipHull) {
+			HullLevel level = new HullLevel();
+			level.setRequirementType(HullRequirementType.DAMAGE_TAKEN);
+			level.setLevel(newLevel);
+			level.setAttributes(new ArrayList<>());
+			((ShipHull) component).getLevels().add(level);
+		}
+		if (component instanceof ShipShield) {
+			ShieldLevel level = new ShieldLevel();
+			level.setRequirementType(ShieldRequirementType.DAMAGE_ABSORBED);
+			level.setLevel(newLevel);
+			level.setAttributes(new ArrayList<>());
+			((ShipShield) component).getLevels().add(level);
+		}
+		if (component instanceof ShipWeapon) {
+			WeaponLevel level = new WeaponLevel();
+			level.setRequirementType(WeaponRequirementType.DAMAGE_DEALT);
+			level.setLevel(newLevel);
+			level.setAttributes(new ArrayList<>());
+			((ShipWeapon) component).getLevels().add(level);
+		}
+	}
+
+	public static void updateComponentLevel(ComponentLevel level, float requirementValue, String requirementType) {
+		if (level instanceof CoreLevel) {
+			((CoreLevel) level).setRequirementType(CoreRequirementType.valueOf(requirementType));
+			((CoreLevel) level).setRequirementValue(requirementValue);
+		}
+		if (level instanceof EngineLevel) {
+			((EngineLevel) level).setRequirementType(EngineRequirementType.valueOf(requirementType));
+			((EngineLevel) level).setRequirementValue(requirementValue);
+		}
+		if (level instanceof HullLevel) {
+			((HullLevel) level).setRequirementType(HullRequirementType.valueOf(requirementType));
+			((HullLevel) level).setRequirementValue(requirementValue);
+		}
+		if (level instanceof ShieldLevel) {
+			((ShieldLevel) level).setRequirementType(ShieldRequirementType.valueOf(requirementType));
+			((ShieldLevel) level).setRequirementValue(requirementValue);
+		}
+		if (level instanceof WeaponLevel) {
+			((WeaponLevel) level).setRequirementType(WeaponRequirementType.valueOf(requirementType));
+			((WeaponLevel) level).setRequirementValue(requirementValue);
+		}
+	}
+
+	public static void createShipLevelAttribute(ComponentLevel componentLevel) {
+		int newId = componentLevel.getAttributes().size() > 0 ? componentLevel.getAttributes().get(componentLevel.getAttributes().size() - 1).getId() + 1 : 0;
+		if (componentLevel instanceof CoreLevel) {
+			CoreAttribute attribute = new CoreAttribute();
+			attribute.setId(newId);
+			attribute.setType(CoreAttributeType.CP_COST);
+			((CoreLevel) componentLevel).getAttributes().add(attribute);
+		}
+		if (componentLevel instanceof EngineLevel) {
+			EngineAttribute attribute = new EngineAttribute();
+			attribute.setId(newId);
+			attribute.setType(EngineAttributeType.SPEED);
+			((EngineLevel) componentLevel).getAttributes().add(attribute);
+		}
+		if (componentLevel instanceof HullLevel) {
+			HullAttribute attribute = new HullAttribute();
+			attribute.setId(newId);
+			attribute.setType(HullAttributeType.STRENGTH);
+			((HullLevel) componentLevel).getAttributes().add(attribute);
+		}
+		if (componentLevel instanceof ShieldLevel) {
+			ShieldAttribute attribute = new ShieldAttribute();
+			attribute.setId(newId);
+			attribute.setType(ShieldAttributeType.STRENGTH);
+			((ShieldLevel) componentLevel).getAttributes().add(attribute);
+		}
+		if (componentLevel instanceof WeaponLevel) {
+			WeaponAttribute attribute = new WeaponAttribute();
+			attribute.setId(newId);
+			attribute.setType(WeaponAttributeType.DAMAGE);
+			((WeaponLevel) componentLevel).getAttributes().add(attribute);
+		}
+	}
+
+	public static void updateLevelAttribute(ComponentAttribute attribute, String type, float value) {
+		if (attribute instanceof CoreAttribute) {
+			((CoreAttribute) attribute).setType(CoreAttributeType.valueOf(type));
+			((CoreAttribute) attribute).setValue(value);
+		}
+		if (attribute instanceof EngineAttribute) {
+			((EngineAttribute) attribute).setType(EngineAttributeType.valueOf(type));
+			((EngineAttribute) attribute).setValue(value);
+		}
+		if (attribute instanceof HullAttribute) {
+			((HullAttribute) attribute).setType(HullAttributeType.valueOf(type));
+			((HullAttribute) attribute).setValue(value);
+		}
+		if (attribute instanceof ShieldAttribute) {
+			((ShieldAttribute) attribute).setType(ShieldAttributeType.valueOf(type));
+			((ShieldAttribute) attribute).setValue(value);
+		}
+		if (attribute instanceof WeaponAttribute) {
+			((WeaponAttribute) attribute).setType(WeaponAttributeType.valueOf(type));
+			((WeaponAttribute) attribute).setValue(value);
+		}
 	}
 
 }

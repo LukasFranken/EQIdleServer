@@ -1,0 +1,68 @@
+.level-attribute-view {
+	position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease-in-out;
+	display: flex;
+    flex-direction: column;
+    height: 100%;
+	transform: translateX(100%);
+}
+
+.level-attribute-table-view {
+	flex: 1;
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+}
+
+.level-attribute-table-view thead th:nth-child(2),
+.level-attribute-table-view tbody td:nth-child(2) {
+	width: 140px;
+}
+
+.level-attribute-table-view thead th:nth-child(3),
+.level-attribute-table-view tbody td:nth-child(3) {
+	width: 90px;;
+}
+
+.create-level-attribute-section {
+	flex-shrink: 0;
+    margin-top: 10px;
+}
+
+.create-level-attribute-submit {
+	margin-left: 10px;
+	position: absolute;
+	right: 0;
+}
+
+.level-attribute-row {
+	cursor: pointer;
+}
+
+.level-attribute-row:hover {
+	background-color: rgb(130, 130, 130);
+}
+
+.level-attribute-view.slide-in {
+	transform: translateX(0);
+}
+
+.level-attribute-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.level-attribute-actions {
+	display: flex;
+	gap: 4px;
+}
+
+.level-attribute-actions button {
+	margin: 0 2px;
+}

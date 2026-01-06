@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div class="level-attribute-view" th:fragment="levelattributes">
+    	<div class="level-attribute-table-view" th:if="${levelattributes != null and not #lists.isEmpty(levelattributes.rows)}">
+        	<div th:replace="~{component/table :: table(${levelattributes})}"></div>
+    	</div>
+    	<div class="create-level-attribute-section">
+    		<label id="level-attribute-response-label"> </label>
+    		<div class="level-attribute-buttons">
+        		<button class="back-btn" onclick="backToLevels()">&larr; Back</button>
+        		<button class="create-level-attribute-submit" onclick="addAttribute(document.getElementById('shipname').textContent, document.getElementById('componentid').textContent, document.getElementById('componentlevel').textContent)">Add Attribute</button>
+    		</div>
+		</div>
+	</div>
+</body>
+
+</html>

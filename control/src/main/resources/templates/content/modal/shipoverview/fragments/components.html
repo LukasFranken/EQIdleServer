@@ -1,0 +1,26 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div class="components-view" th:fragment="components">
+		<div class="components-table-view" th:if="${components != null and not #lists.isEmpty(components.rows)}">
+			<div th:replace="~{component/table :: table(${components})}"></div>
+		</div>
+		<div class="create-component-section">
+			<label id="create-component-response-label" class="response-label"> </label>
+			<form class="create-component-form" id="create-component-form"
+				onsubmit="createComponent(document.getElementById('shipname').textContent, document.getElementById('type').value, document.getElementById('component-type').value); return false;">
+				<div class="create-component-form-container">
+					<select id="type" name="type" style="margin-left: 10px;">
+						<option value="WEAPON">WEAPON</option>
+						<option value="ENGINE">ENGINE</option>
+						<option value="SHIELD">SHIELD</option>
+						<option value="HULL">HULL</option>
+					</select> <select id="component-type" name="type" style="margin-left: 10px;"></select>
+					<button class="create-component-submit" type="submit">Create</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>
