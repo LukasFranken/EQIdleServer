@@ -224,6 +224,7 @@ public class EngineInterface {
 	    shipData.weapons.add(weapon);
 	}
 
+	@SuppressWarnings("unchecked")
 	private static <T> T findLevel(ShipComponent component, PlayerShipData playerShip) {
 	    for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
 	        if (componentLevel.getId() == component.getId()) {
