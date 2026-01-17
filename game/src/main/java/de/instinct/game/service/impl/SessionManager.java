@@ -111,6 +111,7 @@ public class SessionManager {
 			finishData.setPlayedMS(session.getGameState().gameTimeMS);
 			finishData.setWinnerTeamId(session.getGameState().winner);
 			API.matchmaking().finish(session.getUuid(), finishData);
+			
 		}
 		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
 			clientUpdateRequired = true;

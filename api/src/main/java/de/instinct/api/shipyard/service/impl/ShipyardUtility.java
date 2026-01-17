@@ -284,5 +284,14 @@ public class ShipyardUtility {
 			((WeaponAttribute) attribute).setValue(value);
 		}
 	}
+	
+	public static ComponentAttribute getAttribute(ComponentLevel level, int attributeId) {
+		for (ComponentAttribute attribute : level.getAttributes()) {
+			if (attribute.getId() == attributeId) {
+				return attribute;
+			}
+		}
+		return null;
+	}
 
 }

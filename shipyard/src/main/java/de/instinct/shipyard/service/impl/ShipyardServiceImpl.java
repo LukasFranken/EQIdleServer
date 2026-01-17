@@ -41,6 +41,7 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
+import de.instinct.api.shipyard.dto.ship.PlayerShipComponentLevel;
 import de.instinct.api.shipyard.dto.ship.PlayerShipData;
 import de.instinct.api.shipyard.dto.ship.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ship.ShipComponent;
@@ -76,22 +77,34 @@ public class ShipyardServiceImpl implements ShipyardService {
 	public ShipyardInitializationResponseCode init(String token) {
 		if (userShipyards.containsKey(token)) return ShipyardInitializationResponseCode.ALREADY_INITIALIZED;
 		List<PlayerShipData> initShips = new ArrayList<>();
-		PlayerShipData initShipData = new PlayerShipData();
-		initShipData.setUuid(UUID.randomUUID().toString());
-		initShipData.setShipId(0);
-		initShipData.setBuilt(true);
-		initShipData.setInUse(true);
-		initShipData.setComponentLevels(new ArrayList<>());
-		initShips.add(initShipData);
-		
 		PlayerShipyardData initShipyardData = new PlayerShipyardData();
 		initShipyardData.setSlots(getBaseData().getBaseSlots());
 		initShipyardData.setActiveShipSlots(getBaseData().getBaseActiveShipSlots());
 		initShipyardData.setShips(initShips);
+		addShip(initShipyardData, "hawk");
+		initShipyardData.getShips().get(0).setInUse(true);
 		userShipyards.put(token, initShipyardData);
 		return ShipyardInitializationResponseCode.SUCCESS;
 	}
-
+	
+	public void addShip(PlayerShipyardData playerShipyard, String shipname) {
+		ShipBlueprint blueprint = getBlueprint(shipname);
+		if (blueprint == null) return;
+		
+		PlayerShipData initShipData = new PlayerShipData();
+		initShipData.setUuid(UUID.randomUUID().toString());
+		initShipData.setShipId(blueprint.getId());
+		initShipData.setBuilt(true);
+		initShipData.setComponentLevels(new ArrayList<>());
+		for (ShipComponent component : blueprint.getComponents()) {
+			PlayerShipComponentLevel playerComponentLevel = new PlayerShipComponentLevel();
+			playerComponentLevel.setId(component.getId());
+			initShipData.getComponentLevels().add(playerComponentLevel);
+		}
+		
+		playerShipyard.getShips().add(initShipData);
+	}
+	
 	@Override
 	public PlayerShipyardData getShipyardData(String token) {
 		PlayerShipyardData shipyard = userShipyards.get(token);
@@ -99,9 +112,31 @@ public class ShipyardServiceImpl implements ShipyardService {
 			init(token);
 			shipyard = userShipyards.get(token);
 		}
+		validate(shipyard);
 		return shipyard;
 	}
 	
+	private void validate(PlayerShipyardData shipyard) {
+		for (PlayerShipData playerShip : shipyard.getShips()) {
+			ShipBlueprint blueprint = getBlueprint(playerShip.getShipId());
+			if (playerShip.getComponentLevels().size() < blueprint.getComponents().size()) {
+				for (ShipComponent component : blueprint.getComponents()) {
+					boolean hasPlayerLevel = false;
+					for (PlayerShipComponentLevel existingLevel : playerShip.getComponentLevels()) {
+						if (existingLevel.getId() == component.getId()) {
+							hasPlayerLevel = true;
+						}
+					}
+					if (!hasPlayerLevel) {
+						PlayerShipComponentLevel playerComponentLevel = new PlayerShipComponentLevel();
+						playerComponentLevel.setId(component.getId());
+						playerShip.getComponentLevels().add(playerComponentLevel);
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public ShipyardData getBaseData() {
 		if (shipyardData == null) {
@@ -136,6 +171,24 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 		baseData.setBlueprintTags(blueprintTags);
 		FileManager.saveFile("base.data", ObjectJSONMapper.mapObject(baseData));
+	}
+	
+	private ShipBlueprint getBlueprint(String model) {
+		for (ShipBlueprint blueprint : shipyardData.getShipBlueprints()) {
+			if (blueprint.getModel().equalsIgnoreCase(model)) {
+				return blueprint;
+			}
+		}
+		return null;
+	}
+
+	private ShipBlueprint getBlueprint(int id) {
+		for (ShipBlueprint blueprint : shipyardData.getShipBlueprints()) {
+			if (blueprint.getId() == id) {
+				return blueprint;
+			}
+		}
+		return null;
 	}
 
 	@Override

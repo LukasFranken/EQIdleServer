@@ -27,7 +27,7 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 	public void start() {
 		SessionManager.init();
 		connectionListener = new ServerConnectionListener();
-		server = new Server();
+		server = new Server(65536, 65536);
 		Kryo kryo = server.getKryo();
         KryoRegistrator.registerAll(kryo);
 		server.addListener(connectionListener);

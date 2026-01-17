@@ -73,10 +73,12 @@ public class EngineInterface {
 				platform.rotationSpeed = planetTurretBlueprint.getRotationSpeed();
 				turretData.platform = platform;
 				
-				/*HullData hull = new HullData();
+				HullData hull = new HullData();
 				hull.strength = planetTurretBlueprint.getPlanetDefense().getArmor();
-				turretData.defense = getDefense(planetTurretBlueprint.getPlanetDefense());
-				turretData.weapon = getWeapon(planetTurretBlueprint.getPlanetWeapon());*/
+				turretData.hull = hull;
+				
+				turretData.weapons = new ArrayList<>();
+				turretData.shields = new ArrayList<>();
 				
 				turrets.add(turretData);
 			}
@@ -93,147 +95,142 @@ public class EngineInterface {
 	}
 	
 	public static ShipData getShipData(PlayerShipData playerShip, ShipyardData shipyardData) {
-		for (ShipBlueprint shipBlueprint : shipyardData.getShipBlueprints()) {
-			if (shipBlueprint.getId() == playerShip.getShipId()) {
-				ShipData shipData = new ShipData();
-				shipData.model = shipBlueprint.getModel();
-				shipData.shields = new ArrayList<>();
-				shipData.weapons = new ArrayList<>();
-				for (ShipComponent component : shipBlueprint.getComponents()) {
-					if (component instanceof ShipCore) {
-						ShipCore shipCore = (ShipCore) component;
-						CoreData core = new CoreData();
-						core.type = CoreType.valueOf(shipCore.getType().toString());
-						CoreLevel currentCoreLevel = null;
-						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
-							if (componentLevel.getId() == shipCore.getId()) {
-								currentCoreLevel = (CoreLevel)shipCore.getLevels().get(componentLevel.getLevel());
-								break;
-							}
-						}
-						if (currentCoreLevel != null) {
-							for (ComponentAttribute attribute : currentCoreLevel.getAttributes()) {
-								CoreAttribute coreAttribute = (CoreAttribute) attribute;
-								if (coreAttribute.getType() == CoreAttributeType.CP_COST) {
-									shipData.cpCost = (int) attribute.getValue();
-								}
-								if (coreAttribute.getType() == CoreAttributeType.RESOURCE_COST) {
-									shipData.resourceCost = (float) attribute.getValue();
-								}
-							}
-						}
-						shipData.core = core;
-					}
-					if (component instanceof ShipEngine) {
-						ShipEngine shipEngine = (ShipEngine) component;
-						EngineData engine = new EngineData();	
-						engine.type = EngineType.valueOf(shipEngine.getType().toString());
-						EngineLevel currentEngineLevel = null;
-						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
-							if (componentLevel.getId() == shipEngine.getId()) {
-								currentEngineLevel = (EngineLevel)shipEngine.getLevels().get(componentLevel.getLevel());
-								break;
-							}
-						}
-						if (currentEngineLevel != null) {
-							for (ComponentAttribute attribute : currentEngineLevel.getAttributes()) {
-								EngineAttribute engineAttribute = (EngineAttribute) attribute;
-								if (engineAttribute.getType() == EngineAttributeType.SPEED) {
-									engine.speed = (float) attribute.getValue();
-								}
-								if (engineAttribute.getType() == EngineAttributeType.ACCELERATION) {
-									engine.acceleration = (float) attribute.getValue();
-								}
-							}
-						}
-						shipData.engine = engine;
-					}
-					if (component instanceof ShipHull) {
-						ShipHull shipHull = (ShipHull) component;
-						HullData hull = new HullData();	
-						hull.type = HullType.valueOf(shipHull.getType().toString());
-						HullLevel currentHullLevel = null;
-						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
-							if (componentLevel.getId() == shipHull.getId()) {
-								currentHullLevel = (HullLevel)shipHull.getLevels().get(componentLevel.getLevel());
-								break;
-							}
-						}
-						if (currentHullLevel != null) {
-							for (ComponentAttribute attribute : currentHullLevel.getAttributes()) {
-								HullAttribute hullAttribute = (HullAttribute) attribute;
-								if (hullAttribute.getType() == HullAttributeType.STRENGTH) {
-									hull.strength = (float) attribute.getValue();
-								}
-								if (hullAttribute.getType() == HullAttributeType.REPAIR_SPEED) {
-									hull.repairSpeed = (float) attribute.getValue();
-								}
-							}
-						}
-						shipData.hull = hull;
-					}
-					if (component instanceof ShipShield) {
-						ShipShield shipShield = (ShipShield) component;
-						ShieldData shield = new ShieldData();	
-						shield.type = ShieldType.valueOf(shipShield.getType().toString());
-						ShieldLevel currentShieldLevel = null;
-						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
-							if (componentLevel.getId() == shipShield.getId()) {
-								currentShieldLevel = (ShieldLevel)shipShield.getLevels().get(componentLevel.getLevel());
-								break;
-							}
-						}
-						if (currentShieldLevel != null) {
-							for (ComponentAttribute attribute : currentShieldLevel.getAttributes()) {
-								ShieldAttribute shieldAttribute = (ShieldAttribute) attribute;
-								if (shieldAttribute.getType() == ShieldAttributeType.STRENGTH) {
-									shield.strength = (float) attribute.getValue();
-								}
-								if (shieldAttribute.getType() == ShieldAttributeType.GENERATION) {
-									shield.generation = (float) attribute.getValue();
-								}
-							}
-						}
-						shipData.shields.add(shield);
-					}
-					if (component instanceof ShipWeapon) {
-						ShipWeapon shipWeapon = (ShipWeapon) component;
-						WeaponData weapon = new WeaponData();	
-						weapon.type = WeaponType.valueOf(shipWeapon.getType().toString());
-						WeaponLevel currentWeaponLevel = null;
-						for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
-							if (componentLevel.getId() == shipWeapon.getId()) {
-								currentWeaponLevel = (WeaponLevel)shipWeapon.getLevels().get(componentLevel.getLevel());
-								break;
-							}
-						}
-						if (currentWeaponLevel != null) {
-							for (ComponentAttribute attribute : currentWeaponLevel.getAttributes()) {
-								WeaponAttribute weaponAttribute = (WeaponAttribute) attribute;
-								if (weaponAttribute.getType() == WeaponAttributeType.DAMAGE) {
-									weapon.damage = (float) attribute.getValue();
-								}
-								if (weaponAttribute.getType() == WeaponAttributeType.COOLDOWN) {
-									weapon.cooldown = (long) attribute.getValue();
-								}
-								if (weaponAttribute.getType() == WeaponAttributeType.EXPLOSION) {
-									weapon.aoeRadius = (float) attribute.getValue();
-								}
-								if (weaponAttribute.getType() == WeaponAttributeType.RANGE) {
-									weapon.range = (float) attribute.getValue();
-								}
-								if (weaponAttribute.getType() == WeaponAttributeType.SPEED) {
-									weapon.speed = (float) attribute.getValue();
-								}
-							}
-						}
-						shipData.weapons.add(weapon);
-					}
-				}
-				return shipData;
-			}
-		}
-		return null;
+	    for (ShipBlueprint shipBlueprint : shipyardData.getShipBlueprints()) {
+	        if (shipBlueprint.getId() == playerShip.getShipId()) {
+	            ShipData shipData = new ShipData();
+	            shipData.model = shipBlueprint.getModel();
+	            shipData.shields = new ArrayList<>();
+	            shipData.weapons = new ArrayList<>();
+	            for (ShipComponent component : shipBlueprint.getComponents()) {
+	                if (component instanceof ShipCore) {
+	                    processCore(shipData, (ShipCore) component, playerShip);
+	                } else if (component instanceof ShipEngine) {
+	                    processEngine(shipData, (ShipEngine) component, playerShip);
+	                } else if (component instanceof ShipHull) {
+	                    processHull(shipData, (ShipHull) component, playerShip);
+	                } else if (component instanceof ShipShield) {
+	                    processShield(shipData, (ShipShield) component, playerShip);
+	                } else if (component instanceof ShipWeapon) {
+	                    processWeapon(shipData, (ShipWeapon) component, playerShip);
+	                }
+	            }
+	            return shipData;
+	        }
+	    }
+	    return null;
+	}
+
+	private static void processCore(ShipData shipData, ShipCore shipCore, PlayerShipData playerShip) {
+	    CoreData core = new CoreData();
+	    core.id = shipCore.getId();
+	    core.type = CoreType.valueOf(shipCore.getType().toString());
+	    CoreLevel currentCoreLevel = findLevel(shipCore, playerShip);
+	    if (currentCoreLevel != null) {
+	        for (ComponentAttribute attribute : currentCoreLevel.getAttributes()) {
+	            CoreAttribute coreAttribute = (CoreAttribute) attribute;
+	            if (coreAttribute.getType() == CoreAttributeType.CP_COST) {
+	                shipData.cpCost = (int) attribute.getValue();
+	            }
+	            if (coreAttribute.getType() == CoreAttributeType.RESOURCE_COST) {
+	                shipData.resourceCost = (float) attribute.getValue();
+	            }
+	        }
+	    }
+	    shipData.core = core;
+	}
+
+	private static void processEngine(ShipData shipData, ShipEngine shipEngine, PlayerShipData playerShip) {
+	    EngineData engine = new EngineData();
+	    engine.id = shipEngine.getId();
+	    engine.type = EngineType.valueOf(shipEngine.getType().toString());
+	    EngineLevel currentEngineLevel = findLevel(shipEngine, playerShip);
+	    if (currentEngineLevel != null) {
+	        for (ComponentAttribute attribute : currentEngineLevel.getAttributes()) {
+	            EngineAttribute engineAttribute = (EngineAttribute) attribute;
+	            if (engineAttribute.getType() == EngineAttributeType.SPEED) {
+	                engine.speed = (float) attribute.getValue();
+	            }
+	            if (engineAttribute.getType() == EngineAttributeType.ACCELERATION) {
+	                engine.acceleration = (float) attribute.getValue();
+	            }
+	        }
+	    }
+	    shipData.engine = engine;
+	}
+
+	private static void processHull(ShipData shipData, ShipHull shipHull, PlayerShipData playerShip) {
+	    HullData hull = new HullData();
+	    hull.id = shipHull.getId();
+	    hull.type = HullType.valueOf(shipHull.getType().toString());
+	    HullLevel currentHullLevel = findLevel(shipHull, playerShip);
+	    if (currentHullLevel != null) {
+	        for (ComponentAttribute attribute : currentHullLevel.getAttributes()) {
+	            HullAttribute hullAttribute = (HullAttribute) attribute;
+	            if (hullAttribute.getType() == HullAttributeType.STRENGTH) {
+	                hull.strength = (float) attribute.getValue();
+	            }
+	            if (hullAttribute.getType() == HullAttributeType.REPAIR_SPEED) {
+	                hull.repairSpeed = (float) attribute.getValue();
+	            }
+	        }
+	    }
+	    shipData.hull = hull;
+	}
+
+	private static void processShield(ShipData shipData, ShipShield shipShield, PlayerShipData playerShip) {
+	    ShieldData shield = new ShieldData();
+	    shield.id = shipShield.getId();
+	    shield.type = ShieldType.valueOf(shipShield.getType().toString());
+	    ShieldLevel currentShieldLevel = findLevel(shipShield, playerShip);
+	    if (currentShieldLevel != null) {
+	        for (ComponentAttribute attribute : currentShieldLevel.getAttributes()) {
+	            ShieldAttribute shieldAttribute = (ShieldAttribute) attribute;
+	            if (shieldAttribute.getType() == ShieldAttributeType.STRENGTH) {
+	                shield.strength = (float) attribute.getValue();
+	            }
+	            if (shieldAttribute.getType() == ShieldAttributeType.GENERATION) {
+	                shield.generation = (float) attribute.getValue();
+	            }
+	        }
+	    }
+	    shipData.shields.add(shield);
+	}
+
+	private static void processWeapon(ShipData shipData, ShipWeapon shipWeapon, PlayerShipData playerShip) {
+	    WeaponData weapon = new WeaponData();
+	    weapon.id = shipWeapon.getId();
+	    weapon.type = WeaponType.valueOf(shipWeapon.getType().toString());
+	    WeaponLevel currentWeaponLevel = findLevel(shipWeapon, playerShip);
+	    if (currentWeaponLevel != null) {
+	        for (ComponentAttribute attribute : currentWeaponLevel.getAttributes()) {
+	            WeaponAttribute weaponAttribute = (WeaponAttribute) attribute;
+	            if (weaponAttribute.getType() == WeaponAttributeType.DAMAGE) {
+	                weapon.damage = (float) attribute.getValue();
+	            }
+	            if (weaponAttribute.getType() == WeaponAttributeType.COOLDOWN) {
+	                weapon.cooldown = (long) attribute.getValue();
+	            }
+	            if (weaponAttribute.getType() == WeaponAttributeType.EXPLOSION) {
+	                weapon.aoeRadius = (float) attribute.getValue();
+	            }
+	            if (weaponAttribute.getType() == WeaponAttributeType.RANGE) {
+	                weapon.range = (float) attribute.getValue();
+	            }
+	            if (weaponAttribute.getType() == WeaponAttributeType.SPEED) {
+	                weapon.speed = (float) attribute.getValue();
+	            }
+	        }
+	    }
+	    shipData.weapons.add(weapon);
+	}
+
+	private static <T> T findLevel(ShipComponent component, PlayerShipData playerShip) {
+	    for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
+	        if (componentLevel.getId() == component.getId()) {
+	            return (T) component.getLevels().get(componentLevel.getLevel());
+	        }
+	    }
+	    return null;
 	}
 
 }
