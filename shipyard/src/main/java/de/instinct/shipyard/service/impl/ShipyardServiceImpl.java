@@ -49,10 +49,13 @@ import de.instinct.api.shipyard.dto.ship.ShipCore;
 import de.instinct.api.shipyard.dto.ship.ShipEngine;
 import de.instinct.api.shipyard.dto.ship.ShipHull;
 import de.instinct.api.shipyard.dto.ship.ShipShield;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 import de.instinct.api.shipyard.dto.ship.ShipWeapon;
 import de.instinct.api.shipyard.dto.ship.component.ComponentAttribute;
 import de.instinct.api.shipyard.dto.ship.component.ComponentLevel;
 import de.instinct.api.shipyard.dto.ship.component.ShipComponentType;
+import de.instinct.api.shipyard.dto.ship.component.level.CoreLevel;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.model.ship.components.types.CoreType;
@@ -60,6 +63,8 @@ import de.instinct.engine.model.ship.components.types.EngineType;
 import de.instinct.engine.model.ship.components.types.HullType;
 import de.instinct.engine.model.ship.components.types.ShieldType;
 import de.instinct.engine.model.ship.components.types.WeaponType;
+import de.instinct.engine.stats.model.unit.ShipStatistic;
+import de.instinct.engine.stats.model.unit.component.types.CoreStatistic;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.model.ShipyardBaseData;
 
@@ -98,7 +103,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		initShipData.setComponentLevels(new ArrayList<>());
 		for (ShipComponent component : blueprint.getComponents()) {
 			PlayerShipComponentLevel playerComponentLevel = new PlayerShipComponentLevel();
-			playerComponentLevel.setId(component.getId());
+			playerComponentLevel.setComponentId(component.getId());
 			initShipData.getComponentLevels().add(playerComponentLevel);
 		}
 		
@@ -123,13 +128,13 @@ public class ShipyardServiceImpl implements ShipyardService {
 				for (ShipComponent component : blueprint.getComponents()) {
 					boolean hasPlayerLevel = false;
 					for (PlayerShipComponentLevel existingLevel : playerShip.getComponentLevels()) {
-						if (existingLevel.getId() == component.getId()) {
+						if (existingLevel.getComponentId() == component.getId()) {
 							hasPlayerLevel = true;
 						}
 					}
 					if (!hasPlayerLevel) {
 						PlayerShipComponentLevel playerComponentLevel = new PlayerShipComponentLevel();
-						playerComponentLevel.setId(component.getId());
+						playerComponentLevel.setComponentId(component.getId());
 						playerShip.getComponentLevels().add(playerComponentLevel);
 					}
 				}
@@ -325,6 +330,48 @@ public class ShipyardServiceImpl implements ShipyardService {
 		newShip.setInUse(false);
 		shipyard.getShips().add(newShip);
 		return ShipAddResponse.SUCCESS;
+	}
+	
+	@Override
+	public ShipStatisticReportResponse statistic(ShipStatisticReportRequest request) {
+		PlayerShipyardData shipyard = userShipyards.get(request.getUserUUID());
+		if (shipyard == null) return ShipStatisticReportResponse.USER_NOT_FOUND;
+		for (ShipStatistic shipStatistic : request.getShipStatistics()) {
+			for (PlayerShipData playerShip : shipyard.getShips()) {
+				ShipBlueprint blueprint = getBaseData().getShipBlueprints().stream()
+						.filter(bp -> bp.getId() == playerShip.getShipId())
+						.findFirst()
+						.orElse(null);
+				if (blueprint.getModel().contentEquals(shipStatistic.getModel())) {
+					applyStatistic(shipStatistic, blueprint, playerShip);
+				}
+			}
+		}
+		return ShipStatisticReportResponse.SUCCESS;
+	}
+
+	private void applyStatistic(ShipStatistic shipStatistic, ShipBlueprint blueprint, PlayerShipData playerShip) {
+		//Core
+		for (ShipComponent component : blueprint.getComponents()) {
+			if (component instanceof ShipCore) {
+				PlayerShipComponentLevel playerComponentLevel = playerShip.getComponentLevels().stream()
+                        .filter(cl -> cl.getComponentId() == component.getId())
+                        .findFirst()
+                        .orElse(null);
+				for (ComponentLevel level : component.getLevels()) {
+					if (level.getLevel() == playerComponentLevel.getLevel()) {
+						CoreLevel coreLevel = (CoreLevel) level;
+						CoreStatistic coreStatistic = shipStatistic.getCoreStatistic();
+						switch (coreLevel.getRequirementType()) {
+							case CP_USED:
+								playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getCpUsed());
+								break;
+						}
+						shipStatistic.getCoreStatistic();
+					}
+				}
+			}
+		}
 	}
 
 	@Override

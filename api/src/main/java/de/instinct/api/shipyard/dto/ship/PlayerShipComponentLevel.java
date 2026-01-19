@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class PlayerShipComponentLevel {
 	
-	private int id;
+	private int componentId;
 	private int level;
 	private float progress;
 

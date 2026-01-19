@@ -6,6 +6,8 @@ import de.instinct.engine.FleetEngine;
 import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.order.GameOrder;
+import de.instinct.engine.stats.StatCollector;
+import de.instinct.engine.stats.model.GameStatistic;
 import de.instinct.game.service.model.GameSession;
 
 public class GameEngineInterface {
@@ -40,6 +42,10 @@ public class GameEngineInterface {
 	
 	public boolean containedValidOrders() {
 		return engine.containedValidOrders();
+	}
+
+	public GameStatistic grabGameStatistic(String gameUUID) {
+		return StatCollector.grab(gameUUID);
 	}
 
 }

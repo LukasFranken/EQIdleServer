@@ -18,7 +18,9 @@ import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.model.VersusMode;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
 import de.instinct.engine.ai.AiEngine;
+import de.instinct.engine.combat.Ship;
 import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.initialization.PlanetInitialization;
 import de.instinct.engine.map.GameMap;
@@ -38,6 +40,8 @@ import de.instinct.engine.order.types.BuildTurretOrder;
 import de.instinct.engine.order.types.GamePauseOrder;
 import de.instinct.engine.order.types.ShipMovementOrder;
 import de.instinct.engine.order.types.SurrenderOrder;
+import de.instinct.engine.stats.model.GameStatistic;
+import de.instinct.engine.stats.model.PlayerStatistic;
 import de.instinct.engine.util.EngineUtility;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
@@ -112,6 +116,21 @@ public class SessionManager {
 			finishData.setWinnerTeamId(session.getGameState().winner);
 			API.matchmaking().finish(session.getUuid(), finishData);
 			
+			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().gameUUID);
+			if (statistic != null) {
+				for (User user : session.getUsers()) {
+					for (PlayerStatistic playerStatistic : statistic.getPlayerStatistics()) {
+						if (user.getPlayerId() == playerStatistic.getPlayerId()) {
+							ShipStatisticReportRequest shipStatisticReport = new ShipStatisticReportRequest();
+							shipStatisticReport.setUserUUID(user.getUuid());
+							shipStatisticReport.setShipStatistics(playerStatistic.getShipStatistics());
+							API.shipyard().statistic(shipStatisticReport);
+						}
+					}
+				}
+			} else {
+				System.err.println("Could not grab statistics for game uuid: " + session.getGameState().gameUUID);
+			}
 		}
 		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
 			clientUpdateRequired = true;

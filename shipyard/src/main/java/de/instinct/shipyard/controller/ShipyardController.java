@@ -40,6 +40,8 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
@@ -114,6 +116,11 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/add/{token}/{shipid}")
 	public ResponseEntity<ShipAddResponse> add(@PathVariable String token, @PathVariable int shipid) {
 		return ResponseEntity.ok(service.addBlueprint(token, shipid));
+	}
+	
+	@PostMapping("/statistic")
+	public ResponseEntity<ShipStatisticReportResponse> statistic(@RequestBody ShipStatisticReportRequest request) {
+		return ResponseEntity.ok(service.statistic(request));
 	}
 	
 	//admin

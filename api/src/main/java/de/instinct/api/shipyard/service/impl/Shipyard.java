@@ -33,6 +33,8 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 import de.instinct.api.shipyard.service.ShipyardInterface;
 
 public class Shipyard extends BaseService implements ShipyardInterface {
@@ -154,6 +156,17 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.pathVariable(token + "/" + shipid)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipAddResponse.class);
+	}
+	
+	@Override
+	public ShipStatisticReportResponse statistic(ShipStatisticReportRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("statistic")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipStatisticReportResponse.class);
 	}
 
 	@Override

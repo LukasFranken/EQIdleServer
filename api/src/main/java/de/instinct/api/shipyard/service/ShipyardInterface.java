@@ -30,6 +30,8 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
+import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 
 public interface ShipyardInterface extends BaseServiceInterface {
 	
@@ -52,6 +54,8 @@ public interface ShipyardInterface extends BaseServiceInterface {
 	ShipUpgradeResponse upgrade(String shiptoken);
 	
 	ShipAddResponse add(String token, int shipid);
+	
+	ShipStatisticReportResponse statistic(ShipStatisticReportRequest request);
 	
 	ShipCreateResponse createShip(ShipCreateRequest request);
 	
