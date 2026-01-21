@@ -56,6 +56,10 @@ import de.instinct.api.shipyard.dto.ship.component.ComponentAttribute;
 import de.instinct.api.shipyard.dto.ship.component.ComponentLevel;
 import de.instinct.api.shipyard.dto.ship.component.ShipComponentType;
 import de.instinct.api.shipyard.dto.ship.component.level.CoreLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.EngineLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.HullLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.ShieldLevel;
+import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.model.ship.components.types.CoreType;
@@ -65,6 +69,10 @@ import de.instinct.engine.model.ship.components.types.ShieldType;
 import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.engine.stats.model.unit.ShipStatistic;
 import de.instinct.engine.stats.model.unit.component.types.CoreStatistic;
+import de.instinct.engine.stats.model.unit.component.types.EngineStatistic;
+import de.instinct.engine.stats.model.unit.component.types.HullStatistic;
+import de.instinct.engine.stats.model.unit.component.types.ShieldStatistic;
+import de.instinct.engine.stats.model.unit.component.types.WeaponStatistic;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.model.ShipyardBaseData;
 
@@ -351,27 +359,123 @@ public class ShipyardServiceImpl implements ShipyardService {
 	}
 
 	private void applyStatistic(ShipStatistic shipStatistic, ShipBlueprint blueprint, PlayerShipData playerShip) {
-		//Core
 		for (ShipComponent component : blueprint.getComponents()) {
-			if (component instanceof ShipCore) {
-				PlayerShipComponentLevel playerComponentLevel = playerShip.getComponentLevels().stream()
-                        .filter(cl -> cl.getComponentId() == component.getId())
-                        .findFirst()
-                        .orElse(null);
-				for (ComponentLevel level : component.getLevels()) {
-					if (level.getLevel() == playerComponentLevel.getLevel()) {
-						CoreLevel coreLevel = (CoreLevel) level;
-						CoreStatistic coreStatistic = shipStatistic.getCoreStatistic();
-						switch (coreLevel.getRequirementType()) {
-							case CP_USED:
-								playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getCpUsed());
-								break;
-						}
-						shipStatistic.getCoreStatistic();
-					}
+			PlayerShipComponentLevel playerComponentLevel = playerShip.getComponentLevels().stream()
+                    .filter(cl -> cl.getComponentId() == component.getId())
+                    .findFirst()
+                    .orElse(null);
+			
+			float requirementValue = -1;
+			for (ComponentLevel level : component.getLevels()) {
+				if (level.getLevel() == playerComponentLevel.getLevel()) {
+					requirementValue = component.getLevels().get(component.getLevels().indexOf(level) + 1).getRequirementValue();
+					updatePlayerComponentLevelProgress(shipStatistic, component, level, playerComponentLevel);
 				}
 			}
+			
+			if (requirementValue > -1 && playerComponentLevel.getProgress() >= requirementValue) {
+				playerComponentLevel.setLevel(playerComponentLevel.getLevel() + 1);
+				playerComponentLevel.setProgress(0);
+			}
 		}
+	}
+
+	private void updatePlayerComponentLevelProgress(ShipStatistic shipStatistic, ShipComponent component, ComponentLevel level, PlayerShipComponentLevel playerComponentLevel) {
+		if (component instanceof ShipCore) {
+			CoreLevel coreLevel = (CoreLevel) level;
+			CoreStatistic coreStatistic = shipStatistic.getCoreStatistic();
+			switch (coreLevel.getRequirementType()) {
+				case CP_USED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getCpUsed());
+					break;
+				case RESOURCES_USED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getResourcesUsed());
+					break;
+				case TIMES_DEPLOYED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getTimesBuilt());
+					break;
+				case TIMES_DESTROYED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getTimesDestroyed());
+					break;
+			}
+		}
+		
+		if (component instanceof ShipEngine) {
+			EngineLevel engineLevel = (EngineLevel) level;
+			EngineStatistic engineStatistic = shipStatistic.getEngineStatistic();
+			switch (engineLevel.getRequirementType()) {
+				case DISTANCE_TRAVELED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + engineStatistic.getDistanceTraveled());
+					break;
+			}
+		}
+		
+		if (component instanceof ShipHull) {
+			HullLevel hullLevel = (HullLevel) level;
+			HullStatistic hullStatistic = shipStatistic.getHullStatistic();
+			switch (hullLevel.getRequirementType()) {
+				case DAMAGE_TAKEN:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + hullStatistic.getDamageTaken());
+					break;
+				case HULL_REPAIRED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + hullStatistic.getHullRepaired());
+					break;
+			}
+		}
+		
+		if (component instanceof ShipShield) {
+			ShieldLevel shieldLevel = (ShieldLevel) level;
+			ShieldStatistic shieldStatistic = getShieldStatistic(shipStatistic, component.getId());
+			switch (shieldLevel.getRequirementType()) {
+				case DAMAGE_ABSORBED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + shieldStatistic.getDamageAbsorped());
+					break;
+				case SHIELDS_RECHARGED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + shieldStatistic.getShieldRecharged());
+					break;
+				case DAMAGE_INSTANCES_BLOCKED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + shieldStatistic.getDamageInstancesBlocked());
+					break;
+			}
+		}
+		
+		if (component instanceof ShipWeapon) {
+			WeaponLevel weaponLevel = (WeaponLevel) level;
+			WeaponStatistic weaponStatistic = getWeaponStatistic(shipStatistic, component.getId());
+			System.out.println(weaponStatistic);
+			switch (weaponLevel.getRequirementType()) {
+				case DAMAGE_DEALT:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getDamageDealt());
+					break;
+				case KILLS:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getKills());
+					break;
+				case SHOTS_FIRED:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getShotsFired());
+					break;
+				case COOLED_DOWN_SEC:
+					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getCooledDownSec());
+					break;
+			}
+		}
+	}
+
+	private ShieldStatistic getShieldStatistic(ShipStatistic shipStatistic, int id) {
+		for (ShieldStatistic shieldStatistic : shipStatistic.getShieldStatistics()) {
+			if (shieldStatistic.getId() == id) {
+				return shieldStatistic;
+			}
+		}
+		return null;
+	}
+	
+	private WeaponStatistic getWeaponStatistic(ShipStatistic shipStatistic, int id) {
+		for (WeaponStatistic weaponStatistic : shipStatistic.getWeaponStatistics()) {
+			if (weaponStatistic.getId() == id) {
+				return weaponStatistic;
+			}
+		}
+		return null;
 	}
 
 	@Override

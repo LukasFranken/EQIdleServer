@@ -4,6 +4,7 @@ public enum CoreRequirementType {
 	
 	CP_USED,
 	RESOURCES_USED,
-	TIMES_DEPLOYED;
+	TIMES_DEPLOYED,
+	TIMES_DESTROYED;
 
 }

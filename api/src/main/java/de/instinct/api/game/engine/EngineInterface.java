@@ -227,7 +227,7 @@ public class EngineInterface {
 	@SuppressWarnings("unchecked")
 	private static <T> T findLevel(ShipComponent component, PlayerShipData playerShip) {
 	    for (PlayerShipComponentLevel componentLevel : playerShip.getComponentLevels()) {
-	        if (componentLevel.getId() == component.getId()) {
+	        if (componentLevel.getComponentId() == component.getId()) {
 	            return (T) component.getLevels().get(componentLevel.getLevel());
 	        }
 	    }
