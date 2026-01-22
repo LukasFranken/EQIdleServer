@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import de.instinct.api.core.API;
+import de.instinct.api.meta.dto.Resource;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
@@ -73,46 +75,6 @@ public class ShipyardServiceImpl implements ShipyardService {
 	            new Link("titan", "/shipyard/module/titan", "Titan")
 	        );
 	    model.addAttribute("types", links);
-	}
-
-	@Override
-	public void prepareShipTable(Model model, String type) {
-		shipyardData = API.shipyard().shipyard();
-		
-		List<TableHeader> headers = new ArrayList<>();
-		headers.add(TableHeader.builder()
-				.label("ID")
-				.className("id-column")
-				.build());
-		headers.add(TableHeader.builder()
-				.label("Name")
-				.build());
-		headers.add(TableHeader.builder()
-				.label("Created")
-				.build());
-		headers.add(TableHeader.builder()
-				.label("Last Modified")
-				.build());
-		
-		List<TableRow> rows = new ArrayList<>();
-		for (ShipBlueprint shipBlueprint : shipyardData.getShipBlueprints()) {
-			ShipCore core = (ShipCore) ShipyardUtility.getShipComponentByType(shipBlueprint, ShipComponentType.CORE);
-			if (core.getType().toString().equalsIgnoreCase(type)) {
-				List<TableCell> cells = new ArrayList<>();
-				cells.add(TableCell.builder().value(String.valueOf(shipBlueprint.getId())).className("id-column").build());
-				cells.add(TableCell.builder().value(shipBlueprint.getModel()).className("ship-link").attributes("param-modal=shipyard-shipoverviewmodal, param=" + shipBlueprint.getModel().toLowerCase() + ", init-method=initializeBlueprintModal").build());
-				cells.add(TableCell.builder().value(StringUtils.formatDate(shipBlueprint.getCreated())).build());
-				cells.add(TableCell.builder().value(StringUtils.formatDate(shipBlueprint.getLastModified())).build());
-				rows.add(TableRow.builder()
-						.cells(cells)
-						.build());
-			}
-		}
-		
-    	model.addAttribute("ships", Table.builder()
-    			.headers(headers)
-    			.rows(rows)
-				.build());
 	}
 
 	@Override
@@ -183,6 +145,91 @@ public class ShipyardServiceImpl implements ShipyardService {
 		LevelAttributeDeleteResponse response = API.shipyard().deleteLevelAttribute(request);
 		shipyardData = API.shipyard().shipyard();
 		return response;
+	}
+	
+	@Override
+	public void prepareShipTable(Model model, String type) {
+		shipyardData = API.shipyard().shipyard();
+		
+		List<TableHeader> headers = new ArrayList<>();
+		headers.add(TableHeader.builder()
+				.label("ID")
+				.className("id-column")
+				.build());
+		headers.add(TableHeader.builder()
+				.label("Name")
+				.build());
+		headers.add(TableHeader.builder()
+				.label("Created")
+				.build());
+		headers.add(TableHeader.builder()
+				.label("Last Modified")
+				.build());
+		headers.add(TableHeader.builder()
+				.label("Build Cost")
+				.build());
+		
+		List<TableRow> rows = new ArrayList<>();
+		for (ShipBlueprint shipBlueprint : shipyardData.getShipBlueprints()) {
+			ShipCore core = (ShipCore) ShipyardUtility.getShipComponentByType(shipBlueprint, ShipComponentType.CORE);
+			if (core.getType().toString().equalsIgnoreCase(type)) {
+				List<TableCell> cells = new ArrayList<>();
+				cells.add(TableCell.builder().value(String.valueOf(shipBlueprint.getId())).className("id-column").build());
+				cells.add(TableCell.builder().value(shipBlueprint.getModel()).className("ship-link").attributes("param-modal=shipyard-shipoverviewmodal, param=" + shipBlueprint.getModel().toLowerCase() + ", init-method=initializeBlueprintModal").build());
+				cells.add(TableCell.builder().value(StringUtils.formatDate(shipBlueprint.getCreated())).build());
+				cells.add(TableCell.builder().value(StringUtils.formatDate(shipBlueprint.getLastModified())).build());
+				cells.add(TableCell.builder().value("<button class=\"edit-btn\">Edit</button>").className("ship-actions").attributes("param-modal=shipyard-buildcostmodal, param=" + shipBlueprint.getModel().toLowerCase() + ", init-method=initializeBuildCostModal").build());
+				rows.add(TableRow.builder()
+						.cells(cells)
+						.build());
+			}
+		}
+		
+    	model.addAttribute("ships", Table.builder()
+    			.headers(headers)
+    			.rows(rows)
+				.build());
+	}
+	
+	@Override
+	public void prepareBuildCostModal(Model model, String shipname) {
+		model.addAttribute("name", shipname.toUpperCase());
+    	prepareBuildCostTable(model, shipname);
+	}
+
+	private void prepareBuildCostTable(Model model, String shipname) {
+		List<TableHeader> headers = new ArrayList<>();
+		headers.add(TableHeader.builder()
+				.label("Resource")
+				.build());
+		headers.add(TableHeader.builder()
+				.label("Amount")
+				.build());
+		headers.add(TableHeader.builder()
+		        .label("")
+		        .build());
+		
+		List<TableRow> rows = new ArrayList<>();
+		for (ShipBlueprint shipBlueprint : shipyardData.getShipBlueprints()) {
+			if (shipBlueprint.getModel().equalsIgnoreCase(shipname)) {
+				for (ResourceAmount resourceCost : shipBlueprint.getBuildCost()) {
+					List<TableCell> cells = new ArrayList<>();
+					cells.add(TableCell.builder().value(resourceCost.getType().toString()).build());
+					cells.add(TableCell.builder().value(String.valueOf(resourceCost.getAmount())).build());
+					cells.add(TableCell.builder().value("<button class=\"edit-btn\">Edit</button>").className("buildcost-actions").build());
+					rows.add(TableRow.builder()
+							.cells(cells)
+							.className("buildcost-row")
+							.attributes("data-shipname=" + shipname)
+							.build());
+				}
+			}
+		}
+		
+    	model.addAttribute("buildcosts", Table.builder()
+    			.headers(headers)
+    			.rows(rows)
+				.build());
 	}
 
 	@Override
@@ -328,6 +375,11 @@ public class ShipyardServiceImpl implements ShipyardService {
     			.headers(headers)
     			.rows(rows)
 				.build());
+	}
+	
+	@Override
+	public List<String> getResourceTypes() {
+		return Arrays.stream(Resource.values()).map(Enum::name).toList();
 	}
 
 	@Override

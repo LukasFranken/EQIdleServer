@@ -49,12 +49,16 @@ public interface ShipyardService extends ModelService {
 	LevelAttributeDeleteResponse deleteLevelAttribute(LevelAttributeDeleteRequest request);
 	
 	void prepareShipTable(Model model, String type);
+	
+	void prepareBuildCostModal(Model model, String shipname);
 
 	void prepareOverviewModal(Model model, String shipname);
 
 	void prepareComponentLevelTable(Model model, String shipname, int componentID);
 
 	void prepareLevelAttributeTable(Model model, String shipname, int componentID, int level);
+	
+	List<String> getResourceTypes();
 
 	List<String> getComponentTypes(String type);
 

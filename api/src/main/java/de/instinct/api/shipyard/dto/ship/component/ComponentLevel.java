@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import de.instinct.api.core.annotation.Dto;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.shipyard.dto.ship.component.level.CoreLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.EngineLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.HullLevel;
@@ -28,5 +29,6 @@ public abstract class ComponentLevel {
 	private int level;
 	private float requirementValue;
 	private List<ComponentAttribute> attributes;
+	private List<ResourceAmount> buildCost;
 
 }

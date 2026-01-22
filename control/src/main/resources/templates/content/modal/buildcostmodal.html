@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="buildcostmodal">
+		<div class="title-row">
+			<h3>Build Cost - </h3>
+    		<h3 id="shipname" th:text="${name}"></h3>
+		</div>
+
+		<div class="build-cost-table-view" th:if="${buildcosts != null and not #lists.isEmpty(buildcosts.rows)}">
+    		<div th:replace="~{component/table :: table(${buildcosts})}"></div>
+		</div>
+		
+		<button class="create-buildcost-submit" onclick="addBuildCost(document.getElementById('shipname').textContent)">Add Cost</button>
+	</div>
+</body>
+
+</html>

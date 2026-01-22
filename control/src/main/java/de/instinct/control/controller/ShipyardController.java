@@ -119,6 +119,12 @@ public class ShipyardController {
         return "content/modal/shipoverview/shipoverviewmodal :: shipoverviewmodal";
     }
     
+    @GetMapping("/modal/buildcostmodal/{shipname}")
+    public String getBuildCostModal(Model model, @PathVariable("shipname") String shipname) {
+    	shipyardService.prepareBuildCostModal(model, shipname);
+        return "content/modal/buildcostmodal :: buildcostmodal";
+    }
+    
     @GetMapping("/modal/shipoverviewmodal/fragment/{shipname}")
     public String getComponents(Model model, @PathVariable("shipname") String shipname) {
     	shipyardService.prepareOverviewModal(model, shipname);
@@ -135,6 +141,11 @@ public class ShipyardController {
     public String getLevelAttibutes(Model model, @PathVariable("shipname") String shipname, @PathVariable("componentID") int componentID, @PathVariable("level") int level) {
         shipyardService.prepareLevelAttributeTable(model, shipname, componentID, level);
         return "content/modal/shipoverview/fragments/levelattributes :: levelattributes";
+    }
+    
+    @GetMapping("/resource-types")
+    public ResponseEntity<List<String>> getResourceTypes() {
+        return ResponseEntity.ok(shipyardService.getResourceTypes());
     }
     
     @GetMapping("/component-types/{type}")
