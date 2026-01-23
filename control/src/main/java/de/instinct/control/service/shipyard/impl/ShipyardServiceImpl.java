@@ -13,6 +13,12 @@ import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
@@ -80,6 +86,27 @@ public class ShipyardServiceImpl implements ShipyardService {
 	@Override
 	public ShipCreateResponse createShip(ShipCreateRequest request) {
 		ShipCreateResponse response = API.shipyard().createShip(request);
+		shipyardData = API.shipyard().shipyard();
+		return response;
+	}
+	
+	@Override
+	public BuildCostCreateResponse createBuildCost(BuildCostCreateRequest request) {
+		BuildCostCreateResponse response = API.shipyard().createBuildCost(request);
+		shipyardData = API.shipyard().shipyard();
+		return response;
+	}
+
+	@Override
+	public BuildCostUpdateResponse updateBuildCost(BuildCostUpdateRequest request) {
+		BuildCostUpdateResponse response = API.shipyard().updateBuildCost(request);
+		shipyardData = API.shipyard().shipyard();
+		return response;
+	}
+
+	@Override
+	public BuildCostDeleteResponse deleteBuildCost(BuildCostDeleteRequest request) {
+		BuildCostDeleteResponse response = API.shipyard().deleteBuildCost(request);
 		shipyardData = API.shipyard().shipyard();
 		return response;
 	}
@@ -200,6 +227,10 @@ public class ShipyardServiceImpl implements ShipyardService {
 	private void prepareBuildCostTable(Model model, String shipname) {
 		List<TableHeader> headers = new ArrayList<>();
 		headers.add(TableHeader.builder()
+				.label("ID")
+				.className("id-column")
+				.build());
+		headers.add(TableHeader.builder()
 				.label("Resource")
 				.build());
 		headers.add(TableHeader.builder()
@@ -214,6 +245,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 			if (shipBlueprint.getModel().equalsIgnoreCase(shipname)) {
 				for (ResourceAmount resourceCost : shipBlueprint.getBuildCost()) {
 					List<TableCell> cells = new ArrayList<>();
+					cells.add(TableCell.builder().value(String.valueOf(resourceCost.getId())).className("id-column").build());
 					cells.add(TableCell.builder().value(resourceCost.getType().toString()).build());
 					cells.add(TableCell.builder().value(String.valueOf(resourceCost.getAmount())).build());
 					cells.add(TableCell.builder().value("<button class=\"edit-btn\">Edit</button>").className("buildcost-actions").build());

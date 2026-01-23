@@ -15,6 +15,12 @@ import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
@@ -178,6 +184,39 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.payload(request)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipCreateResponse.class);
+	}
+	
+	@Override
+	public BuildCostCreateResponse createBuildCost(BuildCostCreateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/buildcost/create")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, BuildCostCreateResponse.class);
+	}
+
+	@Override
+	public BuildCostUpdateResponse updateBuildCost(BuildCostUpdateRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/buildcost/update")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, BuildCostUpdateResponse.class);
+	}
+
+	@Override
+	public BuildCostDeleteResponse deleteBuildCost(BuildCostDeleteRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/buildcost/delete")
+				.payload(request)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, BuildCostDeleteResponse.class);
 	}
 	
 	@Override

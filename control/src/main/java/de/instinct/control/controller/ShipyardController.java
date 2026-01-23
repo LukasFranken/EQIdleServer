@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
@@ -60,6 +66,21 @@ public class ShipyardController {
     @PostMapping("/create/ship")
     public ResponseEntity<ShipCreateResponse> createShip(@RequestBody ShipCreateRequest request) {
     	return ResponseEntity.ok(shipyardService.createShip(request));
+    }
+    
+    @PostMapping("/create/buildcost")
+    public ResponseEntity<BuildCostCreateResponse> createBuildCost(@RequestBody BuildCostCreateRequest request) {
+    	return ResponseEntity.ok(shipyardService.createBuildCost(request));
+    }
+    
+    @PostMapping("/update/buildcost")
+    public ResponseEntity<BuildCostUpdateResponse> updateBuildCost(@RequestBody BuildCostUpdateRequest request) {
+    	return ResponseEntity.ok(shipyardService.updateBuildCost(request));
+    }
+    
+    @PostMapping("/delete/buildcost")
+    public ResponseEntity<BuildCostDeleteResponse> deleteBuildCost(@RequestBody BuildCostDeleteRequest request) {
+    	return ResponseEntity.ok(shipyardService.deleteBuildCost(request));
     }
     
     @PostMapping("/create/component")

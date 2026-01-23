@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
@@ -23,6 +24,12 @@ import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
@@ -505,6 +512,70 @@ public class ShipyardServiceImpl implements ShipyardService {
 		shipyardData.getShipBlueprints().add(newBlueprint);
 		saveBaseData();
 		return ShipCreateResponse.SUCCESS;
+	}
+	
+	@Override
+	public BuildCostCreateResponse createBuildCost(BuildCostCreateRequest request) {
+		if (request.getShipname() == null) return BuildCostCreateResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return BuildCostCreateResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return BuildCostCreateResponse.SHIP_NOT_FOUND;
+		
+		ResourceAmount newBuildCost = new ResourceAmount();
+		newBuildCost.setId(blueprint.getBuildCost().isEmpty() ? 0 : blueprint.getBuildCost().stream().mapToInt(ResourceAmount::getId).max().getAsInt() + 1);
+		newBuildCost.setType(Resource.METAL);
+		newBuildCost.setAmount(0);
+		blueprint.getBuildCost().add(newBuildCost);
+		saveBaseData();
+		return BuildCostCreateResponse.SUCCESS;
+	}
+
+	@Override
+	public BuildCostUpdateResponse updateBuildCost(BuildCostUpdateRequest request) {
+		if (request.getShipname() == null) return BuildCostUpdateResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return BuildCostUpdateResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return BuildCostUpdateResponse.SHIP_NOT_FOUND;
+		
+		boolean updated = false;
+		for (ResourceAmount buildCost : blueprint.getBuildCost()) {
+			if (buildCost.getId() == request.getId()) {
+				buildCost.setType(Resource.valueOf(request.getResourceType().toUpperCase()));
+				buildCost.setAmount(request.getCost());
+			}
+		}
+		if (!updated) return BuildCostUpdateResponse.BUILD_COST_NOT_FOUND; 
+		
+		saveBaseData();
+		return BuildCostUpdateResponse.SUCCESS;
+	}
+
+	@Override
+	public BuildCostDeleteResponse deleteBuildCost(BuildCostDeleteRequest request) {
+		if (request.getShipname() == null) return BuildCostDeleteResponse.NAME_NULL;
+		if (request.getShipname().trim().contentEquals("")) return BuildCostDeleteResponse.NAME_EMPTY;
+		ShipBlueprint blueprint = null;
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getModel().equalsIgnoreCase(request.getShipname())) {
+				blueprint = existingBlueprint;
+			}
+		}
+		if (blueprint == null) return BuildCostDeleteResponse.SHIP_NOT_FOUND;
+		
+		if (!blueprint.getBuildCost().removeIf(bc -> bc.getId() == request.getId())) return BuildCostDeleteResponse.BUILD_COST_NOT_FOUND;
+		
+		saveBaseData();
+		return BuildCostDeleteResponse.SUCCESS;
 	}
 	
 	@Override

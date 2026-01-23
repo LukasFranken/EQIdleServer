@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class ResourceAmount {
 	
+	private int id;
 	private Resource type;
 	private long amount;
 

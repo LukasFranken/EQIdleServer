@@ -22,6 +22,12 @@ import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
@@ -127,6 +133,21 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/admin/ship/create")
 	public ResponseEntity<ShipCreateResponse> createShip(@RequestBody ShipCreateRequest request) {
 		return ResponseEntity.ok(service.createShip(request));
+	}
+	
+	@PostMapping("/admin/buildcost/create")
+	public ResponseEntity<BuildCostCreateResponse> createBuildCost(@RequestBody BuildCostCreateRequest request) {
+		return ResponseEntity.ok(service.createBuildCost(request));
+	}
+	
+	@PostMapping("/admin/buildcost/update")
+	public ResponseEntity<BuildCostUpdateResponse> updateBuildCost(@RequestBody BuildCostUpdateRequest request) {
+		return ResponseEntity.ok(service.updateBuildCost(request));
+	}
+	
+	@PostMapping("/admin/buildcost/delete")
+	public ResponseEntity<BuildCostDeleteResponse> deleteBuildCost(@RequestBody BuildCostDeleteRequest request) {
+		return ResponseEntity.ok(service.deleteBuildCost(request));
 	}
 	
 	@PostMapping("/admin/component/create")

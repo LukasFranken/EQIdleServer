@@ -6,6 +6,12 @@ import org.springframework.ui.Model;
 
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostDeleteResponse;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateRequest;
+import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostUpdateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateRequest;
 import de.instinct.api.shipyard.dto.admin.component.ComponentCreateResponse;
 import de.instinct.api.shipyard.dto.admin.component.ComponentDeleteRequest;
@@ -29,6 +35,12 @@ import de.instinct.control.service.ModelService;
 public interface ShipyardService extends ModelService {
 
 	ShipCreateResponse createShip(ShipCreateRequest request);
+	
+	BuildCostCreateResponse createBuildCost(BuildCostCreateRequest request);
+	
+	BuildCostUpdateResponse updateBuildCost(BuildCostUpdateRequest request);
+	
+	BuildCostDeleteResponse deleteBuildCost(BuildCostDeleteRequest request);
 	
 	ComponentCreateResponse createComponent(ComponentCreateRequest request);
 	
