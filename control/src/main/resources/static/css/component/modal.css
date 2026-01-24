@@ -21,6 +21,13 @@
     z-index: 20;
 }
 
+.title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
 .close {
     position: absolute;
     top: 10px;

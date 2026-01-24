@@ -1,17 +1,25 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-	<div th:fragment="buildcostmodal">
+	<div class="buildcostmodal-content" th:fragment="buildcostmodal">
 		<div class="title-row">
-			<h3>Build Cost - </h3>
-    		<h3 id="shipname" th:text="${name}"></h3>
+			<h3>Build Cost</h3>
+			<h3 id="shipname" th:text="${name}"></h3>
 		</div>
+		<div class="buildcost-modal-view-container">
+			<div class="buildcost-view">
+				<div class="buildcost-table-view" th:if="${buildcosts != null and not #lists.isEmpty(buildcosts.rows)}">
+					<div th:replace="~{component/table :: table(${buildcosts})}"></div>
+				</div>
 
-		<div class="build-cost-table-view" th:if="${buildcosts != null and not #lists.isEmpty(buildcosts.rows)}">
-    		<div th:replace="~{component/table :: table(${buildcosts})}"></div>
+				<div class="create-buildcost-section">
+					<label id="buildcost-response-label"> </label>
+					<div class="buildcost-buttons">
+						<button class="create-buildcost-submit" onclick="addBuildCost(document.getElementById('shipname').textContent)">Add Cost</button>
+					</div>
+				</div>
+			</div>
 		</div>
-		
-		<button class="create-buildcost-submit" onclick="addBuildCost(document.getElementById('shipname').textContent)">Add Cost</button>
 	</div>
 </body>
 
