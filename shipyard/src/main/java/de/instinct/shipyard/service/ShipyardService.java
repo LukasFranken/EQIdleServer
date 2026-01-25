@@ -60,7 +60,7 @@ public interface ShipyardService {
 
 	ShipUpgradeResponse upgrade(String token, String shiptoken);
 
-	ShipAddResponse addBlueprint(String token, int shipid);
+	ShipAddResponse addBlueprint(String token, String model);
 	
 	ShipStatisticReportResponse statistic(ShipStatisticReportRequest request);
 

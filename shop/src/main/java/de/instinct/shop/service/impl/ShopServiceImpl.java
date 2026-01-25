@@ -11,6 +11,7 @@ import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
+import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shop.dto.BuyResponse;
 import de.instinct.api.shop.dto.BuyResponseCode;
 import de.instinct.api.shop.dto.Purchase;
@@ -81,12 +82,14 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				return null;
+				PlayerShipyardData shipyard = API.shipyard().data(token);
+				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
+				return "Insufficient Hangar Space";
 			}
 			
 			@Override
 			public void applyEffect(String token, int stage) {
-				API.shipyard().add(token, 1);
+				API.shipyard().add(token, "turtle");
 			}
 			
 		});
@@ -94,12 +97,14 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				return null;
+				PlayerShipyardData shipyard = API.shipyard().data(token);
+				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
+				return "Insufficient Hangar Space";
 			}
 			
 			@Override
 			public void applyEffect(String token, int stage) {
-				API.shipyard().add(token, 2);
+				API.shipyard().add(token, "eel");
 			}
 			
 		});
@@ -107,12 +112,14 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				return null;
+				PlayerShipyardData shipyard = API.shipyard().data(token);
+				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
+				return "Insufficient Hangar Space";
 			}
 			
 			@Override
 			public void applyEffect(String token, int stage) {
-				API.shipyard().add(token, 3);
+				API.shipyard().add(token, "shark");
 			}
 			
 		});
@@ -120,15 +127,14 @@ public class ShopServiceImpl implements ShopService {
 			
 			@Override
 			public String preconditionMetMessage(String token, int stage) {
-				/*PlayerShipyardData shipyard = API.shipyard().data(token);
+				PlayerShipyardData shipyard = API.shipyard().data(token);
 				if (shipyard.getSlots() > shipyard.getShips().size()) return null;
-				return "Insufficient Hangar Space";*/
-				return null;
+				return "Insufficient Hangar Space";
 			}
 			
 			@Override
 			public void applyEffect(String token, int stage) {
-				API.shipyard().add(token, 4);
+				API.shipyard().add(token, "shellshock");
 			}
 			
 		});

@@ -101,28 +101,9 @@ public class ShipyardServiceImpl implements ShipyardService {
 		initShipyardData.setSlots(getBaseData().getBaseSlots());
 		initShipyardData.setActiveShipSlots(getBaseData().getBaseActiveShipSlots());
 		initShipyardData.setShips(initShips);
-		addShip(initShipyardData, "hawk");
-		initShipyardData.getShips().get(0).setInUse(true);
 		userShipyards.put(token, initShipyardData);
+		addBlueprint(token, "hawk");
 		return ShipyardInitializationResponseCode.SUCCESS;
-	}
-	
-	public void addShip(PlayerShipyardData playerShipyard, String shipname) {
-		ShipBlueprint blueprint = getBlueprint(shipname);
-		if (blueprint == null) return;
-		
-		PlayerShipData initShipData = new PlayerShipData();
-		initShipData.setUuid(UUID.randomUUID().toString());
-		initShipData.setShipId(blueprint.getId());
-		initShipData.setBuilt(true);
-		initShipData.setComponentLevels(new ArrayList<>());
-		for (ShipComponent component : blueprint.getComponents()) {
-			PlayerShipComponentLevel playerComponentLevel = new PlayerShipComponentLevel();
-			playerComponentLevel.setComponentId(component.getId());
-			initShipData.getComponentLevels().add(playerComponentLevel);
-		}
-		
-		playerShipyard.getShips().add(initShipData);
 	}
 	
 	@Override
@@ -329,21 +310,27 @@ public class ShipyardServiceImpl implements ShipyardService {
 	}
 
 	@Override
-	public ShipAddResponse addBlueprint(String token, int shipid) {
+	public ShipAddResponse addBlueprint(String token, String model) {
 		PlayerShipyardData shipyard = userShipyards.get(token);
 		if (shipyard == null) return ShipAddResponse.USER_NOT_FOUND;
-		if (shipyard.getShips().stream().anyMatch(ship -> ship.getShipId() == shipid)) return ShipAddResponse.ALREADY_OWNED;
-		ShipBlueprint blueprint = getBaseData().getShipBlueprints().stream()
-				.filter(bp -> bp.getId() == shipid)
-				.findFirst()
-				.orElse(null);
+		
+		ShipBlueprint blueprint = getBlueprint(model);
 		if (blueprint == null) return ShipAddResponse.SHIP_NOT_FOUND;
-		PlayerShipData newShip = new PlayerShipData();
-		newShip.setUuid(UUID.randomUUID().toString());
-		newShip.setShipId(shipid);
-		newShip.setBuilt(false);
-		newShip.setInUse(false);
-		shipyard.getShips().add(newShip);
+		
+		if (shipyard.getShips().stream().anyMatch(ship -> ship.getShipId() == blueprint.getId())) return ShipAddResponse.ALREADY_OWNED;
+		
+		PlayerShipData initShipData = new PlayerShipData();
+		initShipData.setUuid(UUID.randomUUID().toString());
+		initShipData.setShipId(blueprint.getId());
+		initShipData.setBuilt(false);
+		initShipData.setComponentLevels(new ArrayList<>());
+		for (ShipComponent component : blueprint.getComponents()) {
+			PlayerShipComponentLevel playerComponentLevel = new PlayerShipComponentLevel();
+			playerComponentLevel.setComponentId(component.getId());
+			initShipData.getComponentLevels().add(playerComponentLevel);
+		}
+		shipyard.getShips().add(initShipData);
+		
 		return ShipAddResponse.SUCCESS;
 	}
 	
@@ -500,16 +487,16 @@ public class ShipyardServiceImpl implements ShipyardService {
 		newBlueprint.setModel(request.getName());
 		newBlueprint.setCreated(System.currentTimeMillis());
 		newBlueprint.setLastModified(System.currentTimeMillis());
-		
 		newBlueprint.setComponents(new ArrayList<>());
+		newBlueprint.setBuildCost(new ArrayList<>());
+		shipyardData.getShipBlueprints().add(newBlueprint);
+		
 		ComponentCreateRequest componentRequest = new ComponentCreateRequest();
 		componentRequest.setShipname(request.getName());
 		componentRequest.setType(ShipComponentType.CORE);
 		componentRequest.setComponentType(request.getType().toString());
-		createComponent(componentRequest);
+		if (createComponent(componentRequest) != ComponentCreateResponse.SUCCESS) return ShipCreateResponse.ERROR;
 		
-		newBlueprint.setBuildCost(new ArrayList<>());
-		shipyardData.getShipBlueprints().add(newBlueprint);
 		saveBaseData();
 		return ShipCreateResponse.SUCCESS;
 	}

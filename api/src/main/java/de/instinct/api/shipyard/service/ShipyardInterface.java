@@ -59,7 +59,7 @@ public interface ShipyardInterface extends BaseServiceInterface {
 	
 	ShipUpgradeResponse upgrade(String shiptoken);
 	
-	ShipAddResponse add(String token, int shipid);
+	ShipAddResponse add(String token, String model);
 	
 	ShipStatisticReportResponse statistic(ShipStatisticReportRequest request);
 	

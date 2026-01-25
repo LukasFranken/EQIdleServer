@@ -154,12 +154,12 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 	}
 	
 	@Override
-	public ShipAddResponse add(String token, int shipid) {
+	public ShipAddResponse add(String token, String model) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
 				.endpoint("add")
-				.pathVariable(token + "/" + shipid)
+				.pathVariable(token + "/" + model)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipAddResponse.class);
 	}

@@ -119,9 +119,9 @@ public class ShipyardController extends BaseServiceController {
 		return ResponseEntity.ok(service.upgrade(token, shiptoken));
 	}
 	
-	@PostMapping("/add/{token}/{shipid}")
-	public ResponseEntity<ShipAddResponse> add(@PathVariable String token, @PathVariable int shipid) {
-		return ResponseEntity.ok(service.addBlueprint(token, shipid));
+	@PostMapping("/add/{token}/{model}")
+	public ResponseEntity<ShipAddResponse> add(@PathVariable String token, @PathVariable String model) {
+		return ResponseEntity.ok(service.addBlueprint(token, model));
 	}
 	
 	@PostMapping("/statistic")
