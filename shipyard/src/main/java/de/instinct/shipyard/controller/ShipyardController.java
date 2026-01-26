@@ -84,9 +84,9 @@ public class ShipyardController extends BaseServiceController {
 	}
 	
 	@GetMapping("/load")
-	public ResponseEntity<ShipyardData> load() {
+	public ResponseEntity<String> load() {
 		service.loadBaseData();
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok("loaded");
 	}
 	
 	@PostMapping("/use/{token}/{shipUUID}")

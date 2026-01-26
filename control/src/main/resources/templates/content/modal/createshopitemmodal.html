@@ -1,0 +1,17 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="createshopitemmodal">
+		<h2>Create Item</h2>
+		<form id="create-shop-item-form" onsubmit="createShopItem(document.getElementById('shop-item-name').value, document.getElementById('shop-category-id').value); return false;">
+      	<input type="hidden" id="shop-category-id" name="categoryId" th:value="${categoryId}">
+			<div style="display: flex; align-items: center;">
+				<input type="text" id="shop-item-name" name="name" placeholder="Enter item name" required>
+				<button type="submit" style="margin-left: 10px;">Submit</button>
+			</div>
+			<label id="response-label" style="display: block; margin-top: 10px; color: red;"></label>
+		</form>
+	</div>
+</body>
+
+</html>

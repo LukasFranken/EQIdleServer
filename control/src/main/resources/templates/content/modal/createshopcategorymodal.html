@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="createshopcategorymodal">
+		<h2>Create Category</h2>
+		<form id="create-shop-category-form" onsubmit="createShopCategory(document.getElementById('shop-category-name').value); return false;">
+			<div style="display: flex; align-items: center;">
+				<input type="text" id="shop-category-name" name="name" placeholder="Enter category name" required>
+				<button type="submit" style="margin-left: 10px;">Submit</button>
+			</div>
+			<label id="response-label" style="display: block; margin-top: 10px; color: red;"></label>
+		</form>
+	</div>
+</body>
+
+</html>

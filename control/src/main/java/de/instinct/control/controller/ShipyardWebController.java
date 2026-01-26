@@ -38,16 +38,16 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 import de.instinct.control.service.base.BaseService;
-import de.instinct.control.service.shipyard.ShipyardService;
+import de.instinct.control.service.shipyard.ShipyardControlService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("shipyard")
-public class ShipyardController {
+public class ShipyardWebController {
 	
 	private final BaseService baseService;
-	private final ShipyardService shipyardService;
+	private final ShipyardControlService shipyardService;
 	
 	@GetMapping("")
     public String home(Model model) {

@@ -32,7 +32,7 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 import de.instinct.control.service.ModelService;
 
-public interface ShipyardService extends ModelService {
+public interface ShipyardControlService extends ModelService {
 
 	ShipCreateResponse createShip(ShipCreateRequest request);
 	

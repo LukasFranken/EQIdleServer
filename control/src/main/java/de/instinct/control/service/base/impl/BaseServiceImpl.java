@@ -17,7 +17,8 @@ public class BaseServiceImpl implements BaseService {
 		List<Link> links = Arrays.asList(
 	            new Link("overview", "/overview", "Overview"),
 	            new Link("users", "/users", "Users"),
-	            new Link("shipyard", "/shipyard", "Shipyard")
+	            new Link("shipyard", "/shipyard", "Shipyard"),
+	            new Link("shop", "/shop", "Shop")
 	        );
 	        model.addAttribute("links", links);
 	}

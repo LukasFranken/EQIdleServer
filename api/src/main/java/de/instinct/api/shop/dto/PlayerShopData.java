@@ -1,14 +1,14 @@
 package de.instinct.api.shop.dto;
 
+import java.util.List;
+
 import de.instinct.api.core.annotation.Dto;
 import lombok.Data;
 
 @Dto
 @Data
-public class ShopItemStage {
+public class PlayerShopData {
 	
-	private int id;
-	private String description;
-	private long price;
+	private List<Purchase> purchaseHistory;
 
 }

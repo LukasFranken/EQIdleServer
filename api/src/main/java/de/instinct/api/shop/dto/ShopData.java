@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class ShopData {
 	
-	private List<Purchase> purchaseHistory;
+	private int nextItemId;
 	private List<ShopCategory> categories;
 
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class ShopCategory {
 	
+	private int id;
 	private String name;
 	private List<ShopItem> items;
 

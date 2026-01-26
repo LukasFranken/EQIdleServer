@@ -59,7 +59,7 @@ import de.instinct.control.component.table.TableCell;
 import de.instinct.control.component.table.TableHeader;
 import de.instinct.control.component.table.TableRow;
 import de.instinct.control.service.base.model.Link;
-import de.instinct.control.service.shipyard.ShipyardService;
+import de.instinct.control.service.shipyard.ShipyardControlService;
 import de.instinct.engine.model.ship.components.types.CoreType;
 import de.instinct.engine.model.ship.components.types.EngineType;
 import de.instinct.engine.model.ship.components.types.HullType;
@@ -68,7 +68,7 @@ import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.eqspringutils.StringUtils;
 
 @Service
-public class ShipyardServiceImpl implements ShipyardService {
+public class ShipyardServiceImpl implements ShipyardControlService {
 	
 	private ShipyardData shipyardData;
 

@@ -1,0 +1,24 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="shop">
+		<div class="shop-container">
+			<div class="sidebar">
+				<div th:replace="~{component/navbar :: navbar(${ids})}"></div>
+			</div>
+    		<div class="content-area">
+    			<div class="action-bar">
+    				<button id="create-category-btn" modal="createshopcategorymodal">Create Category</button>
+    				<button id="create-item-btn" param-modal="shop-createshopitemmodal" th:param="${categoryId}">Create Item</button>
+    				<button id="refresh-btn" onclick="refreshShop()">Refresh</button>
+    			</div>
+    			<div th:if="${items != null and not #lists.isEmpty(items.rows)}">
+    				<div th:replace="~{component/table :: table(${items})}"></div>
+				</div>
+    		</div>
+		</div>
+		<div th:replace="~{component/modal :: modal}"></div>
+	</div>
+</body>
+
+</html>

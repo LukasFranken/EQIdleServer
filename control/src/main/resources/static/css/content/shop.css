@@ -1,0 +1,20 @@
+.shop-container {
+    display: flex;
+    height: 100%;
+    background-color: #121212;
+}
+
+.shop-link {
+    color: #cccccc;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.shop-link:hover {
+    color: #bb0000;
+    text-decoration: underline;
+}
+
+.shop-link.active {
+    color: #bb0000;
+}

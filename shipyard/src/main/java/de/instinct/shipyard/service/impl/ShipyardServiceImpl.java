@@ -160,7 +160,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 	}
 	
-	public void saveBaseData() {
+	private void saveBaseData() {
 		ShipyardBaseData baseData = new ShipyardBaseData();
 		baseData.setBaseActiveShipSlots(shipyardData.getBaseActiveShipSlots());
 		baseData.setBaseSlots(shipyardData.getBaseSlots());
