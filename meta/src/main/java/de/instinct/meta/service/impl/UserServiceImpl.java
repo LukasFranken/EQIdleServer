@@ -14,6 +14,7 @@ import de.instinct.api.meta.dto.NameRegisterResponseCode;
 import de.instinct.api.meta.dto.PlayerRank;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.meta.dto.RegisterResponseCode;
+import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.meta.dto.ResourceUpdateResponseCode;
@@ -27,11 +28,24 @@ public class UserServiceImpl implements UserService {
 	
 	private Map<String, UserData> users;
 	
+	private ResourceData startingResources;
+	
 	@Autowired
 	private ModuleService moduleService;
 	
 	public UserServiceImpl() {
 		users = new HashMap<>();
+		
+		startingResources = new ResourceData();
+		startingResources.setResources(new ArrayList<>());
+		ResourceAmount credits = new ResourceAmount();
+		credits.setType(Resource.CREDITS);
+		credits.setAmount(100);
+		startingResources.getResources().add(credits);
+		ResourceAmount metal = new ResourceAmount();
+		metal.setType(Resource.METAL);
+		metal.setAmount(10);
+		startingResources.getResources().add(metal);
 	}
 
 	@Override
@@ -65,6 +79,7 @@ public class UserServiceImpl implements UserService {
 		API.commander().init(token);
 		API.shipyard().init(token);
 		API.construction().init(token);
+		updateResources(token, startingResources);
 		return RegisterResponseCode.SUCCESS;
 	}
 

@@ -362,8 +362,10 @@ public class ShipyardServiceImpl implements ShipyardService {
 			float requirementValue = -1;
 			for (ComponentLevel level : component.getLevels()) {
 				if (level.getLevel() == playerComponentLevel.getLevel()) {
-					requirementValue = component.getLevels().get(component.getLevels().indexOf(level) + 1).getRequirementValue();
 					updatePlayerComponentLevelProgress(shipStatistic, component, level, playerComponentLevel);
+				}
+				if (level.getLevel() == playerComponentLevel.getLevel() + 1) {
+					requirementValue = level.getRequirementValue();
 				}
 			}
 			
