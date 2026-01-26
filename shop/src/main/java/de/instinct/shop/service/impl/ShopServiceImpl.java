@@ -239,6 +239,17 @@ public class ShopServiceImpl implements ShopService {
 		eelItem.setStages(eelStages);
 		shipBlueprintItems.add(eelItem);
 		
+		List<ShopItemStage> shellshockStages = new ArrayList<>();
+		ShopItemStage shellshockStage = new ShopItemStage();
+		shellshockStage.setDescription("");
+		shellshockStage.setPrice(1000);
+		shellshockStages.add(shellshockStage);
+		ShopItem shellshockItem = new ShopItem();
+		shellshockItem.setId(5);
+		shellshockItem.setName("Shellshock");
+		shellshockItem.setStages(shellshockStages);
+		shipBlueprintItems.add(shellshockItem);
+		
 		ShopCategory shipBlueprintsCategory = new ShopCategory();
 		shipBlueprintsCategory.setName("Ship Blueprints");
 		shipBlueprintsCategory.setItems(shipBlueprintItems);
