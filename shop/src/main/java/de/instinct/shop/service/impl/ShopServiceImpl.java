@@ -18,12 +18,13 @@ import de.instinct.api.shop.dto.Purchase;
 import de.instinct.api.shop.dto.ShopCategory;
 import de.instinct.api.shop.dto.ShopData;
 import de.instinct.api.shop.dto.ShopInitializationResponseCode;
-import de.instinct.api.shop.dto.ShopItem;
-import de.instinct.api.shop.dto.ShopItemStage;
 import de.instinct.api.shop.dto.ShopSaveResponseCode;
+import de.instinct.api.shop.dto.item.ShopItem;
+import de.instinct.api.shop.dto.item.ShopItemStage;
 import de.instinct.base.file.FileManager;
 import de.instinct.shop.service.ShopService;
 import de.instinct.shop.service.model.ShopBaseData;
+import de.instinct.shop.service.model.ShopItemEffect;
 
 @Service
 public class ShopServiceImpl implements ShopService {
@@ -33,6 +34,7 @@ public class ShopServiceImpl implements ShopService {
 	
 	public ShopServiceImpl() {
 		playerShops = new HashMap<>();
+		ShopEffectModelRegistry.init();
 	}
 
 	@Override
@@ -125,7 +127,8 @@ public class ShopServiceImpl implements ShopService {
 			return response;
 		}
 		
-		String preconditionMessage = ShopEffectLoader.getShopItemEffects().get(item.getId()).preconditionMetMessage(token, stagesBought);
+		ShopItemEffect effect = ShopEffectModelRegistry.getEffect(firstUnboughtStage.getEffectData());
+		String preconditionMessage = effect.preconditionNotMetMessage(token);
 		if (preconditionMessage != null) {
 			BuyResponse response = new BuyResponse();
 			response.setCode(BuyResponseCode.PRECONDITION_NOT_MET);
@@ -140,7 +143,7 @@ public class ShopServiceImpl implements ShopService {
 		credits.setAmount(-firstUnboughtStage.getPrice());
 		resourceData.getResources().add(credits);
 		API.meta().addResources(token, resourceData);
-		ShopEffectLoader.getShopItemEffects().get(item.getId()).applyEffect(token, stagesBought);
+		effect.applyEffect(token);
 		Purchase purchase = new Purchase();
 		purchase.setUserToken(token);
 		purchase.setItemId(itemId);

@@ -1,9 +1,13 @@
 package de.instinct.shop.service.model;
 
+import de.instinct.api.shop.dto.item.ShopItemEffectData;
+
 public interface ShopItemEffect {
 	
-	String preconditionMetMessage(String token, int stage);
+	boolean acceptData(ShopItemEffectData data);
 	
-	void applyEffect(String token, int stage);
+	String preconditionNotMetMessage(String token);
+	
+	void applyEffect(String token);
 
 }

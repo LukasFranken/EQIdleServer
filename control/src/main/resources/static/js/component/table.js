@@ -7,6 +7,15 @@ function createValueInputElement(row, value, column) {
 	row.querySelector('td:nth-child(' + column + ')').appendChild(input);
 }
 
+function createInputElement(row, value, column) {
+	const input = document.createElement('input');
+	input.type = 'text';
+	input.className = 'edit-value';
+	input.value = value;
+	row.querySelector('td:nth-child(' + column + ')').innerHTML = '';
+	row.querySelector('td:nth-child(' + column + ')').appendChild(input);
+}
+
 function createSelectElement(row, options, selected, column) {
 	const select = document.createElement('select');
 	select.className = 'edit-type';

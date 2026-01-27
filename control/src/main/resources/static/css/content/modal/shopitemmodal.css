@@ -1,0 +1,61 @@
+.shopitem-modal-view-container {
+	position: relative;
+	overflow: hidden;
+	height: 300px;
+}
+
+.shopitem-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+	display: flex;
+    flex-direction: column;
+}
+
+.shopitem-table-view {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+}
+
+.shopitem-table-view thead th:nth-child(1),
+.shopitem-table-view tbody td:nth-child(1) {
+	width: 30px;
+}
+
+.shopitem-table-view thead th:nth-child(2),
+.shopitem-table-view tbody td:nth-child(2) {
+	width: 80px;
+}
+
+.shopitem-table-view thead th:nth-child(3),
+.shopitem-table-view tbody td:nth-child(3) {
+	width: 80px;
+}
+
+.shopitem-table-view thead th:nth-child(4),
+.shopitem-table-view tbody td:nth-child(4) {
+	width: 80px;
+}
+
+.create-shopitemstage-section {
+	flex-shrink: 0;
+    margin-top: 10px;
+}
+
+.create-shopitemstage-submit {
+	margin-left: 10px;
+	position: absolute;
+	right: 0;
+}
+
+.shopitem-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    min-height: 40px;
+}

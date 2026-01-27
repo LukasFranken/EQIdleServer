@@ -1,0 +1,27 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div class="shopitemmodal-content" th:fragment="shopitemmodal">
+		<div class="title-row">
+			<h3>Stages</h3>
+			<h3 id="id" th:text="${id}"></h3>
+			<h3 id="name" th:text="${name}"></h3>
+		</div>
+		<div class="shopitem-modal-view-container">
+			<div class="shopitem-view">
+				<div class="shopitem-table-view" th:if="${stages != null and not #lists.isEmpty(stages.rows)}">
+					<div th:replace="~{component/table :: table(${stages})}"></div>
+				</div>
+
+				<div class="create-shopitemstage-section">
+					<label id="shopitem-response-label"> </label>
+					<div class="shopitem-buttons">
+						<button class="create-shopitemstage-submit" onclick="addShopItemStage(document.getElementById('id').textContent)">Add Stage</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

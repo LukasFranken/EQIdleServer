@@ -74,12 +74,10 @@ public class ShipyardServiceImpl implements ShipyardControlService {
 
 	@Override
 	public void setModel(Model model) {
-		List<Link> links = Arrays.asList(
-	            new Link("fighter", "/shipyard/module/fighter", "Fighter"),
-	            new Link("cruiser", "/shipyard/module/cruiser", "Cruiser"),
-	            new Link("destroyer", "/shipyard/module/destroyer", "Destroyer"),	
-	            new Link("titan", "/shipyard/module/titan", "Titan")
-	        );
+		List<Link> links = new ArrayList<>();
+		for (CoreType coreType : CoreType.values()) {
+			links.add(new Link(coreType.toString().toLowerCase(), "/shipyard/module/" + coreType.toString().toLowerCase(), coreType.toString()));
+		}
 	    model.addAttribute("types", links);
 	}
 

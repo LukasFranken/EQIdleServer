@@ -1,4 +1,4 @@
-package de.instinct.api.shop.dto;
+package de.instinct.api.shop.dto.item;
 
 import java.util.List;
 

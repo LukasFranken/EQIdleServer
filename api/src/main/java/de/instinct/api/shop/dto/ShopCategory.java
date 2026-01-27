@@ -3,6 +3,7 @@ package de.instinct.api.shop.dto;
 import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
+import de.instinct.api.shop.dto.item.ShopItem;
 import lombok.Data;
 
 @Dto
