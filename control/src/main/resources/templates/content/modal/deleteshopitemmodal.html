@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="deleteshopitemmodal">
+		<h2>Create Item</h2>
+		<form id="delete-shop-item-form" onsubmit="deleteShopItem(document.getElementById('shop-item-id').value); return false;">
+			<div style="display: flex; align-items: center;">
+				<input type="text" id="shop-item-id" name="itemid" placeholder="Enter item ID" required>
+				<button type="submit" style="margin-left: 10px;">Submit</button>
+			</div>
+			<label id="response-label" style="display: block; margin-top: 10px; color: red;"></label>
+		</form>
+	</div>
+</body>
+
+</html>

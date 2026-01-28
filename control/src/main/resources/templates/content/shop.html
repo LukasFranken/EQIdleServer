@@ -4,12 +4,14 @@
 	<div th:fragment="shop">
 		<div class="shop-container">
 			<div class="sidebar">
-				<div th:replace="~{component/navbar :: navbar(${ids})}"></div>
+				<div th:replace="~{component/navbar :: navbar(${ids}, ${activeShopCategory})}"></div>
 			</div>
     		<div class="content-area">
     			<div class="action-bar">
     				<button id="create-category-btn" modal="createshopcategorymodal">Create Category</button>
     				<button id="create-item-btn" param-modal="shop-createshopitemmodal" th:param="${categoryId}">Create Item</button>
+    				<button id="delete-category-btn" th:attr="data-category-id=${categoryId}">Delete Category</button>
+    				<button id="delete-item-btn" modal="deleteshopitemmodal">Delete Item</button>
     				<button id="refresh-btn" onclick="refreshShop()">Refresh</button>
     			</div>
     			<div th:if="${items != null and not #lists.isEmpty(items.rows)}">

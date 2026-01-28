@@ -23,7 +23,6 @@ import de.instinct.api.shop.dto.item.ShopItem;
 import de.instinct.api.shop.dto.item.ShopItemStage;
 import de.instinct.base.file.FileManager;
 import de.instinct.shop.service.ShopService;
-import de.instinct.shop.service.model.ShopBaseData;
 import de.instinct.shop.service.model.ShopItemEffect;
 
 @Service
@@ -66,22 +65,18 @@ public class ShopServiceImpl implements ShopService {
 	
 	@Override
 	public void loadBaseData() {
-		shopData = new ShopData();
-		ShopBaseData baseData = ObjectJSONMapper.mapJSON(FileManager.loadFile("base.data"), ShopBaseData.class);
-		shopData.setCategories(baseData.getCategories());
+		shopData = ObjectJSONMapper.mapJSON(FileManager.loadFile("base.data"), ShopData.class);
 	}
 	
 	@Override
 	public ShopSaveResponseCode saveBaseData(ShopData data) {
 		shopData = data;
-		saveBaseData();
+		saveData();
 		return ShopSaveResponseCode.SUCCESS;
 	}
 	
-	private void saveBaseData() {
-		ShopBaseData baseData = new ShopBaseData();
-		baseData.setCategories(shopData.getCategories());
-		FileManager.saveFile("base.data", ObjectJSONMapper.mapObject(baseData));
+	private void saveData() {
+		FileManager.saveFile("base.data", ObjectJSONMapper.mapObject(shopData));
 	}
 
 	@Override

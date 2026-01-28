@@ -4,14 +4,14 @@
 	<div th:fragment="shipyard">
 		<div class="shipyard-container">
 			<div class="sidebar">
-				<div th:replace="~{component/navbar :: navbar(${types})}"></div>
+				<div th:replace="~{component/navbar :: navbar(${types}, ${activeShipType})}"></div>
 			</div>
     		<div class="content-area">
     			<div class="action-bar">
     				<button id="create-ship-btn" modal="createshipmodal">Create Ship</button>
     				<button id="refresh-btn" onclick="refresh()">Refresh</button>
     			</div>
-    			<div th:if="${ships != null and not #lists.isEmpty(ships.rows)}">
+    			<div th:if="${ships != null and ships.rows != null and !ships.rows.isEmpty()}">
     				<div th:replace="~{component/table :: table(${ships})}"></div>
 				</div>
     		</div>

@@ -20,7 +20,6 @@ import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
 import de.instinct.engine.ai.AiEngine;
-import de.instinct.engine.combat.Ship;
 import de.instinct.engine.initialization.GameStateInitialization;
 import de.instinct.engine.initialization.PlanetInitialization;
 import de.instinct.engine.map.GameMap;

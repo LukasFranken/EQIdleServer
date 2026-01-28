@@ -11,8 +11,8 @@
         <div th:replace="~{component/header :: header}"></div>
     </div>
     <div class="nav-bar">
-    	<div th:replace="~{component/navbar :: navbar(${links})}"></div>
-    </div>
+		<div th:replace="~{component/navbar :: navbar(${links}, ${panel})}"></div>
+	</div>
     <div class="main-panel" id="main-content">
     	<div th:replace="~{content/__${panel}__ :: __${panel}__}"></div>
     </div>

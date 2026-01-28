@@ -6,6 +6,23 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import de.instinct.api.control.model.Link;
+import de.instinct.api.control.model.Table;
+import de.instinct.api.control.model.TableCell;
+import de.instinct.api.control.model.TableHeader;
+import de.instinct.api.control.model.TableRow;
+import de.instinct.api.control.requests.CreateShopCategoryRequest;
+import de.instinct.api.control.requests.CreateShopCategoryResponse;
+import de.instinct.api.control.requests.CreateShopItemRequest;
+import de.instinct.api.control.requests.CreateShopItemResponse;
+import de.instinct.api.control.requests.CreateShopItemStageRequest;
+import de.instinct.api.control.requests.CreateShopItemStageResponse;
+import de.instinct.api.control.requests.DeleteShopCategoryResponse;
+import de.instinct.api.control.requests.DeleteShopItemResponse;
+import de.instinct.api.control.requests.DeleteShopItemStageRequest;
+import de.instinct.api.control.requests.DeleteShopItemStageResponse;
+import de.instinct.api.control.requests.UpdateShopItemStageRequest;
+import de.instinct.api.control.requests.UpdateShopItemStageResponse;
 import de.instinct.api.core.API;
 import de.instinct.api.shop.dto.ShopCategory;
 import de.instinct.api.shop.dto.ShopData;
@@ -13,22 +30,7 @@ import de.instinct.api.shop.dto.item.ShopItem;
 import de.instinct.api.shop.dto.item.ShopItemEffectData;
 import de.instinct.api.shop.dto.item.ShopItemEffectType;
 import de.instinct.api.shop.dto.item.ShopItemStage;
-import de.instinct.control.component.table.Table;
-import de.instinct.control.component.table.TableCell;
-import de.instinct.control.component.table.TableHeader;
-import de.instinct.control.component.table.TableRow;
-import de.instinct.control.service.base.model.Link;
 import de.instinct.control.service.shop.ShopControlService;
-import de.instinct.control.service.shop.model.CreateShopCategoryRequest;
-import de.instinct.control.service.shop.model.CreateShopCategoryResponse;
-import de.instinct.control.service.shop.model.CreateShopItemRequest;
-import de.instinct.control.service.shop.model.CreateShopItemResponse;
-import de.instinct.control.service.shop.model.CreateShopItemStageRequest;
-import de.instinct.control.service.shop.model.CreateShopItemStageResponse;
-import de.instinct.control.service.shop.model.DeleteShopItemStageRequest;
-import de.instinct.control.service.shop.model.DeleteShopItemStageResponse;
-import de.instinct.control.service.shop.model.UpdateShopItemStageRequest;
-import de.instinct.control.service.shop.model.UpdateShopItemStageResponse;
 
 @Service
 public class ShopControlServiceImpl implements ShopControlService {
@@ -83,6 +85,7 @@ public class ShopControlServiceImpl implements ShopControlService {
     			.rows(rows)
 				.build());
     	model.addAttribute("categoryId", id);
+    	model.addAttribute("deleteCategoryMethod", "deleteCategory(" + id + ")");
 	}
 
 	@Override
@@ -99,6 +102,18 @@ public class ShopControlServiceImpl implements ShopControlService {
 		shopData.getCategories().add(newCategory);
 		API.shop().save(shopData);
 		return CreateShopCategoryResponse.SUCCESS;
+	}
+	
+	@Override
+	public DeleteShopCategoryResponse deleteCategory(String id) {
+		for (ShopCategory category : shopData.getCategories()) {
+			if (category.getId() == Integer.parseInt(id)) {
+				shopData.getCategories().remove(category);
+				API.shop().save(shopData);
+				return DeleteShopCategoryResponse.SUCCESS;
+			}
+		}
+		return DeleteShopCategoryResponse.CATEGORY_NOT_FOUND;
 	}
 
 	@Override
@@ -125,6 +140,20 @@ public class ShopControlServiceImpl implements ShopControlService {
 		shopData.setNextItemId(shopData.getNextItemId() + 1);
 		API.shop().save(shopData);
 		return CreateShopItemResponse.SUCCESS;
+	}
+	
+	@Override
+	public DeleteShopItemResponse deleteItem(String id) {
+		for (ShopCategory category : shopData.getCategories()) {
+			for (ShopItem item : category.getItems()) {
+				if (item.getId() == Integer.parseInt(id)) {
+					category.getItems().remove(item);
+					API.shop().save(shopData);
+					return DeleteShopItemResponse.SUCCESS;
+				}
+			}
+		}
+		return DeleteShopItemResponse.ITEM_NOT_FOUND;
 	}
 	
 	@Override

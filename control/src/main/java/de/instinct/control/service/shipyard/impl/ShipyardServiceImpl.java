@@ -7,6 +7,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import de.instinct.api.control.model.Link;
+import de.instinct.api.control.model.Table;
+import de.instinct.api.control.model.TableCell;
+import de.instinct.api.control.model.TableHeader;
+import de.instinct.api.control.model.TableRow;
 import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
@@ -54,11 +59,6 @@ import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldRequiremen
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponRequirementType;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
-import de.instinct.control.component.table.Table;
-import de.instinct.control.component.table.TableCell;
-import de.instinct.control.component.table.TableHeader;
-import de.instinct.control.component.table.TableRow;
-import de.instinct.control.service.base.model.Link;
 import de.instinct.control.service.shipyard.ShipyardControlService;
 import de.instinct.engine.model.ship.components.types.CoreType;
 import de.instinct.engine.model.ship.components.types.EngineType;

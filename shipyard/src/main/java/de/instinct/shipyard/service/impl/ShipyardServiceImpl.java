@@ -68,6 +68,7 @@ import de.instinct.api.shipyard.dto.ship.component.level.HullLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.ShieldLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
+import de.instinct.api.shipyard.service.model.ShipyardBaseData;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.model.ship.components.types.CoreType;
 import de.instinct.engine.model.ship.components.types.EngineType;
@@ -81,7 +82,6 @@ import de.instinct.engine.stats.model.unit.component.types.HullStatistic;
 import de.instinct.engine.stats.model.unit.component.types.ShieldStatistic;
 import de.instinct.engine.stats.model.unit.component.types.WeaponStatistic;
 import de.instinct.shipyard.service.ShipyardService;
-import de.instinct.shipyard.service.model.ShipyardBaseData;
 
 @Service
 public class ShipyardServiceImpl implements ShipyardService {

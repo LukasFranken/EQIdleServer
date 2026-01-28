@@ -1,4 +1,4 @@
-package de.instinct.control.service.shop.model;
+package de.instinct.api.control.requests;
 
 public enum CreateShopItemResponse {
 	

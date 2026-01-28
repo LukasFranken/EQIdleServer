@@ -4,16 +4,18 @@ import java.util.List;
 
 import org.springframework.ui.Model;
 
-import de.instinct.control.service.shop.model.CreateShopCategoryRequest;
-import de.instinct.control.service.shop.model.CreateShopCategoryResponse;
-import de.instinct.control.service.shop.model.CreateShopItemRequest;
-import de.instinct.control.service.shop.model.CreateShopItemResponse;
-import de.instinct.control.service.shop.model.CreateShopItemStageRequest;
-import de.instinct.control.service.shop.model.CreateShopItemStageResponse;
-import de.instinct.control.service.shop.model.DeleteShopItemStageRequest;
-import de.instinct.control.service.shop.model.DeleteShopItemStageResponse;
-import de.instinct.control.service.shop.model.UpdateShopItemStageRequest;
-import de.instinct.control.service.shop.model.UpdateShopItemStageResponse;
+import de.instinct.api.control.requests.CreateShopCategoryRequest;
+import de.instinct.api.control.requests.CreateShopCategoryResponse;
+import de.instinct.api.control.requests.CreateShopItemRequest;
+import de.instinct.api.control.requests.CreateShopItemResponse;
+import de.instinct.api.control.requests.CreateShopItemStageRequest;
+import de.instinct.api.control.requests.CreateShopItemStageResponse;
+import de.instinct.api.control.requests.DeleteShopCategoryResponse;
+import de.instinct.api.control.requests.DeleteShopItemResponse;
+import de.instinct.api.control.requests.DeleteShopItemStageRequest;
+import de.instinct.api.control.requests.DeleteShopItemStageResponse;
+import de.instinct.api.control.requests.UpdateShopItemStageRequest;
+import de.instinct.api.control.requests.UpdateShopItemStageResponse;
 
 public interface ShopControlService {
 	
@@ -22,8 +24,12 @@ public interface ShopControlService {
 	void prepareShopTable(Model model, String id);
 
 	CreateShopCategoryResponse createCategory(CreateShopCategoryRequest request);
+	
+	DeleteShopCategoryResponse deleteCategory(String id);
 
 	CreateShopItemResponse createItem(CreateShopItemRequest request);
+	
+	DeleteShopItemResponse deleteItem(String id);
 	
 	CreateShopItemStageResponse createItemStage(CreateShopItemStageRequest request);
 	

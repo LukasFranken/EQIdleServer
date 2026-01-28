@@ -11,18 +11,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import de.instinct.api.control.requests.CreateShopCategoryRequest;
+import de.instinct.api.control.requests.CreateShopCategoryResponse;
+import de.instinct.api.control.requests.CreateShopItemRequest;
+import de.instinct.api.control.requests.CreateShopItemResponse;
+import de.instinct.api.control.requests.CreateShopItemStageRequest;
+import de.instinct.api.control.requests.CreateShopItemStageResponse;
+import de.instinct.api.control.requests.DeleteShopCategoryResponse;
+import de.instinct.api.control.requests.DeleteShopItemResponse;
+import de.instinct.api.control.requests.DeleteShopItemStageRequest;
+import de.instinct.api.control.requests.DeleteShopItemStageResponse;
+import de.instinct.api.control.requests.UpdateShopItemStageRequest;
+import de.instinct.api.control.requests.UpdateShopItemStageResponse;
 import de.instinct.control.service.base.BaseService;
 import de.instinct.control.service.shop.ShopControlService;
-import de.instinct.control.service.shop.model.CreateShopCategoryRequest;
-import de.instinct.control.service.shop.model.CreateShopCategoryResponse;
-import de.instinct.control.service.shop.model.CreateShopItemRequest;
-import de.instinct.control.service.shop.model.CreateShopItemResponse;
-import de.instinct.control.service.shop.model.CreateShopItemStageRequest;
-import de.instinct.control.service.shop.model.CreateShopItemStageResponse;
-import de.instinct.control.service.shop.model.DeleteShopItemStageRequest;
-import de.instinct.control.service.shop.model.DeleteShopItemStageResponse;
-import de.instinct.control.service.shop.model.UpdateShopItemStageRequest;
-import de.instinct.control.service.shop.model.UpdateShopItemStageResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -38,7 +40,6 @@ public class ShopWebController {
 		baseService.setModel(model);
 		shopService.setModel(model);
 		model.addAttribute("panel", "shop");
-		model.addAttribute("modal", "basemodal");
         return "home";
     }
 
@@ -50,6 +51,7 @@ public class ShopWebController {
     @GetMapping("/module/{id}")
     public String selectTypeModule(Model model, @PathVariable("id") String id) {
     	shopService.prepareShopTable(model, id);
+    	model.addAttribute("activeShopCategory", id);
 		return home(model);
     }
     
@@ -58,9 +60,19 @@ public class ShopWebController {
 		return ResponseEntity.ok(shopService.createCategory(request));
 	}
     
+    @PostMapping("/delete/category/{id}")
+    public ResponseEntity<DeleteShopCategoryResponse> deleteShopCategory(@PathVariable("id") String id) {
+		return ResponseEntity.ok(shopService.deleteCategory(id));
+	}
+    
     @PostMapping("/create/item")
     public ResponseEntity<CreateShopItemResponse> createItem(@RequestBody CreateShopItemRequest request) {
 		return ResponseEntity.ok(shopService.createItem(request));
+	}
+    
+    @PostMapping("/delete/item/{id}")
+    public ResponseEntity<DeleteShopItemResponse> deleteShopItem(@PathVariable("id") String id) {
+		return ResponseEntity.ok(shopService.deleteItem(id));
 	}
     
     @PostMapping("/create/itemstage")

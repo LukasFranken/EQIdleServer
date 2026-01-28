@@ -54,7 +54,6 @@ public class ShipyardWebController {
 		baseService.setModel(model);
 		shipyardService.setModel(model);
 		model.addAttribute("panel", "shipyard");
-		model.addAttribute("modal", "basemodal");
         return "home";
     }
 
@@ -131,6 +130,7 @@ public class ShipyardWebController {
     @GetMapping("/module/{type}")
     public String selectTypeModule(Model model, @PathVariable("type") String type) {
 		shipyardService.prepareShipTable(model, type);
+		model.addAttribute("activeShipType", type);
 		return home(model);
     }
     

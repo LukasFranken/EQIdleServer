@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import de.instinct.api.control.model.Link;
 import de.instinct.control.service.base.BaseService;
-import de.instinct.control.service.base.model.Link;
 
 @Service
 public class BaseServiceImpl implements BaseService {
@@ -20,7 +20,8 @@ public class BaseServiceImpl implements BaseService {
 	            new Link("shipyard", "/shipyard", "Shipyard"),
 	            new Link("shop", "/shop", "Shop")
 	        );
-	        model.addAttribute("links", links);
+	    model.addAttribute("links", links);
+	    model.addAttribute("modal", "basemodal");
 	}
 
 }

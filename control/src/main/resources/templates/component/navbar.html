@@ -1,12 +1,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-	<div th:fragment="navbar(links)">
+	<div th:fragment="navbar(links, activeTag)">
 		<div class="nav-container">
 			<ul class="nav flex-column">
 				<li th:each="link : ${links}" class="nav-item">
 					<a th:href="@{${link.url}}" th:text="${link.label}"
-                       th:class="${link.tag == panel} ? 'nav-link active' : 'nav-link'"></a>
+                       th:class="${link.tag == activeTag} ? 'nav-link active' : 'nav-link'"></a>
 				</li>
 			</ul>
 		</div>
