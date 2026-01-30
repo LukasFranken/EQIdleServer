@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.ui.Model;
 
+import de.instinct.api.shipyard.dto.admin.DeleteShipResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
@@ -35,6 +36,8 @@ import de.instinct.control.service.ModelService;
 public interface ShipyardControlService extends ModelService {
 
 	ShipCreateResponse createShip(ShipCreateRequest request);
+	
+	DeleteShipResponse deleteShip(String id);
 	
 	BuildCostCreateResponse createBuildCost(BuildCostCreateRequest request);
 	

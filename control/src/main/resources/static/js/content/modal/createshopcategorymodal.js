@@ -10,7 +10,7 @@ function createShopCategory(name) {
 			toggleModal(false);
 			location.reload();
 		} else {
-			document.getElementById('response-label').textContent = data.replace('_', ' ').toLowerCase();
+			document.getElementById('response-label').textContent = "Error: " + data.replaceAll('_', ' ').toLowerCase();
 		}
 	})
 	.catch(error => {

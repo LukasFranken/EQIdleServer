@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<div th:fragment="deleteshipmodal">
+		<h2>Delete Ship</h2>
+		<form id="delete-ship-form" onsubmit="deleteShip(document.getElementById('ship-id').value); return false;">
+			<div style="display: flex; align-items: center;">
+				<input type="text" id="ship-id" name="itemid" placeholder="Enter ship ID" required>
+				<button type="submit" style="margin-left: 10px;">Submit</button>
+			</div>
+			<label id="response-label" style="display: block; margin-top: 10px; color: red;"></label>
+		</form>
+	</div>
+</body>
+
+</html>

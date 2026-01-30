@@ -15,8 +15,8 @@ import de.instinct.api.construction.dto.PlanetWeapon;
 import de.instinct.api.construction.dto.PlayerInfrastructure;
 import de.instinct.api.construction.dto.PlayerTurretData;
 import de.instinct.api.construction.dto.UseTurretResponseCode;
+import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 import de.instinct.construction.service.ConstructionService;
-import de.instinct.engine.model.ship.components.types.WeaponType;
 
 @Service
 public class ConstructionServiceImpl implements ConstructionService {
@@ -60,7 +60,7 @@ public class ConstructionServiceImpl implements ConstructionService {
 		projectileDefense.setShieldRegenerationSpeed(0.5f);
 		projectileTurretBlueprint.setPlanetDefense(projectileDefense);
 		PlanetWeapon projectileWeapon = new PlanetWeapon();
-		projectileWeapon.setType(WeaponType.PROJECTILE);
+		projectileWeapon.setType(ShipWeaponType.PROJECTILE);
 		projectileWeapon.setDamage(3);
 		projectileWeapon.setRange(80f);
 		projectileWeapon.setSpeed(120f);
@@ -80,7 +80,7 @@ public class ConstructionServiceImpl implements ConstructionService {
 		laserDefense.setShieldRegenerationSpeed(0.5f);
 		laserTurretBlueprint.setPlanetDefense(laserDefense);
 		PlanetWeapon laserWeapon = new PlanetWeapon();
-		laserWeapon.setType(WeaponType.LASER);
+		laserWeapon.setType(ShipWeaponType.LASER);
 		laserWeapon.setDamage(5);
 		laserWeapon.setRange(100f);
 		laserWeapon.setSpeed(120f);
@@ -100,7 +100,7 @@ public class ConstructionServiceImpl implements ConstructionService {
 		missileDefense.setShieldRegenerationSpeed(0.5f);
 		missileTurretBlueprint.setPlanetDefense(missileDefense);
 		PlanetWeapon missileWeapon = new PlanetWeapon();
-		missileWeapon.setType(WeaponType.MISSILE);
+		missileWeapon.setType(ShipWeaponType.MISSILE);
 		missileWeapon.setDamage(11);
 		missileWeapon.setRange(120f);
 		missileWeapon.setSpeed(60f);
@@ -120,7 +120,7 @@ public class ConstructionServiceImpl implements ConstructionService {
 		beamDefense.setShieldRegenerationSpeed(0.5f);
 		beamTurretBlueprint.setPlanetDefense(beamDefense);
 		PlanetWeapon beamWeapon = new PlanetWeapon();
-		beamWeapon.setType(WeaponType.BEAM);
+		beamWeapon.setType(ShipWeaponType.BEAM);
 		beamWeapon.setDamage(10);
 		beamWeapon.setRange(130f);
 		beamWeapon.setSpeed(220f);

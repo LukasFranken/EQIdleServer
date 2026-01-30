@@ -17,7 +17,8 @@ import de.instinct.api.core.reflection.RegisterReflection;
 @ImportRuntimeHints(ReflectionHintRegistrar.class)
 public class ReflectionHintRegistrar implements RuntimeHintsRegistrar {
 
-    private static final String BASE_PACKAGE = "de.instinct.api";
+    private static final String API_PACKAGE = "de.instinct.api";
+    private static final String ENGINE_API_PACKAGE = "de.instinct.engine_api";
 
     @Override
     public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
@@ -25,7 +26,18 @@ public class ReflectionHintRegistrar implements RuntimeHintsRegistrar {
         scanner.addIncludeFilter(new AnnotationTypeFilter(RegisterReflection.class));
         scanner.setResourceLoader(resourceLoader(classLoader));
 
-        for (BeanDefinition bd : scanner.findCandidateComponents(BASE_PACKAGE)) {
+        for (BeanDefinition bd : scanner.findCandidateComponents(API_PACKAGE)) {
+            try {
+                Class<?> clazz = Class.forName(bd.getBeanClassName());
+                hints.reflection()
+                     .registerType(clazz,
+                                   MemberCategory.INVOKE_PUBLIC_CONSTRUCTORS,
+                                   MemberCategory.PUBLIC_FIELDS,
+                                   MemberCategory.INVOKE_PUBLIC_METHODS);
+            }
+            catch (ClassNotFoundException e) {}
+        }
+        for (BeanDefinition bd : scanner.findCandidateComponents(ENGINE_API_PACKAGE)) {
             try {
                 Class<?> clazz = Class.forName(bd.getBeanClassName());
                 hints.reflection()

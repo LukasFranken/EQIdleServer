@@ -1,4 +1,4 @@
-package de.instinct.api.shipyard.dto.ship;
+package de.instinct.engine_api.ship.model;
 
 import java.util.List;
 

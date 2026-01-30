@@ -16,6 +16,7 @@ import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.shipyard.dto.ShipyardData;
+import de.instinct.api.shipyard.dto.admin.DeleteShipResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
@@ -58,13 +59,13 @@ import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldAttributeT
 import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldRequirementType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponRequirementType;
+import de.instinct.api.shipyard.dto.ship.types.ShipCoreType;
+import de.instinct.api.shipyard.dto.ship.types.ShipEngineType;
+import de.instinct.api.shipyard.dto.ship.types.ShipHullType;
+import de.instinct.api.shipyard.dto.ship.types.ShipShieldType;
+import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
 import de.instinct.control.service.shipyard.ShipyardControlService;
-import de.instinct.engine.model.ship.components.types.CoreType;
-import de.instinct.engine.model.ship.components.types.EngineType;
-import de.instinct.engine.model.ship.components.types.HullType;
-import de.instinct.engine.model.ship.components.types.ShieldType;
-import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.eqspringutils.StringUtils;
 
 @Service
@@ -75,7 +76,7 @@ public class ShipyardServiceImpl implements ShipyardControlService {
 	@Override
 	public void setModel(Model model) {
 		List<Link> links = new ArrayList<>();
-		for (CoreType coreType : CoreType.values()) {
+		for (ShipCoreType coreType : ShipCoreType.values()) {
 			links.add(new Link(coreType.toString().toLowerCase(), "/shipyard/module/" + coreType.toString().toLowerCase(), coreType.toString()));
 		}
 	    model.addAttribute("types", links);
@@ -84,6 +85,13 @@ public class ShipyardServiceImpl implements ShipyardControlService {
 	@Override
 	public ShipCreateResponse createShip(ShipCreateRequest request) {
 		ShipCreateResponse response = API.shipyard().createShip(request);
+		shipyardData = API.shipyard().shipyard();
+		return response;
+	}
+	
+	@Override
+	public DeleteShipResponse deleteShip(String id) {
+		DeleteShipResponse response = API.shipyard().deleteShip(id);
 		shipyardData = API.shipyard().shipyard();
 		return response;
 	}
@@ -415,11 +423,11 @@ public class ShipyardServiceImpl implements ShipyardControlService {
 	@Override
 	public List<String> getComponentTypes(String type) {
 		List<String> types = switch (type.toUpperCase()) {
-        	case "CORE" -> Arrays.stream(CoreType.values()).map(Enum::name).toList();
-        	case "WEAPON" -> Arrays.stream(WeaponType.values()).map(Enum::name).toList();
-        	case "ENGINE" -> Arrays.stream(EngineType.values()).map(Enum::name).toList();
-        	case "SHIELD" -> Arrays.stream(ShieldType.values()).map(Enum::name).toList();
-        	case "HULL" -> Arrays.stream(HullType.values()).map(Enum::name).toList();
+        	case "CORE" -> Arrays.stream(ShipCoreType.values()).map(Enum::name).toList();
+        	case "WEAPON" -> Arrays.stream(ShipWeaponType.values()).map(Enum::name).toList();
+        	case "ENGINE" -> Arrays.stream(ShipEngineType.values()).map(Enum::name).toList();
+        	case "SHIELD" -> Arrays.stream(ShipShieldType.values()).map(Enum::name).toList();
+        	case "HULL" -> Arrays.stream(ShipHullType.values()).map(Enum::name).toList();
         	default -> List.of(" ");
 		};
 		return types;

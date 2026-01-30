@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.instinct.api.core.API;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
@@ -20,6 +19,7 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.DeleteShipResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
@@ -46,9 +46,10 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 import de.instinct.base.controller.BaseServiceController;
+import de.instinct.engine_api.core.EngineAPI;
+import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.ship.model.ShipStatisticReportResponse;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
 
@@ -65,7 +66,7 @@ public class ShipyardController extends BaseServiceController {
 	
 	@Override
 	protected void connectToAPIs() {
-		API.meta().connect();
+		EngineAPI.meta().connect();
 	}
 	
 	@GetMapping("/init/{token}")
@@ -133,6 +134,11 @@ public class ShipyardController extends BaseServiceController {
 	@PostMapping("/admin/ship/create")
 	public ResponseEntity<ShipCreateResponse> createShip(@RequestBody ShipCreateRequest request) {
 		return ResponseEntity.ok(service.createShip(request));
+	}
+	
+	@PostMapping("/admin/ship/delete/{id}")
+	public ResponseEntity<DeleteShipResponse> deleteShip(@PathVariable String id) {
+		return ResponseEntity.ok(service.deleteShip(id));
 	}
 	
 	@PostMapping("/admin/buildcost/create")

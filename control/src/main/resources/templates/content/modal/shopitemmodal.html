@@ -9,7 +9,7 @@
 		</div>
 		<div class="shopitem-modal-view-container">
 			<div class="shopitem-view">
-				<div class="shopitem-table-view" th:if="${stages != null and not #lists.isEmpty(stages.rows)}">
+				<div class="shopitem-table-view" th:if="${stages != null}">
 					<div th:replace="~{component/table :: table(${stages})}"></div>
 				</div>
 

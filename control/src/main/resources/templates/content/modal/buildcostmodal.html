@@ -8,7 +8,7 @@
 		</div>
 		<div class="buildcost-modal-view-container">
 			<div class="buildcost-view">
-				<div class="buildcost-table-view" th:if="${buildcosts != null and not #lists.isEmpty(buildcosts.rows)}">
+				<div class="buildcost-table-view" th:if="${buildcosts != null}">
 					<div th:replace="~{component/table :: table(${buildcosts})}"></div>
 				</div>
 

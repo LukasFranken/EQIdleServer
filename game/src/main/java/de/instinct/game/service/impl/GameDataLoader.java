@@ -3,14 +3,10 @@ package de.instinct.game.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
-import de.instinct.api.game.engine.EngineInterface;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.ai.AiEngine;
-import de.instinct.engine.initialization.GameStateInitialization;
-import de.instinct.engine.map.GameMap;
 import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.Player;
 import de.instinct.engine.model.planet.PlanetData;
@@ -22,6 +18,10 @@ import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.engine.model.turret.PlatformData;
 import de.instinct.engine.model.turret.PlatformType;
 import de.instinct.engine.model.turret.TurretData;
+import de.instinct.engine_api.core.EngineAPI;
+import de.instinct.engine_api.core.model.GameMap;
+import de.instinct.engine_api.core.model.GameStateInitialization;
+import de.instinct.engine_api.core.service.EngineDataInterface;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
 
@@ -38,23 +38,24 @@ public class GameDataLoader {
 	
 	public GameStateInitialization generateGameStateInitialization(GameSession session) {
 		GameStateInitialization initialGameState = loadInitialMap(session);
-		initialGameState.gameUUID = session.getUuid();
-		initialGameState.players = loadPlayers(session);
-		initialGameState.ancientPlanetResourceDegradationFactor = 0.5f;
-		initialGameState.gameTimeLimitMS = (int)session.getGameType().getDuration();
-		initialGameState.atpToWin = 50;
-		initialGameState.pauseTimeLimitMS = 20_000;
-		initialGameState.pauseCountLimit = 3;
+		initialGameState.setGameUUID(session.getUuid());
+		initialGameState.setPlayers(loadPlayers(session));
+		initialGameState.setAncientPlanetResourceDegradationFactor(0.5f);;
+		initialGameState.setGameTimeLimitMS((int)session.getGameType().getDuration());
+		initialGameState.setAtpToWin(50);
+		initialGameState.setPauseTimeLimitMS(20_000);
+		initialGameState.setPauseCountLimit(3);
 		return initialGameState;
 	}
 
 	private GameStateInitialization loadInitialMap(GameSession session) {
 		GameStateInitialization initialGameState = new GameStateInitialization();
-		initialGameState.map = ObjectJSONMapper.mapJSON(FileManager.loadFile(
+		initialGameState.setMap(ObjectJSONMapper.mapJSON(FileManager.loadFile(
 				MAP_FILE_SUBFOLDER 
 				+ "/" + session.getGameType().getGameMode().toString().toLowerCase() 
 				+ "/" + session.getGameType().getFactionMode().toString().toLowerCase() 
-				+ "/" + session.getGameType().getMap() + MAP_FILE_POSTFIX), GameMap.class);
+				+ "/" + session.getGameType().getMap() + MAP_FILE_POSTFIX), GameMap.class));
+		System.out.println("Map: " + initialGameState.getMap() + " for game mode: " + session.getGameType());
 		return initialGameState;
 	}
 	
@@ -166,9 +167,9 @@ public class GameDataLoader {
 		newPlayer.commandPointsGenerationSpeed = user.getLoadout().getCommander().getCommandPointsGenerationSpeed();
 		newPlayer.startCommandPoints = user.getLoadout().getCommander().getStartCommandPoints();
 		newPlayer.maxCommandPoints = user.getLoadout().getCommander().getMaxCommandPoints();
-		newPlayer.planetData = EngineInterface.getPlanetData(user.getLoadout().getPlayerInfrastructure(), API.construction().construction());
-		newPlayer.ships = EngineInterface.getShips(user.getLoadout().getShips(), API.shipyard().shipyard());
-		newPlayer.turrets = EngineInterface.getPlayerTurretData(user.getLoadout().getPlayerInfrastructure().getPlayerTurrets().get(0), API.construction().construction());
+		newPlayer.planetData = EngineDataInterface.getPlanetData(user.getLoadout().getPlayerInfrastructure(), EngineAPI.construction().construction());
+		newPlayer.ships = EngineDataInterface.getShips(user.getLoadout().getShips(), EngineAPI.shipyard().shipyard());
+		newPlayer.turrets = EngineDataInterface.getPlayerTurretData(user.getLoadout().getPlayerInfrastructure().getPlayerTurrets().get(0), EngineAPI.construction().construction());
 		return newPlayer;
 	}
 	

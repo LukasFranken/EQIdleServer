@@ -10,6 +10,7 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.DeleteShipResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
@@ -36,8 +37,6 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 
 public interface ShipyardInterface extends BaseServiceInterface {
 	
@@ -61,9 +60,9 @@ public interface ShipyardInterface extends BaseServiceInterface {
 	
 	ShipAddResponse add(String token, String model);
 	
-	ShipStatisticReportResponse statistic(ShipStatisticReportRequest request);
-	
 	ShipCreateResponse createShip(ShipCreateRequest request);
+	
+	DeleteShipResponse deleteShip(String id);
 	
 	BuildCostCreateResponse createBuildCost(BuildCostCreateRequest request);
 	

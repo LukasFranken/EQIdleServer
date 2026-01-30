@@ -9,9 +9,10 @@
     		<div class="content-area">
     			<div class="action-bar">
     				<button id="create-ship-btn" modal="createshipmodal">Create Ship</button>
+    				<button id="delete-ship-btn" modal="deleteshipmodal">Delete Ship</button>
     				<button id="refresh-btn" onclick="refresh()">Refresh</button>
     			</div>
-    			<div th:if="${ships != null and ships.rows != null and !ships.rows.isEmpty()}">
+    			<div th:if="${ships != null}">
     				<div th:replace="~{component/table :: table(${ships})}"></div>
 				</div>
     		</div>

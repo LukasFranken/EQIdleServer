@@ -2,7 +2,7 @@
 
 <body>
 	<div class="level-attribute-view" th:fragment="levelattributes">
-    	<div class="level-attribute-table-view" th:if="${levelattributes != null and not #lists.isEmpty(levelattributes.rows)}">
+    	<div class="level-attribute-table-view" th:if="${levelattributes != null}">
         	<div th:replace="~{component/table :: table(${levelattributes})}"></div>
     	</div>
     	<div class="create-level-attribute-section">

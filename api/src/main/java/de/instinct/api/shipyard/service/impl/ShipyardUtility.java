@@ -34,11 +34,11 @@ import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldAttributeT
 import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldRequirementType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponRequirementType;
-import de.instinct.engine.model.ship.components.types.CoreType;
-import de.instinct.engine.model.ship.components.types.EngineType;
-import de.instinct.engine.model.ship.components.types.HullType;
-import de.instinct.engine.model.ship.components.types.ShieldType;
-import de.instinct.engine.model.ship.components.types.WeaponType;
+import de.instinct.api.shipyard.dto.ship.types.ShipCoreType;
+import de.instinct.api.shipyard.dto.ship.types.ShipEngineType;
+import de.instinct.api.shipyard.dto.ship.types.ShipHullType;
+import de.instinct.api.shipyard.dto.ship.types.ShipShieldType;
+import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 
 public class ShipyardUtility {
 	
@@ -159,11 +159,11 @@ public class ShipyardUtility {
 	}
 
 	public static void updateShipComponentType(ShipComponent component, ComponentUpdateRequest request) {
-		if (component instanceof ShipCore) ((ShipCore) component).setType(CoreType.valueOf(request.getType()));
-		if (component instanceof ShipEngine) ((ShipEngine) component).setType(EngineType.valueOf(request.getType()));
-		if (component instanceof ShipHull) ((ShipHull) component).setType(HullType.valueOf(request.getType()));
-		if (component instanceof ShipShield) ((ShipShield) component).setType(ShieldType.valueOf(request.getType()));
-		if (component instanceof ShipWeapon) ((ShipWeapon) component).setType(WeaponType.valueOf(request.getType()));
+		if (component instanceof ShipCore) ((ShipCore) component).setType(ShipCoreType.valueOf(request.getType()));
+		if (component instanceof ShipEngine) ((ShipEngine) component).setType(ShipEngineType.valueOf(request.getType()));
+		if (component instanceof ShipHull) ((ShipHull) component).setType(ShipHullType.valueOf(request.getType()));
+		if (component instanceof ShipShield) ((ShipShield) component).setType(ShipShieldType.valueOf(request.getType()));
+		if (component instanceof ShipWeapon) ((ShipWeapon) component).setType(ShipWeaponType.valueOf(request.getType()));
 	}
 
 	public static void createShipComponentLevel(ShipComponent component) {

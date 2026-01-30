@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import de.instinct.api.shipyard.dto.admin.DeleteShipResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
@@ -66,6 +67,11 @@ public class ShipyardWebController {
     public ResponseEntity<ShipCreateResponse> createShip(@RequestBody ShipCreateRequest request) {
     	return ResponseEntity.ok(shipyardService.createShip(request));
     }
+    
+    @PostMapping("/delete/ship/{id}")
+    public ResponseEntity<DeleteShipResponse> deleteShip(@PathVariable("id") String id) {
+		return ResponseEntity.ok(shipyardService.deleteShip(id));
+	}
     
     @PostMapping("/create/buildcost")
     public ResponseEntity<BuildCostCreateResponse> createBuildCost(@RequestBody BuildCostCreateRequest request) {

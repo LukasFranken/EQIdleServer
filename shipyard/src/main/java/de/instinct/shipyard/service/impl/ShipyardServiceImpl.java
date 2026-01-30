@@ -8,7 +8,6 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import de.instinct.api.core.API;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
@@ -22,6 +21,7 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.DeleteShipResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
@@ -56,8 +56,6 @@ import de.instinct.api.shipyard.dto.ship.ShipCore;
 import de.instinct.api.shipyard.dto.ship.ShipEngine;
 import de.instinct.api.shipyard.dto.ship.ShipHull;
 import de.instinct.api.shipyard.dto.ship.ShipShield;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 import de.instinct.api.shipyard.dto.ship.ShipWeapon;
 import de.instinct.api.shipyard.dto.ship.component.ComponentAttribute;
 import de.instinct.api.shipyard.dto.ship.component.ComponentLevel;
@@ -67,20 +65,23 @@ import de.instinct.api.shipyard.dto.ship.component.level.EngineLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.HullLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.ShieldLevel;
 import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
+import de.instinct.api.shipyard.dto.ship.types.ShipCoreType;
+import de.instinct.api.shipyard.dto.ship.types.ShipEngineType;
+import de.instinct.api.shipyard.dto.ship.types.ShipHullType;
+import de.instinct.api.shipyard.dto.ship.types.ShipShieldType;
+import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
 import de.instinct.api.shipyard.service.model.ShipyardBaseData;
 import de.instinct.base.file.FileManager;
-import de.instinct.engine.model.ship.components.types.CoreType;
-import de.instinct.engine.model.ship.components.types.EngineType;
-import de.instinct.engine.model.ship.components.types.HullType;
-import de.instinct.engine.model.ship.components.types.ShieldType;
-import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.engine.stats.model.unit.ShipStatistic;
 import de.instinct.engine.stats.model.unit.component.types.CoreStatistic;
 import de.instinct.engine.stats.model.unit.component.types.EngineStatistic;
 import de.instinct.engine.stats.model.unit.component.types.HullStatistic;
 import de.instinct.engine.stats.model.unit.component.types.ShieldStatistic;
 import de.instinct.engine.stats.model.unit.component.types.WeaponStatistic;
+import de.instinct.engine_api.core.EngineAPI;
+import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.ship.model.ShipStatisticReportResponse;
 import de.instinct.shipyard.service.ShipyardService;
 
 @Service
@@ -266,7 +267,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.findFirst()
 				.orElse(null);
 		if (blueprint == null) return ShipBuildResponse.BLUEPRINT_NOT_FOUND;
-		ResourceData playerResources = API.meta().resources(token);
+		ResourceData playerResources = EngineAPI.meta().resources(token);
 		for (ResourceAmount resourceCost : blueprint.getBuildCost()) {
 			if (!playerResources.contains(resourceCost)) {
 				return ShipBuildResponse.NOT_ENOUGH_RESOURCES;
@@ -274,7 +275,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 		ResourceData resourceUpdate = new ResourceData();
 		resourceUpdate.setResources(blueprint.getBuildCost());
-		API.meta().addResources(token, resourceUpdate);
+		EngineAPI.meta().addResources(token, resourceUpdate);
 		
 		ship.setBuilt(true);
 		return ShipBuildResponse.SUCCESS;
@@ -296,7 +297,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 				.orElse(null);
 		if (blueprint == null) return ShipUpgradeResponse.BLUEPRINT_NOT_FOUND;
 		if (ship.getLevel() >= blueprint.getLevels().size()) return ShipUpgradeResponse.MAX_LEVEL_REACHED;
-		ResourceData playerResources = API.meta().resources(token);
+		ResourceData playerResources = EngineAPI.meta().resources(token);
 		for (ResourceAmount resourceCost : blueprint.getLevels().get(ship.getLevel()).getCost()) {
 			if (!playerResources.contains(resourceCost)) {
 				return ShipUpgradeResponse.NOT_ENOUGH_RESOURCES;
@@ -304,7 +305,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 		ResourceData resourceUpdate = new ResourceData();
 		resourceUpdate.setResources(blueprint.getLevels().get(ship.getLevel()).getCost());
-		API.meta().addResources(token, resourceUpdate);
+		EngineAPI.meta().addResources(token, resourceUpdate);
 		ship.setLevel(ship.getLevel() + 1);*/
 		return ShipUpgradeResponse.SUCCESS;
 	}
@@ -504,6 +505,18 @@ public class ShipyardServiceImpl implements ShipyardService {
 	}
 	
 	@Override
+	public DeleteShipResponse deleteShip(String id) {
+		for (ShipBlueprint existingBlueprint : shipyardData.getShipBlueprints()) {
+			if (existingBlueprint.getId() == Integer.parseInt(id)) {
+				shipyardData.getShipBlueprints().remove(existingBlueprint);
+				saveBaseData();
+				return DeleteShipResponse.SUCCESS;
+			}
+		}
+		return DeleteShipResponse.SHIP_NOT_FOUND;
+	}
+	
+	@Override
 	public BuildCostCreateResponse createBuildCost(BuildCostCreateRequest request) {
 		if (request.getShipname() == null) return BuildCostCreateResponse.NAME_NULL;
 		if (request.getShipname().trim().contentEquals("")) return BuildCostCreateResponse.NAME_EMPTY;
@@ -582,23 +595,23 @@ public class ShipyardServiceImpl implements ShipyardService {
 		switch (request.getType()) {
 			case CORE:
 				component = new ShipCore();
-				((ShipCore)component).setType(CoreType.valueOf(request.getComponentType()));
+				((ShipCore)component).setType(ShipCoreType.valueOf(request.getComponentType()));
 				break;
 			case WEAPON:
 				component = new ShipWeapon();
-				((ShipWeapon)component).setType(WeaponType.valueOf(request.getComponentType()));
+				((ShipWeapon)component).setType(ShipWeaponType.valueOf(request.getComponentType()));
 				break;
 			case SHIELD:
 				component = new ShipShield();
-				((ShipShield)component).setType(ShieldType.valueOf(request.getComponentType()));
+				((ShipShield)component).setType(ShipShieldType.valueOf(request.getComponentType()));
 				break;
 			case ENGINE:
 				component = new ShipEngine();
-				((ShipEngine)component).setType(EngineType.valueOf(request.getComponentType()));
+				((ShipEngine)component).setType(ShipEngineType.valueOf(request.getComponentType()));
 				break;
 			case HULL:
 				component = new ShipHull();
-				((ShipHull)component).setType(HullType.valueOf(request.getComponentType()));
+				((ShipHull)component).setType(ShipHullType.valueOf(request.getComponentType()));
 				break;
 		}
 		component.setId(blueprint.getComponents().isEmpty() ? 0 : blueprint.getComponents().stream().mapToInt(ShipComponent::getId).max().getAsInt() + 1);

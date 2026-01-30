@@ -129,7 +129,7 @@ public class API {
 		return commander;
 	}
 	
-	private static boolean apiReady() {
+	public static boolean apiReady() {
 		if (isInitialized()) return true;
 		loggingHook.log("API not connected. Connect first via API.initialize()!");
 		return false;

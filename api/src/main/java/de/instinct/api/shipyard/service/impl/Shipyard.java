@@ -13,6 +13,7 @@ import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
 import de.instinct.api.shipyard.dto.StatChangeResponse;
 import de.instinct.api.shipyard.dto.UnuseShipResponseCode;
 import de.instinct.api.shipyard.dto.UseShipResponseCode;
+import de.instinct.api.shipyard.dto.admin.DeleteShipResponse;
 import de.instinct.api.shipyard.dto.admin.ShipCreateRequest;
 import de.instinct.api.shipyard.dto.admin.ShipCreateResponse;
 import de.instinct.api.shipyard.dto.admin.buildcost.BuildCostCreateRequest;
@@ -39,8 +40,6 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportResponse;
 import de.instinct.api.shipyard.service.ShipyardInterface;
 
 public class Shipyard extends BaseService implements ShipyardInterface {
@@ -163,17 +162,6 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipAddResponse.class);
 	}
-	
-	@Override
-	public ShipStatisticReportResponse statistic(ShipStatisticReportRequest request) {
-		if (!isConnected()) return null;
-		String response = super.sendRequest(RESTRequest.builder()
-				.type(SupportedRequestType.POST)
-				.endpoint("statistic")
-				.payload(request)
-				.build());
-		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipStatisticReportResponse.class);
-	}
 
 	@Override
 	public ShipCreateResponse createShip(ShipCreateRequest request) {
@@ -184,6 +172,16 @@ public class Shipyard extends BaseService implements ShipyardInterface {
 				.payload(request)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, ShipCreateResponse.class);
+	}
+	
+	@Override
+	public DeleteShipResponse deleteShip(String id) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("admin/ship/delete/" + id)
+				.build());
+		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, DeleteShipResponse.class);
 	}
 	
 	@Override

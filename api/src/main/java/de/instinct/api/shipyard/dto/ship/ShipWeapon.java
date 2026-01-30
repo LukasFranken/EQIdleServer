@@ -1,7 +1,7 @@
 package de.instinct.api.shipyard.dto.ship;
 
 import de.instinct.api.core.annotation.Dto;
-import de.instinct.engine.model.ship.components.types.WeaponType;
+import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,6 +10,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ShipWeapon extends ShipComponent {
 	
-	private WeaponType type;
+	private ShipWeaponType type;
 
 }

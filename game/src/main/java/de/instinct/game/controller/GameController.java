@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.instinct.api.core.API;
+import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.MapPreview;
 import de.instinct.base.controller.BaseServiceController;
+import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.game.config.ApplicationConfig;
 import de.instinct.game.config.GameserverConfig;
 import de.instinct.game.service.GameserverManagerService;
@@ -32,10 +33,11 @@ public class GameController extends BaseServiceController {
 	
 	@Override
 	protected void connectToAPIs() {
-		API.matchmaking().connect();
-		API.meta().connect();
-		API.shipyard().connect();
-		API.construction().connect();
+		EngineAPI.initialize(APIConfiguration.SERVER);
+		EngineAPI.matchmaking().connect();
+		EngineAPI.meta().connect();
+		EngineAPI.shipyard().connect();
+		EngineAPI.construction().connect();
 		start();
 	}
 	

@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.esotericsoftware.kryonet.Connection;
 
-import de.instinct.api.core.API;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.MapPreview;
 import de.instinct.api.game.dto.PreviewPlanet;
@@ -18,11 +17,7 @@ import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.model.VersusMode;
-import de.instinct.api.shipyard.dto.ship.ShipStatisticReportRequest;
 import de.instinct.engine.ai.AiEngine;
-import de.instinct.engine.initialization.GameStateInitialization;
-import de.instinct.engine.initialization.PlanetInitialization;
-import de.instinct.engine.map.GameMap;
 import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Player;
@@ -42,6 +37,11 @@ import de.instinct.engine.order.types.SurrenderOrder;
 import de.instinct.engine.stats.model.GameStatistic;
 import de.instinct.engine.stats.model.PlayerStatistic;
 import de.instinct.engine.util.EngineUtility;
+import de.instinct.engine_api.core.EngineAPI;
+import de.instinct.engine_api.core.model.GameMap;
+import de.instinct.engine_api.core.model.GameStateInitialization;
+import de.instinct.engine_api.core.model.PlanetInitialization;
+import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
 
@@ -113,7 +113,7 @@ public class SessionManager {
 			FinishGameData finishData = new FinishGameData();
 			finishData.setPlayedMS(session.getGameState().gameTimeMS);
 			finishData.setWinnerTeamId(session.getGameState().winner);
-			API.matchmaking().finish(session.getUuid(), finishData);
+			EngineAPI.matchmaking().finish(session.getUuid(), finishData);
 			
 			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().gameUUID);
 			if (statistic != null) {
@@ -123,7 +123,7 @@ public class SessionManager {
 							ShipStatisticReportRequest shipStatisticReport = new ShipStatisticReportRequest();
 							shipStatisticReport.setUserUUID(user.getUuid());
 							shipStatisticReport.setShipStatistics(playerStatistic.getShipStatistics());
-							API.shipyard().statistic(shipStatisticReport);
+							EngineAPI.shipyard().statistic(shipStatisticReport);
 						}
 					}
 				}
@@ -238,8 +238,8 @@ public class SessionManager {
 		session.setGameState(engineInterface.initializeGameState(initialization));
 		readyUpAI(session.getGameState());
 		inCreationSessions.add(session);
-		System.out.println("Starting session: " + initialization.gameUUID);
-		API.matchmaking().callback(session.getUuid(), CallbackCode.READY);
+		System.out.println("Starting session: " + initialization.getGameUUID());
+		EngineAPI.matchmaking().callback(session.getUuid(), CallbackCode.READY);
 	}
 
 	private static void readyUpAI(GameState state) {
@@ -261,10 +261,10 @@ public class SessionManager {
 		for (UserTeamData userData : request.getUsers()) {
 			System.out.println(userData);
 			users.add(User.builder()
-					.name(API.meta().profile(userData.getUuid()).getUsername())
+					.name(EngineAPI.meta().profile(userData.getUuid()).getUsername())
 					.uuid(userData.getUuid())
 					.teamid(userData.getTeamId())
-					.loadout(API.meta().loadout(userData.getUuid()))
+					.loadout(EngineAPI.meta().loadout(userData.getUuid()))
 					.build());
 		}
 		return users;
@@ -278,6 +278,7 @@ public class SessionManager {
 					EngineUtility.getPlayerConnectionStatus(session.getGameState().connectionStati, user.getPlayerId()).connected = true;
 					PlayerAssigned playerAssigned = new PlayerAssigned();
 					playerAssigned.playerId = user.getPlayerId();
+					user.getConnection().sendTCP("test");
 					user.getConnection().sendTCP(playerAssigned);
 					System.out.println("assigning id " + playerAssigned.playerId + " to " + user.getName());
 					checkKickoff(session);
@@ -357,16 +358,16 @@ public class SessionManager {
 		if (gameMap == null) return mapPreview;
 		
 		List<PreviewPlanet> planets = new ArrayList<>();
-		for (PlanetInitialization planetInit : gameMap.planets) {
+		for (PlanetInitialization planetInit : gameMap.getPlanets()) {
 			PreviewPlanet planet = new PreviewPlanet();
-			planet.setXPos(planetInit.position.x);
-			planet.setYPos(planetInit.position.y);
-			planet.setAncient(planetInit.ancient);
-			planet.setOwnerId(planetInit.ownerId);
+			planet.setXPos(planetInit.getPosition().x);
+			planet.setYPos(planetInit.getPosition().y);
+			planet.setAncient(planetInit.isAncient());
+			planet.setOwnerId(planetInit.getOwnerId());
 			planets.add(planet);
 		}
 		mapPreview.setPlanets(planets);
-		mapPreview.setZoomFactor(gameMap.zoomFactor);
+		mapPreview.setZoomFactor(gameMap.getZoomFactor());
 		return mapPreview;
 	}
 

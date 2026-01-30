@@ -1,4 +1,4 @@
-package de.instinct.api.game.engine;
+package de.instinct.engine_api.core.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.engine.model.turret.PlatformData;
 import de.instinct.engine.model.turret.TurretData;
 
-public class EngineInterface {
+public class EngineDataInterface {
 	
 	public static PlanetData getPlanetData(PlayerInfrastructure playerInfrastructure, Infrastructure infrastructure) {
 		if (infrastructure != null) {

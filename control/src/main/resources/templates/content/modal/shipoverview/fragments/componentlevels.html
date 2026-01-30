@@ -2,7 +2,7 @@
 
 <body>
 	<div class="component-level-view" th:fragment="componentlevels">
-		<div class="component-level-table-view" th:if="${componentlevels != null and not #lists.isEmpty(componentlevels.rows)}">
+		<div class="component-level-table-view" th:if="${componentlevels != null}">
     		<div th:replace="~{component/table :: table(${componentlevels})}"></div>
 		</div>
 		<div class="create-component-level-section">

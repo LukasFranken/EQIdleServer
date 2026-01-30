@@ -14,7 +14,7 @@
     				<button id="delete-item-btn" modal="deleteshopitemmodal">Delete Item</button>
     				<button id="refresh-btn" onclick="refreshShop()">Refresh</button>
     			</div>
-    			<div th:if="${items != null and not #lists.isEmpty(items.rows)}">
+    			<div th:if="${items != null}">
     				<div th:replace="~{component/table :: table(${items})}"></div>
 				</div>
     		</div>
