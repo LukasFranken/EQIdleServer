@@ -64,7 +64,7 @@ public class GameController extends BaseServiceController {
 	}
 	
 	@GetMapping("/preview/{map}")
-	public ResponseEntity<MapPreview> preview(@PathVariable("map") String map) {;
+	public ResponseEntity<MapPreview> preview(@PathVariable("map") String map) {
 		return ResponseEntity.ok(service.preview(map));
 	}
 
