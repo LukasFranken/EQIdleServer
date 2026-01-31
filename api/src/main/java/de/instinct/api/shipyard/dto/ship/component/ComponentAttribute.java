@@ -24,6 +24,6 @@ import lombok.Data;
 public abstract class ComponentAttribute {
 	
 	private int id;
-	private double value;
+	private float value;
 
 }
