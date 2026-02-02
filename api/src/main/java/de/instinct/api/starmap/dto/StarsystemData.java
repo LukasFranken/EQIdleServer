@@ -16,7 +16,7 @@ public class StarsystemData {
 	private float mapPosX;
 	private float mapPosY;
 	private MapPreview mapPreview;
-	private float ancientPoints;
+	private int ancientPoints;
 	private int threatLevel;
 	private long experience;
 	private long duration;

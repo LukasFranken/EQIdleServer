@@ -97,6 +97,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 					if (galaxy.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[0]) && system.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[1])) {
 						selectedGameType.setThreatLevel(system.getThreatLevel());
 						selectedGameType.setDuration(system.getDuration());
+						selectedGameType.setApRequired(system.getAncientPoints());
 						break;
 					}
 				}

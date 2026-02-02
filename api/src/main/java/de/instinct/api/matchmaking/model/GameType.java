@@ -14,6 +14,7 @@ public class GameType {
 	private String map;
 	private int threatLevel;
 	private long duration;
+	private int apRequired;
 	private VersusMode versusMode;
 	private GameMode gameMode;
 	private FactionMode factionMode;
@@ -22,6 +23,7 @@ public class GameType {
 		if (!sameMapAs(otherGameType.map)) return false;
 		if (threatLevel != otherGameType.threatLevel) return false;
 		if (duration != otherGameType.duration) return false;
+		if (apRequired != otherGameType.apRequired) return false;
 		if (versusMode != otherGameType.versusMode) return false;
 		if (gameMode != otherGameType.gameMode) return false;
 		if (factionMode != otherGameType.factionMode) return false;
