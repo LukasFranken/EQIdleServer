@@ -7,6 +7,7 @@ import de.instinct.engine.model.GameState;
 import de.instinct.engine.order.GameOrder;
 import de.instinct.engine.stats.StatCollector;
 import de.instinct.engine.stats.model.GameStatistic;
+import de.instinct.engine.util.EngineUtility;
 import de.instinct.engine_api.core.model.GameStateInitialization;
 import de.instinct.engine_api.core.service.GameStateInitializer;
 import de.instinct.game.service.model.GameSession;
@@ -50,6 +51,10 @@ public class GameEngineInterface {
 
 	public GameStatistic grabGameStatistic(String gameUUID) {
 		return StatCollector.grab(gameUUID);
+	}
+
+	public boolean checkWiped(GameState gameState) {
+		return EngineUtility.winIsWiped(gameState);
 	}
 
 }

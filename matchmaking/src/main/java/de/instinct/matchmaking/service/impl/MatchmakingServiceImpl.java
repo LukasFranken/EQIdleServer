@@ -32,6 +32,8 @@ import de.instinct.api.matchmaking.model.GameMode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.Invite;
 import de.instinct.api.matchmaking.model.VersusMode;
+import de.instinct.api.meta.dto.Resource;
+import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.GalaxyData;
@@ -372,25 +374,35 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 					if (currentSystem == null) break;
 					for (String userUUID : lobby.getUserUUIDs()) {
 						if (finishGameData.getWinnerTeamId() == 1) {
-							PlayerReward reward = new PlayerReward();
-							reward.setUuid(userUUID);
-							reward.setExperience(currentSystem.getExperience());
-							reward.setResources(currentSystem.getResourceRewards());
-							rewards.add(reward);
-							API.meta().experience(userUUID, currentSystem.getExperience());
+							float multi = finishGameData.isWiped() ? 1.2f : 1f;
 							ResourceData resourceData = new ResourceData();
 							resourceData.setResources(currentSystem.getResourceRewards());
+							for (ResourceAmount r : resourceData.getResources()) {
+								r.setAmount((long)(r.getAmount() * multi));
+							}
 							API.meta().addResources(userUUID, resourceData);
+							PlayerReward reward = new PlayerReward();
+							reward.setUuid(userUUID);
+							reward.setExperience((long)(currentSystem.getExperience() * multi));
+							reward.setResources(resourceData.getResources());
+							rewards.add(reward);
+							API.meta().experience(userUUID, currentSystem.getExperience());
 							CompletionRequest completionRequest = new CompletionRequest();
 							completionRequest.setUserUUID(userUUID);
 							completionRequest.setGalaxyId(galaxyId);
 							completionRequest.setSystemId(systemId);
 							API.starmap().complete(completionRequest);
 						} else {
+							float fraction = finishGameData.isWiped() ? 0 : ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
+							ResourceData resourceData = new ResourceData();
+							resourceData.setResources(currentSystem.getResourceRewards());
+							resourceData.getResources().removeIf(r -> r.getType() != Resource.CREDITS);
+							if (resourceData.getResources().size() > 0) resourceData.getResources().get(0).setAmount((long)(resourceData.getResources().get(0).getAmount() * fraction));
+							API.meta().addResources(userUUID, resourceData);
 							PlayerReward reward = new PlayerReward();
 							reward.setUuid(userUUID);
-							reward.setExperience((long)(currentSystem.getExperience() * ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration())));
-							reward.setResources(new ArrayList<>());
+							reward.setExperience((long)(currentSystem.getExperience() * fraction));
+							reward.setResources(resourceData.getResources());
 							rewards.add(reward);
 							API.meta().experience(userUUID, currentSystem.getExperience());
 						}

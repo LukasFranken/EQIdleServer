@@ -9,5 +9,6 @@ public class FinishGameData {
 	
 	private long playedMS;
 	private int winnerTeamId;
+	private boolean wiped;
 
 }

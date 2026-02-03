@@ -113,6 +113,7 @@ public class SessionManager {
 			FinishGameData finishData = new FinishGameData();
 			finishData.setPlayedMS(session.getGameState().gameTimeMS);
 			finishData.setWinnerTeamId(session.getGameState().winner);
+			finishData.setWiped(engineInterface.checkWiped(session.getGameState()));
 			EngineAPI.matchmaking().finish(session.getUuid(), finishData);
 			
 			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().gameUUID);
