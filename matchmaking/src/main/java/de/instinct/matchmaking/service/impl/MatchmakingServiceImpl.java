@@ -373,39 +373,11 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 					}
 					if (currentSystem == null) break;
 					for (String userUUID : lobby.getUserUUIDs()) {
-						if (finishGameData.getWinnerTeamId() == 1) {
-							float multi = finishGameData.isWiped() ? 1.2f : 1f;
-							ResourceData resourceData = new ResourceData();
-							resourceData.setResources(currentSystem.getResourceRewards());
-							for (ResourceAmount r : resourceData.getResources()) {
-								r.setAmount((long)(r.getAmount() * multi));
-							}
-							API.meta().addResources(userUUID, resourceData);
-							PlayerReward reward = new PlayerReward();
-							reward.setUuid(userUUID);
-							reward.setExperience((long)(currentSystem.getExperience() * multi));
-							reward.setResources(resourceData.getResources());
-							rewards.add(reward);
-							API.meta().experience(userUUID, currentSystem.getExperience());
-							CompletionRequest completionRequest = new CompletionRequest();
-							completionRequest.setUserUUID(userUUID);
-							completionRequest.setGalaxyId(galaxyId);
-							completionRequest.setSystemId(systemId);
-							API.starmap().complete(completionRequest);
-						} else {
-							float fraction = finishGameData.isWiped() ? 0 : ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
-							ResourceData resourceData = new ResourceData();
-							resourceData.setResources(currentSystem.getResourceRewards());
-							resourceData.getResources().removeIf(r -> r.getType() != Resource.CREDITS);
-							if (resourceData.getResources().size() > 0) resourceData.getResources().get(0).setAmount((long)(resourceData.getResources().get(0).getAmount() * fraction));
-							API.meta().addResources(userUUID, resourceData);
-							PlayerReward reward = new PlayerReward();
-							reward.setUuid(userUUID);
-							reward.setExperience((long)(currentSystem.getExperience() * fraction));
-							reward.setResources(resourceData.getResources());
-							rewards.add(reward);
-							API.meta().experience(userUUID, currentSystem.getExperience());
-						}
+						CompletionRequest completionRequest = new CompletionRequest();
+						completionRequest.setUserUUID(userUUID);
+						completionRequest.setGalaxyId(galaxyId);
+						completionRequest.setSystemId(systemId);
+						rewards.add(processConquestReward(completionRequest, currentSystem, finishGameData));
 					}
 				}
 				if (lobby.getType().getGameMode() == GameMode.KING_OF_THE_HILL) {
@@ -415,7 +387,6 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 						reward.setUuid(userUUID);
 						reward.setExperience(defaultExp);
 						reward.setResources(new ArrayList<>());
-						rewards.add(reward);
 						rewards.add(reward);
 						API.meta().experience(userUUID, defaultExp);
 					}
@@ -427,6 +398,34 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		postGameResult.setPlayedMS(finishGameData.getPlayedMS());
 		postGameResult.setRewards(rewards);
 		postGameResults.put(gameSessionToken, postGameResult);
+	}
+	
+	private PlayerReward processConquestReward(CompletionRequest completionRequest, StarsystemData currentSystem, FinishGameData finishGameData) {
+		float multi = 1f;
+		ResourceData resourceData = new ResourceData();
+		resourceData.setResources(currentSystem.getResourceRewards());
+		
+		if (finishGameData.getWinnerTeamId() == 1) {
+			if (finishGameData.isWiped()) multi = 1.2f;
+			API.starmap().complete(completionRequest);
+		} else {
+			multi = finishGameData.isWiped() ? 0 : ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
+			resourceData.getResources().removeIf(r -> r.getType() != Resource.CREDITS);
+		}
+		
+		for (ResourceAmount r : resourceData.getResources()) {
+			if (r.getType() == Resource.CREDITS) r.setAmount((long)(r.getAmount() * multi));
+		}
+		long exp = (long)(currentSystem.getExperience() * multi);
+		
+		API.meta().addResources(completionRequest.getUserUUID(), resourceData);
+		API.meta().experience(completionRequest.getUserUUID(), exp);
+		
+		PlayerReward reward = new PlayerReward();
+		reward.setUuid(completionRequest.getUserUUID());
+		reward.setExperience(exp);
+		reward.setResources(resourceData.getResources());
+		return reward;
 	}
 
 	@Override
