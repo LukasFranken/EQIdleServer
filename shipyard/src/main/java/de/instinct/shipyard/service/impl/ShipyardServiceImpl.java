@@ -9,12 +9,16 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.matchmaking.dto.PlayerShipResult;
+import de.instinct.api.matchmaking.dto.ShipComponentResult;
+import de.instinct.api.matchmaking.dto.ShipResult;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
+import de.instinct.api.shipyard.dto.ShipStatisticReportResponse;
 import de.instinct.api.shipyard.dto.ShipUpgradeResponse;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ShipyardInitializationResponseCode;
@@ -81,7 +85,6 @@ import de.instinct.engine.stats.model.unit.component.types.ShieldStatistic;
 import de.instinct.engine.stats.model.unit.component.types.WeaponStatistic;
 import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
-import de.instinct.engine_api.ship.model.ShipStatisticReportResponse;
 import de.instinct.shipyard.service.ShipyardService;
 
 @Service
@@ -336,9 +339,15 @@ public class ShipyardServiceImpl implements ShipyardService {
 	}
 	
 	@Override
-	public ShipStatisticReportResponse statistic(ShipStatisticReportRequest request) {
+	public PlayerShipResult statistic(ShipStatisticReportRequest request) {
+		PlayerShipResult result = new PlayerShipResult();
+		result.setUuid(request.getUserUUID());
+		result.setShipResults(new ArrayList<>());
 		PlayerShipyardData shipyard = userShipyards.get(request.getUserUUID());
-		if (shipyard == null) return ShipStatisticReportResponse.USER_NOT_FOUND;
+		if (shipyard == null) {
+			result.setResponseCode(ShipStatisticReportResponse.USER_NOT_FOUND);
+			return result;
+		}
 		for (ShipStatistic shipStatistic : request.getShipStatistics()) {
 			for (PlayerShipData playerShip : shipyard.getShips()) {
 				ShipBlueprint blueprint = getBaseData().getShipBlueprints().stream()
@@ -346,14 +355,18 @@ public class ShipyardServiceImpl implements ShipyardService {
 						.findFirst()
 						.orElse(null);
 				if (blueprint.getModel().contentEquals(shipStatistic.getModel())) {
-					applyStatistic(shipStatistic, blueprint, playerShip);
+					result.getShipResults().add(applyStatistic(shipStatistic, blueprint, playerShip));
 				}
 			}
 		}
-		return ShipStatisticReportResponse.SUCCESS;
+		result.setResponseCode(ShipStatisticReportResponse.SUCCESS);
+		return result;
 	}
 
-	private void applyStatistic(ShipStatistic shipStatistic, ShipBlueprint blueprint, PlayerShipData playerShip) {
+	private ShipResult applyStatistic(ShipStatistic shipStatistic, ShipBlueprint blueprint, PlayerShipData playerShip) {
+		ShipResult shipResult = new ShipResult();
+		shipResult.setModel(blueprint.getModel());
+		shipResult.setComponentResults(new ArrayList<>());
 		for (ShipComponent component : blueprint.getComponents()) {
 			PlayerShipComponentLevel playerComponentLevel = playerShip.getComponentLevels().stream()
                     .filter(cl -> cl.getComponentId() == component.getId())
@@ -363,7 +376,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 			float requirementValue = -1;
 			for (ComponentLevel level : component.getLevels()) {
 				if (level.getLevel() == playerComponentLevel.getLevel()) {
-					updatePlayerComponentLevelProgress(shipStatistic, component, level, playerComponentLevel);
+					shipResult.getComponentResults().add(updatePlayerComponentLevelProgress(shipStatistic, component, level, playerComponentLevel));
 				}
 				if (level.getLevel() == playerComponentLevel.getLevel() + 1) {
 					requirementValue = level.getRequirementValue();
@@ -374,11 +387,16 @@ public class ShipyardServiceImpl implements ShipyardService {
 				playerComponentLevel.setLevel(playerComponentLevel.getLevel() + 1);
 				playerComponentLevel.setProgress(0);
 			}
+			
 		}
+		return shipResult;
 	}
 
-	private void updatePlayerComponentLevelProgress(ShipStatistic shipStatistic, ShipComponent component, ComponentLevel level, PlayerShipComponentLevel playerComponentLevel) {
+	private ShipComponentResult updatePlayerComponentLevelProgress(ShipStatistic shipStatistic, ShipComponent component, ComponentLevel level, PlayerShipComponentLevel playerComponentLevel) {
+		ShipComponentResult componentResult = new ShipComponentResult();
+		componentResult.setStartProgress(playerComponentLevel.getProgress());
 		if (component instanceof ShipCore) {
+			componentResult.setType(ShipComponentType.CORE);
 			CoreLevel coreLevel = (CoreLevel) level;
 			CoreStatistic coreStatistic = shipStatistic.getCoreStatistic();
 			switch (coreLevel.getRequirementType()) {
@@ -398,6 +416,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 		
 		if (component instanceof ShipEngine) {
+			componentResult.setType(ShipComponentType.ENGINE);
 			EngineLevel engineLevel = (EngineLevel) level;
 			EngineStatistic engineStatistic = shipStatistic.getEngineStatistic();
 			switch (engineLevel.getRequirementType()) {
@@ -408,6 +427,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 		
 		if (component instanceof ShipHull) {
+			componentResult.setType(ShipComponentType.HULL);
 			HullLevel hullLevel = (HullLevel) level;
 			HullStatistic hullStatistic = shipStatistic.getHullStatistic();
 			switch (hullLevel.getRequirementType()) {
@@ -421,6 +441,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 		
 		if (component instanceof ShipShield) {
+			componentResult.setType(ShipComponentType.SHIELD);
 			ShieldLevel shieldLevel = (ShieldLevel) level;
 			ShieldStatistic shieldStatistic = getShieldStatistic(shipStatistic, component.getId());
 			switch (shieldLevel.getRequirementType()) {
@@ -437,6 +458,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		}
 		
 		if (component instanceof ShipWeapon) {
+			componentResult.setType(ShipComponentType.WEAPON);
 			WeaponLevel weaponLevel = (WeaponLevel) level;
 			WeaponStatistic weaponStatistic = getWeaponStatistic(shipStatistic, component.getId());
 			System.out.println(weaponStatistic);
@@ -455,6 +477,8 @@ public class ShipyardServiceImpl implements ShipyardService {
 					break;
 			}
 		}
+		componentResult.setEndProgress(playerComponentLevel.getProgress());
+		return componentResult;
 	}
 
 	private ShieldStatistic getShieldStatistic(ShipStatistic shipStatistic, int id) {

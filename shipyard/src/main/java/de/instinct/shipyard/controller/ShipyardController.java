@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.instinct.api.matchmaking.dto.PlayerShipResult;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
@@ -49,7 +50,6 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
-import de.instinct.engine_api.ship.model.ShipStatisticReportResponse;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
 
@@ -126,7 +126,7 @@ public class ShipyardController extends BaseServiceController {
 	}
 	
 	@PostMapping("/statistic")
-	public ResponseEntity<ShipStatisticReportResponse> statistic(@RequestBody ShipStatisticReportRequest request) {
+	public ResponseEntity<PlayerShipResult> statistic(@RequestBody ShipStatisticReportRequest request) {
 		return ResponseEntity.ok(service.statistic(request));
 	}
 	

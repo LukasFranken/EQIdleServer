@@ -1,5 +1,6 @@
 package de.instinct.shipyard.service;
 
+import de.instinct.api.matchmaking.dto.PlayerShipResult;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
@@ -37,7 +38,6 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
-import de.instinct.engine_api.ship.model.ShipStatisticReportResponse;
 
 public interface ShipyardService {
 
@@ -63,7 +63,7 @@ public interface ShipyardService {
 
 	ShipAddResponse addBlueprint(String token, String model);
 	
-	ShipStatisticReportResponse statistic(ShipStatisticReportRequest request);
+	PlayerShipResult statistic(ShipStatisticReportRequest request);
 
 	ShipCreateResponse createShip(ShipCreateRequest request);
 	

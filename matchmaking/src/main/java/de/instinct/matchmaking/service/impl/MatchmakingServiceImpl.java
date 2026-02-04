@@ -28,6 +28,8 @@ import de.instinct.api.matchmaking.dto.MatchmakingStatusResponse;
 import de.instinct.api.matchmaking.dto.MatchmakingStatusResponseCode;
 import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.dto.PlayerReward;
+import de.instinct.api.matchmaking.dto.PlayerShipResult;
+import de.instinct.api.matchmaking.dto.VictoryType;
 import de.instinct.api.matchmaking.model.GameMode;
 import de.instinct.api.matchmaking.model.GameType;
 import de.instinct.api.matchmaking.model.Invite;
@@ -405,11 +407,25 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		ResourceData resourceData = new ResourceData();
 		resourceData.setResources(currentSystem.getResourceRewards());
 		
+		PlayerReward reward = new PlayerReward();
+		reward.setVictoryType(VictoryType.DRAW);
 		if (finishGameData.getWinnerTeamId() == 1) {
-			if (finishGameData.isWiped()) multi = 1.2f;
+			if (finishGameData.isWiped()) {
+				multi = 1.2f;
+				reward.setVictoryType(VictoryType.DOMINATION);
+			} else {
+				reward.setVictoryType(VictoryType.VICTORY);
+			}
 			API.starmap().complete(completionRequest);
 		} else {
-			multi = finishGameData.isWiped() ? 0 : ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
+			if (finishGameData.isWiped()) {
+				multi = 0;
+				reward.setVictoryType(VictoryType.WIPED_OUT);
+			} else {
+				multi = ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
+				reward.setVictoryType(VictoryType.DEFEAT);
+			}
+			multi = ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
 			resourceData.getResources().removeIf(r -> r.getType() != Resource.CREDITS);
 		}
 		
@@ -421,10 +437,17 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		API.meta().addResources(completionRequest.getUserUUID(), resourceData);
 		API.meta().experience(completionRequest.getUserUUID(), exp);
 		
-		PlayerReward reward = new PlayerReward();
 		reward.setUuid(completionRequest.getUserUUID());
 		reward.setExperience(exp);
 		reward.setResources(resourceData.getResources());
+		
+		for (PlayerShipResult playerShipResult : finishGameData.getPlayerShipResults()) {
+			if (playerShipResult.getUuid().contentEquals(completionRequest.getUserUUID())) {
+				reward.setShipResults(playerShipResult.getShipResults());
+				break;
+			}
+		}
+		
 		return reward;
 	}
 

@@ -114,8 +114,7 @@ public class SessionManager {
 			finishData.setPlayedMS(session.getGameState().gameTimeMS);
 			finishData.setWinnerTeamId(session.getGameState().winner);
 			finishData.setWiped(engineInterface.checkWiped(session.getGameState()));
-			EngineAPI.matchmaking().finish(session.getUuid(), finishData);
-			
+			finishData.setPlayerShipResults(new ArrayList<>());
 			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().gameUUID);
 			if (statistic != null) {
 				for (User user : session.getUsers()) {
@@ -124,13 +123,15 @@ public class SessionManager {
 							ShipStatisticReportRequest shipStatisticReport = new ShipStatisticReportRequest();
 							shipStatisticReport.setUserUUID(user.getUuid());
 							shipStatisticReport.setShipStatistics(playerStatistic.getShipStatistics());
-							EngineAPI.shipyard().statistic(shipStatisticReport);
+							finishData.getPlayerShipResults().add(EngineAPI.shipyard().statistic(shipStatisticReport));
 						}
 					}
 				}
 			} else {
 				System.err.println("Could not grab statistics for game uuid: " + session.getGameState().gameUUID);
 			}
+			
+			EngineAPI.matchmaking().finish(session.getUuid(), finishData);
 		}
 		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
 			clientUpdateRequired = true;

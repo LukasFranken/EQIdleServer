@@ -1,4 +1,4 @@
-package de.instinct.engine_api.ship.model;
+package de.instinct.api.shipyard.dto;
 
 public enum ShipStatisticReportResponse {
 	

@@ -3,17 +3,15 @@ package de.instinct.api.matchmaking.dto;
 import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
-import de.instinct.api.meta.dto.ResourceAmount;
+import de.instinct.api.shipyard.dto.ShipStatisticReportResponse;
 import lombok.Data;
 
 @Dto
 @Data
-public class PlayerReward {
+public class PlayerShipResult {
 	
+	private ShipStatisticReportResponse responseCode;
 	private String uuid;
-	private VictoryType victoryType;
-	private long experience;
-	private List<ResourceAmount> resources;
 	private List<ShipResult> shipResults;
 
 }
