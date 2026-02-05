@@ -11,5 +11,6 @@ public class ShipComponentResult {
 	private ShipComponentType type;
 	private float startProgress;
 	private float endProgress;
+	private float maxProgress;
 
 }

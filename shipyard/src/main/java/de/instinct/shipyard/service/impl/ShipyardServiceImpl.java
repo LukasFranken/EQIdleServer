@@ -373,21 +373,29 @@ public class ShipyardServiceImpl implements ShipyardService {
                     .findFirst()
                     .orElse(null);
 			
+			ShipComponentResult componentResult = null;
 			float requirementValue = -1;
 			for (ComponentLevel level : component.getLevels()) {
 				if (level.getLevel() == playerComponentLevel.getLevel()) {
-					shipResult.getComponentResults().add(updatePlayerComponentLevelProgress(shipStatistic, component, level, playerComponentLevel));
+					componentResult = updatePlayerComponentLevelProgress(shipStatistic, component, level, playerComponentLevel);
 				}
 				if (level.getLevel() == playerComponentLevel.getLevel() + 1) {
 					requirementValue = level.getRequirementValue();
 				}
 			}
 			
-			if (requirementValue > -1 && playerComponentLevel.getProgress() >= requirementValue) {
-				playerComponentLevel.setLevel(playerComponentLevel.getLevel() + 1);
-				playerComponentLevel.setProgress(0);
+			if (requirementValue > -1) {
+				if (playerComponentLevel.getProgress() >= requirementValue) {
+					playerComponentLevel.setLevel(playerComponentLevel.getLevel() + 1);
+					playerComponentLevel.setProgress(0);
+					componentResult.setEndProgress(requirementValue);
+				}
+				componentResult.setMaxProgress(requirementValue);
+			} else {
+				componentResult.setMaxProgress(playerComponentLevel.getProgress());
 			}
 			
+			if (componentResult != null) shipResult.getComponentResults().add(componentResult);
 		}
 		return shipResult;
 	}
