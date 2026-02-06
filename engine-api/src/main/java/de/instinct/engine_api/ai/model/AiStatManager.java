@@ -13,7 +13,7 @@ public class AiStatManager {
 	public static float getMovementSpeed(int threatLevel) {
 		float maxMoveSpeed = 100f;
 		float minMoveSpeed = 30f;
-		return Math.min(minMoveSpeed + minMoveSpeed * (threatLevel/100), maxMoveSpeed);
+		return Math.min(minMoveSpeed + minMoveSpeed * (threatLevel/50), maxMoveSpeed);
 	}
 
 	public static WeaponData getShipWeapon(int threatLevel) {
