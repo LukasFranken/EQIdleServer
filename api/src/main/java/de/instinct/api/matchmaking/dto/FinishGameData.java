@@ -12,6 +12,7 @@ public class FinishGameData {
 	private long playedMS;
 	private int winnerTeamId;
 	private boolean wiped;
+	private boolean surrendered;
 	private List<PlayerShipResult> playerShipResults;
 
 }

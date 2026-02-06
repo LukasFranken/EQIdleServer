@@ -6,6 +6,7 @@ public enum VictoryType {
 	DEFEAT,
 	DRAW,
 	WIPED_OUT,
+	SURRENDERED,
 	DOMINATION;
 
 }

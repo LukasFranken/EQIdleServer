@@ -57,4 +57,8 @@ public class GameEngineInterface {
 		return EngineUtility.winIsWiped(gameState);
 	}
 
+	public boolean checkSurrendered(GameState gameState) {
+		return gameState.surrendered != 0;
+	}
+
 }

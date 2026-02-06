@@ -114,6 +114,7 @@ public class SessionManager {
 			finishData.setPlayedMS(session.getGameState().gameTimeMS);
 			finishData.setWinnerTeamId(session.getGameState().winner);
 			finishData.setWiped(engineInterface.checkWiped(session.getGameState()));
+			finishData.setSurrendered(engineInterface.checkSurrendered(session.getGameState()));
 			finishData.setPlayerShipResults(new ArrayList<>());
 			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().gameUUID);
 			if (statistic != null) {

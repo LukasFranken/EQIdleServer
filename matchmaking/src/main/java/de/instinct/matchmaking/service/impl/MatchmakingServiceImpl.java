@@ -418,12 +418,17 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 			}
 			API.starmap().complete(completionRequest);
 		} else {
-			if (finishGameData.isWiped()) {
-				multi = 0;
-				reward.setVictoryType(VictoryType.WIPED_OUT);
+			if (finishGameData.isSurrendered()) {
+				multi = 0f;
+				reward.setVictoryType(VictoryType.SURRENDERED);
 			} else {
-				multi = ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
-				reward.setVictoryType(VictoryType.DEFEAT);
+				if (finishGameData.isWiped()) {
+					multi = 0;
+					reward.setVictoryType(VictoryType.WIPED_OUT);
+				} else {
+					multi = ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
+					reward.setVictoryType(VictoryType.DEFEAT);
+				}
 			}
 			multi = ((float)finishGameData.getPlayedMS() / (float)currentSystem.getDuration());
 			resourceData.getResources().removeIf(r -> r.getType() != Resource.CREDITS);
