@@ -52,7 +52,7 @@ public class AiStatManager {
 	public static WeaponData getTurretWeapon(int threatLevel) {
 		WeaponData aiPlanetWeapon = new WeaponData();
 		aiPlanetWeapon.type = WeaponType.LASER;
-		aiPlanetWeapon.damage = 2 + 3 * (threatLevel / descaleFactor);
+		aiPlanetWeapon.damage = 2 + 2 * (threatLevel / descaleFactor);
 		
 		float maxRange = 150f;
 		float minRange = 100f;

@@ -60,27 +60,29 @@ public class EngineDataInterface {
 		return null;
 	}
 
-	public static List<TurretData> getPlayerTurretData(PlayerTurretData currentPlayerTurret, Infrastructure infrastructure) {
+	public static List<TurretData> getPlayerTurretData(PlayerInfrastructure playerInfrastructure, Infrastructure infrastructure) {
 		List<TurretData> turrets = new ArrayList<>();
-		for (PlanetTurretBlueprint planetTurretBlueprint : infrastructure.getTurretBlueprints()) {
-			if (planetTurretBlueprint.getId() == currentPlayerTurret.getTurretId()) {
-				TurretData turretData = new TurretData();
-				turretData.model = planetTurretBlueprint.getName();
-				turretData.resourceCost = planetTurretBlueprint.getCost();
-				turretData.cpCost = planetTurretBlueprint.getCommandPointsCost();
-				
-				PlatformData platform = new PlatformData();
-				platform.rotationSpeed = planetTurretBlueprint.getRotationSpeed();
-				turretData.platform = platform;
-				
-				HullData hull = new HullData();
-				hull.strength = planetTurretBlueprint.getPlanetDefense().getArmor();
-				turretData.hull = hull;
-				
-				turretData.weapons = new ArrayList<>();
-				turretData.shields = new ArrayList<>();
-				
-				turrets.add(turretData);
+		for (PlayerTurretData playerTurretData : playerInfrastructure.getPlayerTurrets()) {
+			for (PlanetTurretBlueprint planetTurretBlueprint : infrastructure.getTurretBlueprints()) {
+				if (planetTurretBlueprint.getId() == playerTurretData.getTurretId()) {
+					TurretData turretData = new TurretData();
+					turretData.model = planetTurretBlueprint.getName();
+					turretData.resourceCost = planetTurretBlueprint.getCost();
+					turretData.cpCost = planetTurretBlueprint.getCommandPointsCost();
+					
+					PlatformData platform = new PlatformData();
+					platform.rotationSpeed = planetTurretBlueprint.getRotationSpeed();
+					turretData.platform = platform;
+					
+					HullData hull = new HullData();
+					hull.strength = planetTurretBlueprint.getPlanetDefense().getArmor();
+					turretData.hull = hull;
+					
+					turretData.weapons = new ArrayList<>();
+					turretData.shields = new ArrayList<>();
+					
+					turrets.add(turretData);
+				}
 			}
 		}
 		return turrets;

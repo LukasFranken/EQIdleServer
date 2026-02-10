@@ -28,7 +28,7 @@ public class AIPlayerLoader {
 		newAiPlayer.ships.add(createAIShip(threatLevel));
 		
 		newAiPlayer.turrets = new ArrayList<>();
-		if (threatLevel >= 10) {
+		if (threatLevel >= 100) {
 			newAiPlayer.turrets.add(createAITurret(threatLevel));
 		}
 		

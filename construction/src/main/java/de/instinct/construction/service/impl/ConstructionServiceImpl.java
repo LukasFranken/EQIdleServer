@@ -35,10 +35,10 @@ public class ConstructionServiceImpl implements ConstructionService {
 		initInfrastructure.setMaxResourceCapacity(getBaseData().getBaseMaxResourceCapacity());
 		initInfrastructure.setResourceGenerationSpeed(getBaseData().getBaseResourceGenerationSpeed());
 		initInfrastructure.setPlayerTurrets(new ArrayList<>());
-		PlayerTurretData testPlayerTurretData = new PlayerTurretData();
+		/*PlayerTurretData testPlayerTurretData = new PlayerTurretData();
 		testPlayerTurretData.setUuid("test-turret-uuid");
 		testPlayerTurretData.setTurretId(0);
-		initInfrastructure.getPlayerTurrets().add(testPlayerTurretData);
+		initInfrastructure.getPlayerTurrets().add(testPlayerTurretData);*/
 		playerInfrastructures.put(token, initInfrastructure);
 		return InfrastructureInitializationResponseCode.SUCCESS;
 	}

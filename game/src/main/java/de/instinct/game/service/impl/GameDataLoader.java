@@ -112,7 +112,7 @@ public class GameDataLoader {
 		newPlayer.maxCommandPoints = user.getLoadout().getCommander().getMaxCommandPoints();
 		newPlayer.planetData = EngineDataInterface.getPlanetData(user.getLoadout().getPlayerInfrastructure(), EngineAPI.construction().construction());
 		newPlayer.ships = EngineDataInterface.getShips(user.getLoadout().getShips(), EngineAPI.shipyard().shipyard());
-		newPlayer.turrets = EngineDataInterface.getPlayerTurretData(user.getLoadout().getPlayerInfrastructure().getPlayerTurrets().get(0), EngineAPI.construction().construction());
+		newPlayer.turrets = EngineDataInterface.getPlayerTurretData(user.getLoadout().getPlayerInfrastructure(), EngineAPI.construction().construction());
 		return newPlayer;
 	}
 	
