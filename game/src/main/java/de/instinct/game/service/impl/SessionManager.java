@@ -24,7 +24,10 @@ import de.instinct.engine.model.Player;
 import de.instinct.engine.model.PlayerConnectionStatus;
 import de.instinct.engine.net.message.types.BuildTurretMessage;
 import de.instinct.engine.net.message.types.FleetMovementMessage;
+import de.instinct.engine.net.message.types.GameFinishUpdate;
+import de.instinct.engine.net.message.types.GameOrderUpdate;
 import de.instinct.engine.net.message.types.GamePauseMessage;
+import de.instinct.engine.net.message.types.GameStartUpdate;
 import de.instinct.engine.net.message.types.JoinMessage;
 import de.instinct.engine.net.message.types.LoadedMessage;
 import de.instinct.engine.net.message.types.PlayerAssigned;
@@ -54,8 +57,7 @@ public class SessionManager {
 	private static GameDataLoader gameDataLoader;
 	private static AiEngine aiEngine;
 	
-	private static int PERIODIC_UPDATE_MS = 50;
-	private static int PERIODIC_CLIENT_UPDATE_MS = 500;
+	private static int PERIODIC_UPDATE_MS = 20;
 	private static ScheduledExecutorService scheduler;
 	
 	public static void init() {
@@ -93,7 +95,7 @@ public class SessionManager {
 	
 	private static void updateAi(GameSession session) {
 		if (session.getGameType().getVersusMode() == VersusMode.AI) {
-			for (Player player : session.getGameState().players) {
+			for (Player player : session.getGameState().staticData.playerData.players) {
 				if (player instanceof AiPlayer) {
 					List<GameOrder> aiOrders = aiEngine.act((AiPlayer)player, session.getGameState());
 					engineInterface.queueAll(session.getGameState(), aiOrders);
@@ -104,16 +106,15 @@ public class SessionManager {
 
 	private static void updateSession(GameSession session) {
 		engineInterface.updateGameState(session);
-		boolean clientUpdateRequired = engineInterface.containedValidOrders();
-		if (session.getGameState().winner != 0) {
-			clientUpdateRequired = true;
+		if (session.getGameState().resultData.winner != 0) {
+			updateClientsFinish(session);
 			expiredSessions.add(session);
 			activeSessions.remove(session);
 			
 			FinishGameData finishData = new FinishGameData();
 			finishData.setPlayedMS(session.getGameState().gameTimeMS);
-			finishData.setWinnerTeamId(session.getGameState().winner);
-			finishData.setWiped(engineInterface.checkWiped(session.getGameState()));
+			finishData.setWinnerTeamId(session.getGameState().resultData.winner);
+			finishData.setWiped(session.getGameState().resultData.wiped);
 			finishData.setSurrendered(engineInterface.checkSurrendered(session.getGameState()));
 			finishData.setPlayerShipResults(new ArrayList<>());
 			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().gameUUID);
@@ -134,18 +135,48 @@ public class SessionManager {
 			
 			EngineAPI.matchmaking().finish(session.getUuid(), finishData);
 		}
-		if (System.currentTimeMillis() - session.getLastClientUpdateTimeMS() >= PERIODIC_CLIENT_UPDATE_MS) {
-			clientUpdateRequired = true;
+		if (!session.getGameState().orderData.processedOrders.isEmpty()) {
+			updateClientsOnNewOrder(session);
 		}
-        if (clientUpdateRequired) {
-        	updateClients(session);
-        }
+	}
+	
+	private static void updateClientsOnNewOrder(GameSession session) {
+		GameOrderUpdate update = new GameOrderUpdate();
+		update.newOrders = session.getGameState().orderData.processedOrders;
+		for (User user : session.getUsers()) {
+			if (user.getConnection() != null && user.getConnection().isConnected()) {
+				user.getConnection().sendTCP(update);
+			}
+		}
+		session.setLastClientUpdateTimeMS(System.currentTimeMillis());
+		session.getGameState().orderData.processedOrders.clear();
 	}
 
-	private static void updateClients(GameSession session) {
+	private static void updateClientsFull(GameSession session) {
 		for (User user : session.getUsers()) {
 			if (user.getConnection() != null && user.getConnection().isConnected()) {
 				user.getConnection().sendTCP(session.getGameState());
+			}
+		}
+		session.setLastClientUpdateTimeMS(System.currentTimeMillis());
+	}
+	
+	private static void updateClientsStart(GameSession session) {
+		GameStartUpdate startUpdate = new GameStartUpdate();
+		for (User user : session.getUsers()) {
+			if (user.getConnection() != null && user.getConnection().isConnected()) {
+				user.getConnection().sendTCP(startUpdate);
+			}
+		}
+		session.setLastClientUpdateTimeMS(System.currentTimeMillis());
+	}
+	
+	private static void updateClientsFinish(GameSession session) {
+		GameFinishUpdate finishUpdate = new GameFinishUpdate();
+		finishUpdate.resultData = session.getGameState().resultData;
+		for (User user : session.getUsers()) {
+			if (user.getConnection() != null && user.getConnection().isConnected()) {
+				user.getConnection().sendTCP(finishUpdate);
 			}
 		}
 		session.setLastClientUpdateTimeMS(System.currentTimeMillis());
@@ -246,10 +277,10 @@ public class SessionManager {
 	}
 
 	private static void readyUpAI(GameState state) {
-		for (Player player : state.players) {
+		for (Player player : state.staticData.playerData.players) {
 			if (player instanceof AiPlayer) {
 				AiPlayer aiPlayer = (AiPlayer) player;
-				for (PlayerConnectionStatus status : state.connectionStati) {
+				for (PlayerConnectionStatus status : state.staticData.playerData.connectionStati) {
 					if (status.playerId == aiPlayer.id) {
 						status.connected = true;
 						status.loaded = true;
@@ -278,7 +309,7 @@ public class SessionManager {
 			for (User user : session.getUsers()) {
 				if (user.getUuid().contentEquals(joinMessage.playerUUID)) {
 					user.setConnection(connection);
-					EngineUtility.getPlayerConnectionStatus(session.getGameState().connectionStati, user.getPlayerId()).connected = true;
+					EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId()).connected = true;
 					PlayerAssigned playerAssigned = new PlayerAssigned();
 					playerAssigned.playerId = user.getPlayerId();
 					user.getConnection().sendTCP("test");
@@ -312,14 +343,14 @@ public class SessionManager {
 		inCreationSessions.remove(session);
 		session.setLastUpdateTimeMS(System.currentTimeMillis());
 		activeSessions.add(session);
-		updateClients(session);
+		updateClientsFull(session);
 	}
 
 	public static void loaded(LoadedMessage loadedMessage, Connection c) {
 		for (GameSession session : activeSessions) {
 			for (User user : session.getUsers()) {
 				if (user.getUuid().contentEquals(loadedMessage.playerUUID)) {
-					EngineUtility.getPlayerConnectionStatus(session.getGameState().connectionStati, user.getPlayerId()).loaded = true;
+					EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId()).loaded = true;
 					System.out.println("game loaded: id " + user.getPlayerId() + " - " + user.getName());
 					checkGameStart(session);
 					return;
@@ -331,23 +362,25 @@ public class SessionManager {
 	private static void checkGameStart(GameSession session) {
 		boolean canStart = true;
 		for (User user : session.getUsers()) {
-			Player player = EngineUtility.getPlayer(session.getGameState().players, user.getPlayerId());
-			PlayerConnectionStatus status = EngineUtility.getPlayerConnectionStatus(session.getGameState().connectionStati, user.getPlayerId());
+			Player player = EngineUtility.getPlayer(session.getGameState().staticData.playerData.players, user.getPlayerId());
+			PlayerConnectionStatus status = EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId());
 			if (!status.loaded && player.teamId != 0) canStart = false;
 		}
 		if (canStart) {
 			session.getGameState().started = true;
 		}
-		updateClients(session);
+		updateClientsStart(session);
 	}
 
 	public static void disconnect(Connection c) {
 		for (GameSession session : inCreationSessions) {
 			for (User user : session.getUsers()) {
 				if (user.getConnection() == c) {
-					EngineUtility.getPlayerConnectionStatus(session.getGameState().connectionStati, user.getPlayerId()).connected = false;
+					EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId()).connected = false;
 					System.out.println("disconnected: id " + user.getPlayerId() + " - " + user.getName());
-					updateClients(session);
+					//updateClients(session);
+					//update disconnect message to all clients
+					//perhaps pause game?
 					return;
 				}
 			}
