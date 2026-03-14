@@ -6,6 +6,7 @@ PORTMAP TCP 6000, 8080 - 9010
 
 6000 - Discovery
 
+9000 - Social
 9001 - Commander
 9002 - Starmap
 9003 - Construction

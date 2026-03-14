@@ -1,0 +1,14 @@
+package de.instinct.api.social.dto;
+
+public enum GroupInviteResponse {
+	
+	USER_NOT_FOUND,
+	NOT_IN_GROUP,
+	TARGET_USER_NOT_FOUND,
+	TARGET_USER_ALREADY_IN_GROUP,
+	TARGET_USER_OFFLINE,
+	ALREADY_INVITED,
+	NOT_FRIENDS,
+	SUCCESS;
+
+}

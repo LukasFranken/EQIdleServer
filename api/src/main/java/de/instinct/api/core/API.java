@@ -2,6 +2,7 @@ package de.instinct.api.core;
 
 import de.instinct.api.auth.service.AuthenticationInterface;
 import de.instinct.api.auth.service.impl.Authentication;
+import de.instinct.api.commander.service.CommanderInterface;
 import de.instinct.api.commander.service.impl.Commander;
 import de.instinct.api.construction.service.ConstructionInterface;
 import de.instinct.api.construction.service.impl.Construction;
@@ -19,6 +20,8 @@ import de.instinct.api.shipyard.service.ShipyardInterface;
 import de.instinct.api.shipyard.service.impl.Shipyard;
 import de.instinct.api.shop.service.ShopInterface;
 import de.instinct.api.shop.service.impl.Shop;
+import de.instinct.api.social.service.SocialInterface;
+import de.instinct.api.social.service.impl.Social;
 import de.instinct.api.starmap.service.StarmapInterface;
 import de.instinct.api.starmap.service.impl.Starmap;
 
@@ -46,6 +49,7 @@ public class API {
 	private static Shop shop;
 	private static Starmap starmap;
 	private static Commander commander;
+	private static Social social;
 	
 	public static void initialize(APIConfiguration newConfiguration) {
 		configuration = newConfiguration;
@@ -59,6 +63,7 @@ public class API {
 		shop = new Shop();
 		starmap = new Starmap();
 		commander = new Commander();
+		social = new Social();
 		
 		if (newConfiguration != APIConfiguration.SERVER) {
 			discovery().connect();
@@ -71,6 +76,7 @@ public class API {
 			shop().connect();
 			starmap().connect();
 			commander().connect();
+			social().connect();
 			printAPIStatus();
 		}
 	}
@@ -124,9 +130,14 @@ public class API {
 		return starmap;
 	}
 	
-	public static Commander commander() {
+	public static CommanderInterface commander() {
 		if (!apiReady()) return null;
 		return commander;
+	}
+	
+	public static SocialInterface social() {
+		if (!apiReady()) return null;
+		return social;
 	}
 	
 	public static boolean apiReady() {
@@ -149,6 +160,7 @@ public class API {
 		printServiceStatus("Shop", shop.isConnected());
 		printServiceStatus("Starmap", starmap.isConnected());
 		printServiceStatus("Commander", commander.isConnected());
+		printServiceStatus("Social", social.isConnected());
 	}
 	
 	private static void printServiceStatus(String serviceName, boolean connected) {

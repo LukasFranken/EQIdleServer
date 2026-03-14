@@ -79,6 +79,7 @@ public class UserServiceImpl implements UserService {
 		API.commander().init(token);
 		API.shipyard().init(token);
 		API.construction().init(token);
+		API.social().init(token);
 		updateResources(token, startingResources);
 		return RegisterResponseCode.SUCCESS;
 	}
