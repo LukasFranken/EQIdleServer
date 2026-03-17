@@ -174,6 +174,7 @@ public class SocialServiceImpl implements SocialService {
 		if (accept) {
 			group.getMembers().add(playerSocialData.getName());
 			playerSocialData.setGroupToken(groupToken);
+			playerSocialData.getGroupInvites().clear();
 		}
 		return GroupInviteRespondResponse.SUCCESS;
 	}
