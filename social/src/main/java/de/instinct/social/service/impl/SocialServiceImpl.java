@@ -41,7 +41,6 @@ public class SocialServiceImpl implements SocialService {
 		if (socialDatas.containsKey(token)) return UserCreationResponse.ALREADY_EXISTS;
 		
 		PlayerSocialData initPlayerData = new PlayerSocialData();
-		initPlayerData.setName(API.meta().profile(token).getUsername());
 		initPlayerData.setStatus(PlayerStatus.OFFLINE);
 		initPlayerData.setFriends(new ArrayList<>());
 		initPlayerData.setFriendRequests(new ArrayList<>());
@@ -77,17 +76,22 @@ public class SocialServiceImpl implements SocialService {
 	public FriendRequestSendResponse sendFriendRequest(String token, String targetName) {
 		PlayerSocialData playerSocialData = getPlayerSocialData(token);
 		if (playerSocialData == null) return FriendRequestSendResponse.USER_NOT_FOUND;
-		if (playerSocialData.getName().equals(targetName)) return FriendRequestSendResponse.TARGET_IS_SELF;
+		String playerName = getName(token);
+		if (playerName.equals(targetName)) return FriendRequestSendResponse.TARGET_IS_SELF;
 		PlayerSocialData targetSocialData = getSocialData(targetName);
 		if (targetSocialData == null) return FriendRequestSendResponse.TARGET_USER_NOT_FOUND;
-		if (targetSocialData.hasFriend(playerSocialData.getName())) return FriendRequestSendResponse.ALREADY_FRIENDS;
-		if (targetSocialData.hasFriendRequest(playerSocialData.getName())) return FriendRequestSendResponse.ALREADY_REQUESTED;
+		if (targetSocialData.hasFriend(playerName)) return FriendRequestSendResponse.ALREADY_FRIENDS;
+		if (targetSocialData.hasFriendRequest(playerName)) return FriendRequestSendResponse.ALREADY_REQUESTED;
 		
 		FriendRequest newFriendRequest = new FriendRequest();
-		newFriendRequest.setFromName(playerSocialData.getName());
+		newFriendRequest.setFromName(playerName);
 		newFriendRequest.setTimestamp(System.currentTimeMillis());
 		targetSocialData.getFriendRequests().add(newFriendRequest);
 		return FriendRequestSendResponse.SUCCESS;
+	}
+
+	private String getName(String token) {
+		return API.meta().profile(token).getUsername();
 	}
 
 	@Override
@@ -106,7 +110,8 @@ public class SocialServiceImpl implements SocialService {
 			playerSocialData.getFriends().add(newFriend);
 			
 			Friend newFriendForRequester = new Friend();
-			newFriendForRequester.setName(playerSocialData.getName());
+			String playerName = getName(token);
+			newFriendForRequester.setName(playerName);
 			newFriendForRequester.setSinceTimestamp(timestamp);
 			getSocialData(requesterName).getFriends().add(newFriendForRequester);
 		}
@@ -122,7 +127,8 @@ public class SocialServiceImpl implements SocialService {
 		
 		playerSocialData.getFriends().remove(friend);
 		PlayerSocialData friendSocialData = getSocialData(friendName);
-		friendSocialData.getFriends().remove(friendSocialData.getFriend(playerSocialData.getName()));
+		String playerName = getName(token);
+		friendSocialData.getFriends().remove(friendSocialData.getFriend(playerName));
 		return FriendDeleteResponse.SUCCESS;
 	}
 
@@ -134,7 +140,8 @@ public class SocialServiceImpl implements SocialService {
 		
 		Group newGroup = new Group();
 		newGroup.setMembers(new ArrayList<>());
-		newGroup.getMembers().add(playerSocialData.getName());
+		String playerName = getName(token);
+		newGroup.getMembers().add(playerName);
 		String groupToken = UUID.randomUUID().toString();
 		groups.put(groupToken, newGroup);
 		playerSocialData.setGroupToken(groupToken);
@@ -151,10 +158,11 @@ public class SocialServiceImpl implements SocialService {
 		if (targetSocialData.getGroupToken() != null) return GroupInviteResponse.TARGET_USER_ALREADY_IN_GROUP;
 		if (targetSocialData.getStatus() == PlayerStatus.OFFLINE) return GroupInviteResponse.TARGET_USER_OFFLINE;
 		if (targetSocialData.hasGroupInvite(playerSocialData.getGroupToken())) return GroupInviteResponse.ALREADY_INVITED;
-		if (!targetSocialData.hasFriend(playerSocialData.getName())) return GroupInviteResponse.NOT_FRIENDS;
+		String playerName = getName(token);
+		if (!targetSocialData.hasFriend(playerName)) return GroupInviteResponse.NOT_FRIENDS;
 		
 		GroupInvite newInvite = new GroupInvite();
-		newInvite.setFromName(playerSocialData.getName());
+		newInvite.setFromName(playerName);
 		newInvite.setGroupToken(playerSocialData.getGroupToken());
 		newInvite.setTimestamp(System.currentTimeMillis());
 		targetSocialData.getGroupInvites().add(newInvite);
@@ -172,7 +180,8 @@ public class SocialServiceImpl implements SocialService {
 		if (group == null) return GroupInviteRespondResponse.GROUP_NOT_FOUND;
 		playerSocialData.getGroupInvites().remove(invite);
 		if (accept) {
-			group.getMembers().add(playerSocialData.getName());
+			String playerName = getName(token);
+			group.getMembers().add(playerName);
 			playerSocialData.setGroupToken(groupToken);
 			playerSocialData.getGroupInvites().clear();
 		}
@@ -186,7 +195,8 @@ public class SocialServiceImpl implements SocialService {
 		if (playerSocialData.getGroupToken() == null) return GroupLeaveResponse.NOT_IN_GROUP;
 		 Group group = groups.get(playerSocialData.getGroupToken());
 		 if (group == null) return GroupLeaveResponse.GROUP_NOT_FOUND;
-		 group.getMembers().remove(playerSocialData.getName());
+		 String playerName = getName(token);
+		 group.getMembers().remove(playerName);
 		 if (group.getMembers().isEmpty()) {
 			 groups.remove(playerSocialData.getGroupToken());
 		 }
@@ -196,15 +206,8 @@ public class SocialServiceImpl implements SocialService {
 	
 	private PlayerSocialData getSocialData(String username) {
 		PlayerSocialData socialData = null;
-		for (PlayerSocialData currentData : socialDatas.values()) {
-			if (currentData.getName().equals(username)) {
-				socialData = currentData;
-				if (System.currentTimeMillis() >= socialData.getLastRefreshTimestamp() + (1000 * 60)) {
-					socialData.setStatus(PlayerStatus.OFFLINE);
-				}
-				break;
-			}
-		}
+		String token = API.meta().token(username);
+		if (token != null) socialData = socialDatas.get(token);
 		return socialData;
 	}
 

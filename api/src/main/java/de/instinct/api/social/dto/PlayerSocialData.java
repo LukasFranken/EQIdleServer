@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 public class PlayerSocialData {
 	
-	private String name;
 	private PlayerStatus status;
 	private long lastRefreshTimestamp;
 	private List<Friend> friends;
