@@ -40,6 +40,7 @@ public class MetaController extends BaseServiceController {
 		API.shipyard().connect();
 		API.construction().connect();
 		API.commander().connect();
+		API.social().connect();
 	}
 	
 	@PostMapping("/register/{username}")
