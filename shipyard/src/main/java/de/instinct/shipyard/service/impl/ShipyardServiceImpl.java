@@ -408,11 +408,8 @@ public class ShipyardServiceImpl implements ShipyardService {
 			CoreLevel coreLevel = (CoreLevel) level;
 			CoreStatistic coreStatistic = shipStatistic.getCoreStatistic();
 			switch (coreLevel.getRequirementType()) {
-				case CP_USED:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getCpUsed());
-					break;
 				case RESOURCES_USED:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getResourcesUsed());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + coreStatistic.getResourcesUsed()));
 					break;
 				case TIMES_DEPLOYED:
 					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + coreStatistic.getTimesBuilt());
@@ -429,7 +426,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 			EngineStatistic engineStatistic = shipStatistic.getEngineStatistic();
 			switch (engineLevel.getRequirementType()) {
 				case DISTANCE_TRAVELED:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + engineStatistic.getDistanceTraveled());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + engineStatistic.getDistanceTraveled()));
 					break;
 			}
 		}
@@ -440,10 +437,10 @@ public class ShipyardServiceImpl implements ShipyardService {
 			HullStatistic hullStatistic = shipStatistic.getHullStatistic();
 			switch (hullLevel.getRequirementType()) {
 				case DAMAGE_TAKEN:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + hullStatistic.getDamageTaken());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + hullStatistic.getDamageTaken()));
 					break;
 				case HULL_REPAIRED:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + hullStatistic.getHullRepaired());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + hullStatistic.getHullRepaired()));
 					break;
 			}
 		}
@@ -454,10 +451,10 @@ public class ShipyardServiceImpl implements ShipyardService {
 			ShieldStatistic shieldStatistic = getShieldStatistic(shipStatistic, component.getId());
 			switch (shieldLevel.getRequirementType()) {
 				case DAMAGE_ABSORBED:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + shieldStatistic.getDamageAbsorped());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + shieldStatistic.getDamageAbsorped()));
 					break;
 				case SHIELDS_RECHARGED:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + shieldStatistic.getShieldRecharged());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + shieldStatistic.getShieldRecharged()));
 					break;
 				case DAMAGE_INSTANCES_BLOCKED:
 					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + shieldStatistic.getDamageInstancesBlocked());
@@ -469,10 +466,9 @@ public class ShipyardServiceImpl implements ShipyardService {
 			componentResult.setType(ShipComponentType.WEAPON);
 			WeaponLevel weaponLevel = (WeaponLevel) level;
 			WeaponStatistic weaponStatistic = getWeaponStatistic(shipStatistic, component.getId());
-			System.out.println(weaponStatistic);
 			switch (weaponLevel.getRequirementType()) {
 				case DAMAGE_DEALT:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getDamageDealt());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + weaponStatistic.getDamageDealt()));
 					break;
 				case KILLS:
 					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getKills());
@@ -481,7 +477,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getShotsFired());
 					break;
 				case COOLED_DOWN_SEC:
-					playerComponentLevel.setProgress(playerComponentLevel.getProgress() + weaponStatistic.getCooledDownSec());
+					playerComponentLevel.setProgress((float) (playerComponentLevel.getProgress() + weaponStatistic.getCooledDownSec()));
 					break;
 			}
 		}

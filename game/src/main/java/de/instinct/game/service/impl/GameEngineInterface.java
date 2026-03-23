@@ -13,18 +13,15 @@ import de.instinct.game.service.model.GameSession;
 
 public class GameEngineInterface {
 	
-	private FleetEngine engine;
 	private GameStateInitializer gameStateInitializer;
 	
 	public GameEngineInterface() {
-		engine = new FleetEngine();
-		engine.initialize();
 		gameStateInitializer = new GameStateInitializer();
 	}
 
 	public void updateGameState(GameSession session) {
 		long currentTime = System.currentTimeMillis();
-		engine.update(session.getGameState(), currentTime - session.getLastUpdateTimeMS());
+		FleetEngine.update(session.getGameState(), currentTime - session.getLastUpdateTimeMS());
 		session.setLastUpdateTimeMS(currentTime);
 	}
 	
@@ -35,7 +32,7 @@ public class GameEngineInterface {
 
 	public void queue(GameState gameState, GameOrder gameOrder) {
 		System.out.println("Queueing order: " + gameOrder);
-		engine.queue(gameState, gameOrder);
+		FleetEngine.queue(gameState, gameOrder);
 	}
 
 	public void queueAll(GameState gameState, List<GameOrder> gameOrders) {

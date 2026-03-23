@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class CommanderData {
 	
-	private float commandPointsGenerationSpeed;
-	private float maxCommandPoints;
-	private float startCommandPoints;
+	private float resourceGenerationSpeed;
+	private float maxResources;
+	private float startResources;
 
 }

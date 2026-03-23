@@ -170,7 +170,7 @@ public class ShipyardUtility {
 		int newLevel = component.getLevels().size() > 0 ? component.getLevels().get(component.getLevels().size() - 1).getLevel() + 1 : 0;
 		if (component instanceof ShipCore) {
 			CoreLevel level = new CoreLevel();
-			level.setRequirementType(CoreRequirementType.CP_USED);
+			level.setRequirementType(CoreRequirementType.RESOURCES_USED);
 			level.setLevel(newLevel);
 			level.setAttributes(new ArrayList<>());
 			((ShipCore) component).getLevels().add(level);
@@ -233,7 +233,7 @@ public class ShipyardUtility {
 		if (componentLevel instanceof CoreLevel) {
 			CoreAttribute attribute = new CoreAttribute();
 			attribute.setId(newId);
-			attribute.setType(CoreAttributeType.CP_COST);
+			attribute.setType(CoreAttributeType.RESOURCE_COST);
 			((CoreLevel) componentLevel).getAttributes().add(attribute);
 		}
 		if (componentLevel instanceof EngineLevel) {

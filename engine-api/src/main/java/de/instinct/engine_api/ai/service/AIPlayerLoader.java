@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.planet.PlanetData;
 import de.instinct.engine.model.ship.ShipData;
-import de.instinct.engine.model.ship.components.CoreData;
-import de.instinct.engine.model.ship.components.EngineData;
 import de.instinct.engine.model.ship.components.types.CoreType;
 import de.instinct.engine.model.ship.components.types.EngineType;
+import de.instinct.engine.model.ship.components.types.HullType;
 import de.instinct.engine.model.turret.PlatformData;
 import de.instinct.engine.model.turret.PlatformType;
 import de.instinct.engine.model.turret.TurretData;
@@ -33,14 +32,12 @@ public class AIPlayerLoader {
 		}
 		
 		PlanetData aiPlanetData = new PlanetData();
-		aiPlanetData.resourceGenerationSpeed = AiStatManager.getResourceGenerationSpeed(threatLevel);
-		aiPlanetData.maxResourceCapacity = AiStatManager.getMaxResourceCapacity(threatLevel);
+		aiPlanetData.baseResourceGenerationSpeed = AiStatManager.getPlanetBaseResourceGenerationSpeed(threatLevel);
 		
 		newAiPlayer.planetData = aiPlanetData;
-		newAiPlayer.commandPointsGenerationSpeed = AiStatManager.getCommandPointsGenerationSpeed(threatLevel);
-		newAiPlayer.startCommandPoints = AiStatManager.getStartCommandPoints(threatLevel);
-		newAiPlayer.maxCommandPoints = AiStatManager.getMaxCommandPoints(threatLevel);
-		newAiPlayer.currentCommandPoints = newAiPlayer.startCommandPoints;
+		newAiPlayer.resourceGenerationSpeed = AiStatManager.getBaseResourceGenerationSpeed(threatLevel);
+		newAiPlayer.startResources = AiStatManager.getStartResources(threatLevel);
+		newAiPlayer.maxResources = AiStatManager.getMaxResourceCapacity(threatLevel);
 		
 		difficultyLoader.load(newAiPlayer, threatLevel);
 		newAiPlayer.name = "AI (" + newAiPlayer.difficulty.toString() + ")";
@@ -49,19 +46,13 @@ public class AIPlayerLoader {
 
 	private ShipData createAIShip(int threatLevel) {
 		ShipData aiShip = new ShipData();
-		aiShip.resourceCost = 5;
-		aiShip.cpCost = 1;
+		aiShip.resourceCost = 3;
 		aiShip.model = "hawk";
+		aiShip.coreType = CoreType.FIGHTER;
 		
-		CoreData aiShipCore = new CoreData();
-		aiShipCore.type = CoreType.FIGHTER;
-		aiShip.core = aiShipCore;
-		
-		EngineData aiShipEngine = new EngineData();
-		aiShipEngine.type = EngineType.ION;
-		aiShipEngine.speed = AiStatManager.getMovementSpeed(threatLevel);
-		aiShipEngine.acceleration = 1f;
-		aiShip.engine = aiShipEngine;
+		aiShip.engineType = EngineType.ION;
+		aiShip.speed = AiStatManager.getMovementSpeed(threatLevel);
+		aiShip.acceleration = 1f;
 		
 		aiShip.weapons = new ArrayList<>();
 		aiShip.weapons.add(AiStatManager.getShipWeapon(threatLevel));
@@ -71,18 +62,17 @@ public class AIPlayerLoader {
 			aiShip.shields.add(AiStatManager.getShipShield(threatLevel));
 		}
 		
-		aiShip.hull = AiStatManager.getShipHull(threatLevel);
+		aiShip.hullType = HullType.ALLOY;
+		aiShip.hullStrength = AiStatManager.getShipHullStrength(threatLevel);
 		return aiShip;
 	}
 	
 	private TurretData createAITurret(int threatLevel) {
 		TurretData aiTurret = new TurretData();
 		aiTurret.resourceCost = 10;
-		aiTurret.cpCost = 1;
 		aiTurret.model = "projectile";
 		
 		PlatformData aiTurretPlatform = new PlatformData();
-		aiTurretPlatform.rotationSpeed = 1f;
 		aiTurretPlatform.type = PlatformType.SERVO;
 		aiTurret.platform = aiTurretPlatform;
 		
@@ -92,7 +82,8 @@ public class AIPlayerLoader {
 		aiTurret.shields = new ArrayList<>();
 		aiTurret.shields.add(AiStatManager.getTurretShield(threatLevel));
 		
-		aiTurret.hull = AiStatManager.getTurretHull(threatLevel);
+		aiTurret.hullType = HullType.ALLOY;
+		aiTurret.hullStrength = AiStatManager.getTurretHullStrength(threatLevel);
 		return aiTurret;
 	}
 

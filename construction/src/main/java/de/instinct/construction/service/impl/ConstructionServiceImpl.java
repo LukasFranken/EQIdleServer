@@ -46,7 +46,7 @@ public class ConstructionServiceImpl implements ConstructionService {
 	private Infrastructure getBaseInfrastructure() {
 		Infrastructure infrastructure = new Infrastructure();
 		infrastructure.setBaseMaxResourceCapacity(10);
-		infrastructure.setBaseResourceGenerationSpeed(1f);
+		infrastructure.setBaseResourceGenerationSpeed(0.1f);
 		List<PlanetTurretBlueprint> blueprints = new ArrayList<>();
 		PlanetTurretBlueprint projectileTurretBlueprint = new PlanetTurretBlueprint();
 		projectileTurretBlueprint.setName("Projectile");

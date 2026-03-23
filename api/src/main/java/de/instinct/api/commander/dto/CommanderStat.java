@@ -2,9 +2,9 @@ package de.instinct.api.commander.dto;
 
 public enum CommanderStat {
 	
-	MAX_CP("Max CP"),
-	START_CP("Start CP"),
-	CP_PER_SECOND("CP/s");
+	MAX_RES("Max RES"),
+	START_RES("Start RES"),
+	RES_PER_SECOND("RES/s");
 	
 	private String label;
 	

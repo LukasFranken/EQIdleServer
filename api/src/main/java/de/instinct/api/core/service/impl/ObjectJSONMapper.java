@@ -32,8 +32,10 @@ public class ObjectJSONMapper {
 	
 	private static void init() {
 		if (objectMapper == null) {
-			objectMapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		}
+	        objectMapper = new ObjectMapper()
+	            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+	            .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
+	    }
 	}
 
 }

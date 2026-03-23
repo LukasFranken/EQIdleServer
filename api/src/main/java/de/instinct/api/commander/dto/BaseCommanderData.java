@@ -10,8 +10,8 @@ import lombok.Data;
 public class BaseCommanderData {
 	
 	private List<RankUpCommanderUpgrade> rankUpData;
-	private int baseMaxCommandPoints;
-	private int baseStartCommandPoints;
-	private float baseCommandPointsPerSecond;
+	private int baseMaxResources;
+	private int baseStartResources;
+	private float baseResourceGenerationSpeed;
 
 }

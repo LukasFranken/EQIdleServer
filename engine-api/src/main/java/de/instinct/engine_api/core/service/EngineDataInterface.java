@@ -7,6 +7,8 @@ import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.PlanetTurretBlueprint;
 import de.instinct.api.construction.dto.PlayerInfrastructure;
 import de.instinct.api.construction.dto.PlayerTurretData;
+import de.instinct.api.core.API;
+import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.shipyard.dto.ShipyardData;
 import de.instinct.api.shipyard.dto.ship.PlayerShipComponentLevel;
 import de.instinct.api.shipyard.dto.ship.PlayerShipData;
@@ -33,11 +35,9 @@ import de.instinct.api.shipyard.dto.ship.component.types.engine.EngineAttributeT
 import de.instinct.api.shipyard.dto.ship.component.types.hull.HullAttributeType;
 import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldAttributeType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
+import de.instinct.engine.model.Player;
 import de.instinct.engine.model.planet.PlanetData;
 import de.instinct.engine.model.ship.ShipData;
-import de.instinct.engine.model.ship.components.CoreData;
-import de.instinct.engine.model.ship.components.EngineData;
-import de.instinct.engine.model.ship.components.HullData;
 import de.instinct.engine.model.ship.components.ShieldData;
 import de.instinct.engine.model.ship.components.WeaponData;
 import de.instinct.engine.model.ship.components.types.CoreType;
@@ -50,11 +50,28 @@ import de.instinct.engine.model.turret.TurretData;
 
 public class EngineDataInterface {
 	
+	private static Infrastructure infrastructure;
+	private static ShipyardData shipyardData;
+	
+	public static Player getPlayer(LoadoutData loadout) {
+		if (!API.construction().isConnected()) API.construction().connect();
+		if (!API.shipyard().isConnected()) API.shipyard().connect();
+		if (infrastructure == null) infrastructure = API.construction().construction();
+		if (shipyardData == null) shipyardData = API.shipyard().shipyard();
+		Player newPlayer = new Player();
+		newPlayer.resourceGenerationSpeed = loadout.getCommander().getResourceGenerationSpeed();
+		newPlayer.startResources = loadout.getCommander().getStartResources();
+		newPlayer.maxResources = loadout.getCommander().getMaxResources();
+		newPlayer.planetData = getPlanetData(loadout.getPlayerInfrastructure(), infrastructure);
+		newPlayer.ships = getShips(loadout.getShips(), shipyardData);
+		newPlayer.turrets = getPlayerTurretData(loadout.getPlayerInfrastructure(), infrastructure);
+		return newPlayer;
+	}
+	
 	public static PlanetData getPlanetData(PlayerInfrastructure playerInfrastructure, Infrastructure infrastructure) {
 		if (infrastructure != null) {
 			PlanetData planetData = new PlanetData();
-			planetData.maxResourceCapacity = playerInfrastructure.getMaxResourceCapacity();
-			planetData.resourceGenerationSpeed = playerInfrastructure.getResourceGenerationSpeed();
+			planetData.baseResourceGenerationSpeed = playerInfrastructure.getResourceGenerationSpeed();
 			return planetData;
 		}
 		return null;
@@ -68,15 +85,12 @@ public class EngineDataInterface {
 					TurretData turretData = new TurretData();
 					turretData.model = planetTurretBlueprint.getName();
 					turretData.resourceCost = planetTurretBlueprint.getCost();
-					turretData.cpCost = planetTurretBlueprint.getCommandPointsCost();
 					
 					PlatformData platform = new PlatformData();
-					platform.rotationSpeed = planetTurretBlueprint.getRotationSpeed();
 					turretData.platform = platform;
 					
-					HullData hull = new HullData();
-					hull.strength = planetTurretBlueprint.getPlanetDefense().getArmor();
-					turretData.hull = hull;
+					turretData.hullType = HullType.ALLOY;
+					turretData.hullStrength = planetTurretBlueprint.getPlanetDefense().getArmor();
 					
 					turretData.weapons = new ArrayList<>();
 					turretData.shields = new ArrayList<>();
@@ -123,60 +137,48 @@ public class EngineDataInterface {
 	}
 
 	private static void processCore(ShipData shipData, ShipCore shipCore, PlayerShipData playerShip) {
-	    CoreData core = new CoreData();
-	    core.id = shipCore.getId();
-	    core.type = CoreType.valueOf(shipCore.getType().toString());
+	    shipData.coreType = CoreType.valueOf(shipCore.getType().toString());
 	    CoreLevel currentCoreLevel = findLevel(shipCore, playerShip);
 	    if (currentCoreLevel != null) {
 	        for (ComponentAttribute attribute : currentCoreLevel.getAttributes()) {
 	            CoreAttribute coreAttribute = (CoreAttribute) attribute;
-	            if (coreAttribute.getType() == CoreAttributeType.CP_COST) {
-	                shipData.cpCost = (int) attribute.getValue();
-	            }
 	            if (coreAttribute.getType() == CoreAttributeType.RESOURCE_COST) {
 	                shipData.resourceCost = (float) attribute.getValue();
 	            }
 	        }
 	    }
-	    shipData.core = core;
 	}
 
 	private static void processEngine(ShipData shipData, ShipEngine shipEngine, PlayerShipData playerShip) {
-	    EngineData engine = new EngineData();
-	    engine.id = shipEngine.getId();
-	    engine.type = EngineType.valueOf(shipEngine.getType().toString());
+	    shipData.engineType = EngineType.valueOf(shipEngine.getType().toString());
 	    EngineLevel currentEngineLevel = findLevel(shipEngine, playerShip);
 	    if (currentEngineLevel != null) {
 	        for (ComponentAttribute attribute : currentEngineLevel.getAttributes()) {
 	            EngineAttribute engineAttribute = (EngineAttribute) attribute;
 	            if (engineAttribute.getType() == EngineAttributeType.SPEED) {
-	                engine.speed = (float) attribute.getValue();
+	            	shipData.speed = (float) attribute.getValue();
 	            }
 	            if (engineAttribute.getType() == EngineAttributeType.ACCELERATION) {
-	                engine.acceleration = (float) attribute.getValue();
+	            	shipData.acceleration = (float) attribute.getValue();
 	            }
 	        }
 	    }
-	    shipData.engine = engine;
 	}
 
 	private static void processHull(ShipData shipData, ShipHull shipHull, PlayerShipData playerShip) {
-	    HullData hull = new HullData();
-	    hull.id = shipHull.getId();
-	    hull.type = HullType.valueOf(shipHull.getType().toString());
+	    shipData.hullType = HullType.valueOf(shipHull.getType().toString());
 	    HullLevel currentHullLevel = findLevel(shipHull, playerShip);
 	    if (currentHullLevel != null) {
 	        for (ComponentAttribute attribute : currentHullLevel.getAttributes()) {
 	            HullAttribute hullAttribute = (HullAttribute) attribute;
 	            if (hullAttribute.getType() == HullAttributeType.STRENGTH) {
-	                hull.strength = (float) attribute.getValue();
+	            	shipData.hullStrength = (float) attribute.getValue();
 	            }
 	            if (hullAttribute.getType() == HullAttributeType.REPAIR_SPEED) {
-	                hull.repairSpeed = (float) attribute.getValue();
+	            	shipData.hullRepairSpeed = (float) attribute.getValue();
 	            }
 	        }
 	    }
-	    shipData.hull = hull;
 	}
 
 	private static void processShield(ShipData shipData, ShipShield shipShield, PlayerShipData playerShip) {

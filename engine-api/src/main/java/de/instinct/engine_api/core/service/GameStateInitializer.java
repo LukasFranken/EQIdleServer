@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import de.instinct.engine.combat.CombatProcessor;
+import de.instinct.engine.FleetEngine;
 import de.instinct.engine.model.GameState;
 import de.instinct.engine.model.Player;
 import de.instinct.engine.model.PlayerConnectionStatus;
@@ -23,14 +23,6 @@ import de.instinct.engine_api.core.model.GameStateInitialization;
 import de.instinct.engine_api.core.model.PlanetInitialization;
 
 public class GameStateInitializer {
-	
-	private CombatProcessor combatProcessor;
-	private PlanetProcessor planetProcessor;
-	
-	public GameStateInitializer() {
-		combatProcessor = new CombatProcessor();
-		planetProcessor = new PlanetProcessor();
-	}
 	
 	public GameState initialize(GameStateInitialization initialization) {
 		StatCollector.initialize(initialization.getGameUUID(), initialization.getPlayers());
@@ -76,19 +68,12 @@ public class GameStateInitializer {
 		state.staticData.maxGameTimeMS = initialization.getGameTimeLimitMS();
 		state.staticData.atpToWin = initialization.getAtpToWin();
 		state.staticData.playerData = new PlayerData();
-		state.staticData.playerData.players = initializePlayers(state.gameUUID, initialization.getPlayers());
+		state.staticData.playerData.players = initialization.getPlayers();
 		state.staticData.playerData.connectionStati = generateConnectionStati(initialization.getPlayers());
 		state.staticData.maxPauseMS = initialization.getPauseTimeLimitMS();
 		state.staticData.minPauseMS = 1000L;
-		combatProcessor.initialize(state);
+		FleetEngine.initialize(state);
 		return state;
-	}
-	
-	private List<Player> initializePlayers(String gameUUID, List<Player> players) {
-		for (Player player : players) {
-			player.currentCommandPoints = player.startCommandPoints;
-		}
-		return players;
 	}
 
 	private List<PlayerConnectionStatus> generateConnectionStati(List<Player> players) {
@@ -105,7 +90,7 @@ public class GameStateInitializer {
 		List<Planet> initialPlanets = new ArrayList<>();
 		for (PlanetInitialization init : initialization.getMap().getPlanets()) {
 			Player planetOwner = EngineUtility.getPlayer(initialization.getPlayers(), init.getOwnerId());
-			Planet initialPlanet = planetProcessor.createPlanet(planetOwner.planetData, state);
+			Planet initialPlanet = PlanetProcessor.createPlanet(planetOwner.planetData, state);
 			initialPlanet.ownerId = init.getOwnerId();
 			initialPlanet.position = init.getPosition();
 			if (init.isAncient()) {

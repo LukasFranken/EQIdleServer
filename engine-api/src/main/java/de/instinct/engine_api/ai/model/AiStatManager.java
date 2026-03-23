@@ -1,6 +1,5 @@
 package de.instinct.engine_api.ai.model;
 
-import de.instinct.engine.model.ship.components.HullData;
 import de.instinct.engine.model.ship.components.ShieldData;
 import de.instinct.engine.model.ship.components.WeaponData;
 import de.instinct.engine.model.ship.components.types.ShieldType;
@@ -43,10 +42,8 @@ public class AiStatManager {
 		return aiShipShield;
 	}
 	
-	public static HullData getShipHull(int threatLevel) {
-		HullData aiShipHull = new HullData();
-		aiShipHull.strength = 3 + 8 * (threatLevel / descaleFactor);
-		return aiShipHull;
+	public static double getShipHullStrength(int threatLevel) {
+		return 3 + 8 * (threatLevel / descaleFactor);
 	}
 
 	public static WeaponData getTurretWeapon(int threatLevel) {
@@ -76,14 +73,17 @@ public class AiStatManager {
 		return aiTurretShield;
 	}
 	
-	public static HullData getTurretHull(int threatLevel) {
-		HullData aiShipHull = new HullData();
-		aiShipHull.strength = 10 + 20 * (threatLevel / descaleFactor);
-		return aiShipHull;
+	public static double getTurretHullStrength(int threatLevel) {
+		return 10 + 20 * (threatLevel / descaleFactor);
 	}
 
-	public static float getResourceGenerationSpeed(int threatLevel) {
-		float resourceGenerationSpeedPerPowOfTen = 1f;
+	public static float getBaseResourceGenerationSpeed(int threatLevel) {
+		float resourceGenerationSpeedPerPowOfTen = 0.1f;
+		return scaleWithThreatLevelByPowerOfTen(threatLevel, resourceGenerationSpeedPerPowOfTen);
+	}
+	
+	public static float getPlanetBaseResourceGenerationSpeed(int threatLevel) {
+		float resourceGenerationSpeedPerPowOfTen = 0.1f;
 		return scaleWithThreatLevelByPowerOfTen(threatLevel, resourceGenerationSpeedPerPowOfTen);
 	}
 
@@ -91,20 +91,10 @@ public class AiStatManager {
 		float maxResourceCapacityPerPowOfTen = 10f;
 		return scaleWithThreatLevelByPowerOfTen(threatLevel, maxResourceCapacityPerPowOfTen);
 	}
-
-	public static double getCommandPointsGenerationSpeed(int threatLevel) {
-		float commandPointsGenerationSpeedPerPowOfTen = 0.1f;
-		return scaleWithThreatLevelByPowerOfTen(threatLevel, commandPointsGenerationSpeedPerPowOfTen);
-	}
 	
-	public static double getStartCommandPoints(int threatLevel) {
+	public static double getStartResources(int threatLevel) {
 		float startCommandPointsPerPowOfTen = 3f;
 		return scaleWithThreatLevelByPowerOfTen(threatLevel, startCommandPointsPerPowOfTen);
-	}
-	
-	public static double getMaxCommandPoints(int threatLevel) {
-		float maxCommandPointsPerPowOfTen = 10f;
-		return scaleWithThreatLevelByPowerOfTen(threatLevel, maxCommandPointsPerPowOfTen);
 	}
 	
 	private static float scaleWithThreatLevelByPowerOfTen(int threatLevel, float baseValue) {

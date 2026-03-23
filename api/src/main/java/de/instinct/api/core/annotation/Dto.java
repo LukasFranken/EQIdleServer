@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 
 import de.instinct.api.core.reflection.RegisterReflection;
 
@@ -16,6 +18,7 @@ import de.instinct.api.core.reflection.RegisterReflection;
 @JacksonAnnotationsInside
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonSetter(nulls = Nulls.SKIP)
 @RegisterReflection
 public @interface Dto {
 

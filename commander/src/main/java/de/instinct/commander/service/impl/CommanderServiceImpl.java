@@ -30,9 +30,9 @@ public class CommanderServiceImpl implements CommanderService {
 	public CommanderInitializationResponseCode initialize(String token) {
 		if (commanders.containsKey(token)) return CommanderInitializationResponseCode.ALREADY_INITIALIZED;
 		CommanderData newCommander = new CommanderData();
-		newCommander.setStartCommandPoints(baseData.getBaseStartCommandPoints());
-		newCommander.setMaxCommandPoints(baseData.getBaseMaxCommandPoints());
-		newCommander.setCommandPointsGenerationSpeed(baseData.getBaseCommandPointsPerSecond());
+		newCommander.setStartResources(baseData.getBaseStartResources());
+		newCommander.setMaxResources(baseData.getBaseMaxResources());
+		newCommander.setResourceGenerationSpeed(baseData.getBaseResourceGenerationSpeed());
 		commanders.put(token, newCommander);
 		return CommanderInitializationResponseCode.SUCCESS;
 	}
@@ -54,14 +54,14 @@ public class CommanderServiceImpl implements CommanderService {
 		RankUpCommanderUpgrade upgrade = upgrade(rank);
 		for (CommanderUpgrade comUpgrade : upgrade.getUpgrades()) {
 			switch (comUpgrade.getStat()) {
-			case MAX_CP:
-				commander.setMaxCommandPoints(commander.getMaxCommandPoints() + comUpgrade.getValue());
+			case MAX_RES:
+				commander.setMaxResources(commander.getMaxResources() + comUpgrade.getValue());
 				break;
-			case START_CP:
-				commander.setStartCommandPoints(commander.getStartCommandPoints() + comUpgrade.getValue());
+			case START_RES:
+				commander.setStartResources(commander.getStartResources() + comUpgrade.getValue());
 				break;
-			case CP_PER_SECOND:
-				commander.setCommandPointsGenerationSpeed(commander.getCommandPointsGenerationSpeed() + comUpgrade.getValue());
+			case RES_PER_SECOND:
+				commander.setResourceGenerationSpeed(commander.getResourceGenerationSpeed() + comUpgrade.getValue());
 				break;
 			}
 		}

@@ -10,7 +10,6 @@ import de.instinct.engine.model.AiPlayer;
 import de.instinct.engine.model.Player;
 import de.instinct.engine_api.ai.service.AIPlayerLoader;
 import de.instinct.engine_api.ai.service.NeutralPlayerLoader;
-import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.engine_api.core.model.GameMap;
 import de.instinct.engine_api.core.model.GameStateInitialization;
 import de.instinct.engine_api.core.service.EngineDataInterface;
@@ -72,8 +71,9 @@ public class GameDataLoader {
 		int id = 1;
 		for (User user : session.getUsers()) {
 			if (user.getTeamid() == 1) {
-				Player userPlayer = getPlayer(user);
+				Player userPlayer = EngineDataInterface.getPlayer(user.getLoadout());
 				userPlayer.id = id;
+				userPlayer.teamId = 1;
 				user.setPlayerId(userPlayer.id);
 				players.add(userPlayer);
 				id++;
@@ -91,8 +91,9 @@ public class GameDataLoader {
 		} else {
 			for (User user : session.getUsers()) {
 				if (user.getTeamid() == 2) {
-					Player userPlayer = getPlayer(user);
+					Player userPlayer = EngineDataInterface.getPlayer(user.getLoadout());
 					userPlayer.id = id;
+					userPlayer.teamId = 2;
 					user.setPlayerId(userPlayer.id);
 					players.add(userPlayer);
 					id++;
@@ -101,19 +102,6 @@ public class GameDataLoader {
 		}
 		
 		return players;
-	}
-
-	public Player getPlayer(User user) {
-		Player newPlayer = new Player();
-		newPlayer.teamId = user.getTeamid();
-		newPlayer.name = user.getName();
-		newPlayer.commandPointsGenerationSpeed = user.getLoadout().getCommander().getCommandPointsGenerationSpeed();
-		newPlayer.startCommandPoints = user.getLoadout().getCommander().getStartCommandPoints();
-		newPlayer.maxCommandPoints = user.getLoadout().getCommander().getMaxCommandPoints();
-		newPlayer.planetData = EngineDataInterface.getPlanetData(user.getLoadout().getPlayerInfrastructure(), EngineAPI.construction().construction());
-		newPlayer.ships = EngineDataInterface.getShips(user.getLoadout().getShips(), EngineAPI.shipyard().shipyard());
-		newPlayer.turrets = EngineDataInterface.getPlayerTurretData(user.getLoadout().getPlayerInfrastructure(), EngineAPI.construction().construction());
-		return newPlayer;
 	}
 	
 }

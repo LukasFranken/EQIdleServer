@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import de.instinct.engine.model.Player;
 import de.instinct.engine.model.planet.PlanetData;
-import de.instinct.engine.model.ship.components.HullData;
 import de.instinct.engine.model.ship.components.ShieldData;
 import de.instinct.engine.model.ship.components.WeaponData;
+import de.instinct.engine.model.ship.components.types.HullType;
 import de.instinct.engine.model.ship.components.types.ShieldType;
 import de.instinct.engine.model.ship.components.types.WeaponType;
 import de.instinct.engine.model.turret.PlatformData;
@@ -17,28 +17,21 @@ public class NeutralPlayerLoader {
 	
 	public Player createNeutralPlayer(int threatLevel) {
 	Player neutralPlayer = new Player();
-	neutralPlayer.commandPointsGenerationSpeed = 0;
-	neutralPlayer.startCommandPoints = 0;
-	neutralPlayer.maxCommandPoints = 0;
+	
 	PlanetData neutralPlanetData = new PlanetData();
-	neutralPlanetData.resourceGenerationSpeed = 0;
-	neutralPlanetData.maxResourceCapacity = 0;
 	neutralPlayer.planetData = neutralPlanetData;
 	
 	neutralPlayer.turrets = new ArrayList<>();
 	TurretData neutralTurret = new TurretData();
 	neutralTurret.model = "projectile";
-	neutralTurret.cpCost = 0;
 	neutralTurret.resourceCost = 0;
 	
 	PlatformData neutralTurretPlatform = new PlatformData();
 	neutralTurretPlatform.type = PlatformType.SERVO;
-	neutralTurretPlatform.rotationSpeed = 1f;
 	neutralTurret.platform = neutralTurretPlatform;
 	
-	HullData neutralTurretHull = new HullData();
-	neutralTurretHull.strength = 5 + threatLevel;
-	neutralTurret.hull = neutralTurretHull;
+	neutralTurret.hullType = HullType.ALLOY;
+	neutralTurret.hullStrength = 5 + threatLevel;
 	
 	neutralTurret.weapons = new ArrayList<>();
 	WeaponData neutralTurretWeapon = new WeaponData();
