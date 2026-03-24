@@ -3,6 +3,8 @@ package de.instinct.api.shipyard.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.instinct.api.game.model.ShieldType;
+import de.instinct.api.game.model.WeaponType;
 import de.instinct.api.shipyard.dto.admin.component.ComponentUpdateRequest;
 import de.instinct.api.shipyard.dto.ship.ShipBlueprint;
 import de.instinct.api.shipyard.dto.ship.ShipComponent;
@@ -37,8 +39,6 @@ import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponRequiremen
 import de.instinct.api.shipyard.dto.ship.types.ShipCoreType;
 import de.instinct.api.shipyard.dto.ship.types.ShipEngineType;
 import de.instinct.api.shipyard.dto.ship.types.ShipHullType;
-import de.instinct.api.shipyard.dto.ship.types.ShipShieldType;
-import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 
 public class ShipyardUtility {
 	
@@ -162,8 +162,8 @@ public class ShipyardUtility {
 		if (component instanceof ShipCore) ((ShipCore) component).setType(ShipCoreType.valueOf(request.getType()));
 		if (component instanceof ShipEngine) ((ShipEngine) component).setType(ShipEngineType.valueOf(request.getType()));
 		if (component instanceof ShipHull) ((ShipHull) component).setType(ShipHullType.valueOf(request.getType()));
-		if (component instanceof ShipShield) ((ShipShield) component).setType(ShipShieldType.valueOf(request.getType()));
-		if (component instanceof ShipWeapon) ((ShipWeapon) component).setType(ShipWeaponType.valueOf(request.getType()));
+		if (component instanceof ShipShield) ((ShipShield) component).setType(ShieldType.valueOf(request.getType()));
+		if (component instanceof ShipWeapon) ((ShipWeapon) component).setType(WeaponType.valueOf(request.getType()));
 	}
 
 	public static void createShipComponentLevel(ShipComponent component) {

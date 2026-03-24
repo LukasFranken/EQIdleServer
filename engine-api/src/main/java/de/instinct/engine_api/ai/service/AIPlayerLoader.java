@@ -27,11 +27,10 @@ public class AIPlayerLoader {
 		newAiPlayer.ships.add(createAIShip(threatLevel));
 		
 		newAiPlayer.turrets = new ArrayList<>();
-		if (threatLevel >= 100) {
-			newAiPlayer.turrets.add(createAITurret(threatLevel));
-		}
+		newAiPlayer.turrets.add(createAITurret(threatLevel));
 		
 		PlanetData aiPlanetData = new PlanetData();
+		aiPlanetData.turretSlots = 1;
 		aiPlanetData.baseResourceGenerationSpeed = AiStatManager.getPlanetBaseResourceGenerationSpeed(threatLevel);
 		
 		newAiPlayer.planetData = aiPlanetData;
@@ -49,6 +48,7 @@ public class AIPlayerLoader {
 		aiShip.resourceCost = 3;
 		aiShip.model = "hawk";
 		aiShip.coreType = CoreType.FIGHTER;
+		aiShip.transferRate = 0.5f;
 		
 		aiShip.engineType = EngineType.ION;
 		aiShip.speed = AiStatManager.getMovementSpeed(threatLevel);
@@ -77,7 +77,9 @@ public class AIPlayerLoader {
 		aiTurret.platform = aiTurretPlatform;
 		
 		aiTurret.weapons = new ArrayList<>();
-		aiTurret.weapons.add(AiStatManager.getTurretWeapon(threatLevel));
+		if (threatLevel >= 20) {
+			aiTurret.weapons.add(AiStatManager.getTurretWeapon(threatLevel));
+		}
 		
 		aiTurret.shields = new ArrayList<>();
 		aiTurret.shields.add(AiStatManager.getTurretShield(threatLevel));

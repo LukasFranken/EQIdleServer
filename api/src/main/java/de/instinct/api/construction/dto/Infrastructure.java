@@ -9,8 +9,8 @@ import lombok.Data;
 @Data
 public class Infrastructure {
 	
-	private float baseResourceGenerationSpeed;
-	private float baseMaxResourceCapacity;
+	private float basePlanetResourceGenerationSpeed;
+	private int baseTurretSlots;
 	private List<PlanetTurretBlueprint> turretBlueprints;
 
 }

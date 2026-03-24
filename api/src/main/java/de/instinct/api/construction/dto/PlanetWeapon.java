@@ -1,17 +1,19 @@
 package de.instinct.api.construction.dto;
 
 import de.instinct.api.core.annotation.Dto;
-import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
+import de.instinct.api.game.model.WeaponType;
 import lombok.Data;
 
 @Dto
 @Data
 public class PlanetWeapon {
 	
-	private ShipWeaponType type;
+	private WeaponType type;
 	private float damage;
 	private float range;
 	private float speed;
 	private long cooldown;
+	private float radius;
+	//private int ammo;
 
 }

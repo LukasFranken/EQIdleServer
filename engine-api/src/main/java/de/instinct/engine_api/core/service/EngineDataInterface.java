@@ -56,8 +56,8 @@ public class EngineDataInterface {
 	public static Player getPlayer(LoadoutData loadout) {
 		if (!API.construction().isConnected()) API.construction().connect();
 		if (!API.shipyard().isConnected()) API.shipyard().connect();
-		if (infrastructure == null) infrastructure = API.construction().construction();
-		if (shipyardData == null) shipyardData = API.shipyard().shipyard();
+		infrastructure = API.construction().construction();
+		shipyardData = API.shipyard().shipyard();
 		Player newPlayer = new Player();
 		newPlayer.resourceGenerationSpeed = loadout.getCommander().getResourceGenerationSpeed();
 		newPlayer.startResources = loadout.getCommander().getStartResources();
@@ -71,7 +71,8 @@ public class EngineDataInterface {
 	public static PlanetData getPlanetData(PlayerInfrastructure playerInfrastructure, Infrastructure infrastructure) {
 		if (infrastructure != null) {
 			PlanetData planetData = new PlanetData();
-			planetData.baseResourceGenerationSpeed = playerInfrastructure.getResourceGenerationSpeed();
+			planetData.baseResourceGenerationSpeed = playerInfrastructure.getPlanetResourceGenerationSpeed();
+			planetData.turretSlots = playerInfrastructure.getTurretSlots();
 			return planetData;
 		}
 		return null;
@@ -93,8 +94,24 @@ public class EngineDataInterface {
 					turretData.hullStrength = planetTurretBlueprint.getPlanetDefense().getArmor();
 					
 					turretData.weapons = new ArrayList<>();
+					if (planetTurretBlueprint.getPlanetWeapon() != null) {
+						WeaponData weapon = new WeaponData();
+						weapon.type = WeaponType.valueOf(planetTurretBlueprint.getPlanetWeapon().getType().toString());
+						weapon.damage = planetTurretBlueprint.getPlanetWeapon().getDamage();
+						weapon.cooldown = planetTurretBlueprint.getPlanetWeapon().getCooldown();
+						weapon.aoeRadius = planetTurretBlueprint.getPlanetWeapon().getRadius();
+						weapon.range = planetTurretBlueprint.getPlanetWeapon().getRange();
+						weapon.speed = planetTurretBlueprint.getPlanetWeapon().getSpeed();
+						turretData.weapons.add(weapon);
+					}
 					turretData.shields = new ArrayList<>();
-					
+					if (planetTurretBlueprint.getPlanetDefense().getShieldType() != null) {
+						ShieldData shield = new ShieldData();
+						shield.type = ShieldType.valueOf(planetTurretBlueprint.getPlanetDefense().getShieldType().toString());
+						shield.generation = planetTurretBlueprint.getPlanetDefense().getShieldRegenerationSpeed();
+						shield.strength = planetTurretBlueprint.getPlanetDefense().getShield();
+						turretData.shields.add(shield);
+					}
 					turrets.add(turretData);
 				}
 			}
@@ -144,6 +161,9 @@ public class EngineDataInterface {
 	            CoreAttribute coreAttribute = (CoreAttribute) attribute;
 	            if (coreAttribute.getType() == CoreAttributeType.RESOURCE_COST) {
 	                shipData.resourceCost = (float) attribute.getValue();
+	            }
+	            if (coreAttribute.getType() == CoreAttributeType.TRANSFER_RATE) {
+	                shipData.transferRate = (float) attribute.getValue();
 	            }
 	        }
 	    }

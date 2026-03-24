@@ -68,13 +68,13 @@ public class AiStatManager {
 	public static ShieldData getTurretShield(int threatLevel) {
 		ShieldData aiTurretShield = new ShieldData();
 		aiTurretShield.type = ShieldType.PLASMA;
-		aiTurretShield.strength = 5 + 15 * (threatLevel / descaleFactor);
+		aiTurretShield.strength = 3 + 15 * (threatLevel / descaleFactor);
 		aiTurretShield.generation = 0.2f + 0.5f * (threatLevel / descaleFactor);
 		return aiTurretShield;
 	}
 	
 	public static double getTurretHullStrength(int threatLevel) {
-		return 10 + 20 * (threatLevel / descaleFactor);
+		return 5 + 20 * (threatLevel / descaleFactor);
 	}
 
 	public static float getBaseResourceGenerationSpeed(int threatLevel) {

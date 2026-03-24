@@ -13,6 +13,8 @@ import de.instinct.api.control.model.TableCell;
 import de.instinct.api.control.model.TableHeader;
 import de.instinct.api.control.model.TableRow;
 import de.instinct.api.core.API;
+import de.instinct.api.game.model.ShieldType;
+import de.instinct.api.game.model.WeaponType;
 import de.instinct.api.meta.dto.Resource;
 import de.instinct.api.meta.dto.ResourceAmount;
 import de.instinct.api.shipyard.dto.ShipyardData;
@@ -62,8 +64,6 @@ import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponRequiremen
 import de.instinct.api.shipyard.dto.ship.types.ShipCoreType;
 import de.instinct.api.shipyard.dto.ship.types.ShipEngineType;
 import de.instinct.api.shipyard.dto.ship.types.ShipHullType;
-import de.instinct.api.shipyard.dto.ship.types.ShipShieldType;
-import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
 import de.instinct.control.service.shipyard.ShipyardControlService;
 import de.instinct.eqspringutils.StringUtils;
@@ -424,9 +424,9 @@ public class ShipyardServiceImpl implements ShipyardControlService {
 	public List<String> getComponentTypes(String type) {
 		List<String> types = switch (type.toUpperCase()) {
         	case "CORE" -> Arrays.stream(ShipCoreType.values()).map(Enum::name).toList();
-        	case "WEAPON" -> Arrays.stream(ShipWeaponType.values()).map(Enum::name).toList();
+        	case "WEAPON" -> Arrays.stream(WeaponType.values()).map(Enum::name).toList();
         	case "ENGINE" -> Arrays.stream(ShipEngineType.values()).map(Enum::name).toList();
-        	case "SHIELD" -> Arrays.stream(ShipShieldType.values()).map(Enum::name).toList();
+        	case "SHIELD" -> Arrays.stream(ShieldType.values()).map(Enum::name).toList();
         	case "HULL" -> Arrays.stream(ShipHullType.values()).map(Enum::name).toList();
         	default -> List.of(" ");
 		};

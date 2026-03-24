@@ -20,6 +20,7 @@ public class NeutralPlayerLoader {
 	
 	PlanetData neutralPlanetData = new PlanetData();
 	neutralPlayer.planetData = neutralPlanetData;
+	neutralPlayer.planetData.turretSlots = 1;
 	
 	neutralPlayer.turrets = new ArrayList<>();
 	TurretData neutralTurret = new TurretData();

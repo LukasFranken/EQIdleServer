@@ -71,7 +71,7 @@ public class GameStateInitializer {
 		state.staticData.playerData.players = initialization.getPlayers();
 		state.staticData.playerData.connectionStati = generateConnectionStati(initialization.getPlayers());
 		state.staticData.maxPauseMS = initialization.getPauseTimeLimitMS();
-		state.staticData.minPauseMS = 1000L;
+		
 		FleetEngine.initialize(state);
 		return state;
 	}
@@ -90,12 +90,7 @@ public class GameStateInitializer {
 		List<Planet> initialPlanets = new ArrayList<>();
 		for (PlanetInitialization init : initialization.getMap().getPlanets()) {
 			Player planetOwner = EngineUtility.getPlayer(initialization.getPlayers(), init.getOwnerId());
-			Planet initialPlanet = PlanetProcessor.createPlanet(planetOwner.planetData, state);
-			initialPlanet.ownerId = init.getOwnerId();
-			initialPlanet.position = init.getPosition();
-			if (init.isAncient()) {
-				initialPlanet.ancient = true;
-			}
+			Planet initialPlanet = PlanetProcessor.createPlanet(state, planetOwner, init.getPosition(), init.isAncient());
 			initialPlanets.add(initialPlanet);
 		}
 		return initialPlanets;

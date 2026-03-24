@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.game.model.ShieldType;
+import de.instinct.api.game.model.WeaponType;
 import de.instinct.api.matchmaking.dto.PlayerShipResult;
 import de.instinct.api.matchmaking.dto.ShipComponentResult;
 import de.instinct.api.matchmaking.dto.ShipResult;
@@ -72,8 +74,6 @@ import de.instinct.api.shipyard.dto.ship.component.level.WeaponLevel;
 import de.instinct.api.shipyard.dto.ship.types.ShipCoreType;
 import de.instinct.api.shipyard.dto.ship.types.ShipEngineType;
 import de.instinct.api.shipyard.dto.ship.types.ShipHullType;
-import de.instinct.api.shipyard.dto.ship.types.ShipShieldType;
-import de.instinct.api.shipyard.dto.ship.types.ShipWeaponType;
 import de.instinct.api.shipyard.service.impl.ShipyardUtility;
 import de.instinct.api.shipyard.service.model.ShipyardBaseData;
 import de.instinct.base.file.FileManager;
@@ -281,6 +281,7 @@ public class ShipyardServiceImpl implements ShipyardService {
 		EngineAPI.meta().addResources(token, resourceUpdate);
 		
 		ship.setBuilt(true);
+		useShip(token, shiptoken);
 		return ShipBuildResponse.SUCCESS;
 	}
 
@@ -627,11 +628,11 @@ public class ShipyardServiceImpl implements ShipyardService {
 				break;
 			case WEAPON:
 				component = new ShipWeapon();
-				((ShipWeapon)component).setType(ShipWeaponType.valueOf(request.getComponentType()));
+				((ShipWeapon)component).setType(WeaponType.valueOf(request.getComponentType()));
 				break;
 			case SHIELD:
 				component = new ShipShield();
-				((ShipShield)component).setType(ShipShieldType.valueOf(request.getComponentType()));
+				((ShipShield)component).setType(ShieldType.valueOf(request.getComponentType()));
 				break;
 			case ENGINE:
 				component = new ShipEngine();
