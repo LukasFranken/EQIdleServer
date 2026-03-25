@@ -10,6 +10,7 @@ import lombok.Data;
 public class GameMap {
 
 	private float zoomFactor;
+	private float ancientPlanetResourceDegradationFactor;
 	private List<PlanetInitialization> planets;
 
 }

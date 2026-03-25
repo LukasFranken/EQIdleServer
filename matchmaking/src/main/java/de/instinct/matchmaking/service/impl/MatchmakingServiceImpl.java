@@ -16,6 +16,7 @@ import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.dto.GameResult;
+import de.instinct.api.matchmaking.dto.GroupLobbyCreationRequest;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -76,6 +77,22 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 	}
 	
 	@Override
+	public LobbyCreationResponse creategrouplobby(GroupLobbyCreationRequest request) {
+		for (String userUUID : request.getPlayerUUIDs()) {
+			Lobby existingLobby = getPlayerLobby(userUUID);
+			if (existingLobby != null) {
+				leaveLobby(userUUID);
+			}
+		}
+		Lobby lobby = createLobby();
+		lobby.getUserUUIDs().addAll(request.getPlayerUUIDs());
+		lobbies.add(lobby);
+		LobbyCreationResponse response = new LobbyCreationResponse();
+		response.setLobbyUUID(lobby.getLobbyUUID());
+		return response;
+	}
+	
+	@Override
 	public LobbyLeaveResponse leaveLobby(String authToken) {
 		Lobby lobby = getPlayerLobby(authToken);
 		if (lobby == null) return LobbyLeaveResponse.NOT_IN_LOBBY;
@@ -95,7 +112,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		Lobby lobby = getLobby(lobbyUUID);
 		if (lobby == null) return LobbyTypeSetResponse.LOBBY_DOESNT_EXIST;
 		if (selectedGameType.getGameMode() == GameMode.CONQUEST) {
-			SectorData sectorData = API.starmap().sector();
+			SectorData sectorData = API.starmap().sector(selectedGameType.getFactionMode());
 			for (GalaxyData galaxy : sectorData.getGalaxies()) {
 				for (StarsystemData system : galaxy.getStarsystems()) {
 					if (galaxy.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[0]) && system.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[1])) {
@@ -362,7 +379,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				if (lobby.getType().getGameMode() == GameMode.CONQUEST) {
 					int galaxyId = Integer.parseInt(lobby.getType().getMap().split("_")[0]);
 					int systemId = Integer.parseInt(lobby.getType().getMap().split("_")[1]);
-					SectorData sectorData = API.starmap().sector();
+					SectorData sectorData = API.starmap().sector(lobby.getType().getFactionMode());
 					StarsystemData currentSystem = null;
 					for (GalaxyData galaxy : sectorData.getGalaxies()) {
 						if (galaxy.getId() == galaxyId) {

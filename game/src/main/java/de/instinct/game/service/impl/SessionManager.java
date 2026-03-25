@@ -16,6 +16,7 @@ import de.instinct.api.game.dto.PreviewPlanet;
 import de.instinct.api.game.dto.UserTeamData;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
+import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.engine.ai.AiEngine;
 import de.instinct.engine.model.AiPlayer;
@@ -387,8 +388,8 @@ public class SessionManager {
 		}
 	}
 
-	public static MapPreview preview(String map) {
-		GameMap gameMap = gameDataLoader.preview(map);
+	public static MapPreview preview(FactionMode mode, String map) {
+		GameMap gameMap = gameDataLoader.preview(mode, map);
 		MapPreview mapPreview = new MapPreview();
 		mapPreview.setPlanets(new ArrayList<>());
 		if (gameMap == null) return mapPreview;

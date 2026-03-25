@@ -7,6 +7,7 @@ import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
+import de.instinct.api.matchmaking.dto.GroupLobbyCreationRequest;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -38,6 +39,17 @@ public class Matchmaking extends BaseService implements MatchmakingInterface {
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.POST)
 				.endpoint("create")
+				.build());
+		return ObjectJSONMapper.mapJSON(response, LobbyCreationResponse.class);
+	}
+	
+	@Override
+	public LobbyCreationResponse creategrouplobby(GroupLobbyCreationRequest request) {
+		if (!isConnected()) return null;
+		String response = super.sendRequest(RESTRequest.builder()
+				.type(SupportedRequestType.POST)
+				.endpoint("creategrouplobby")
+				.payload(request)
 				.build());
 		return ObjectJSONMapper.mapJSON(response, LobbyCreationResponse.class);
 	}

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.MapPreview;
+import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.game.config.ApplicationConfig;
@@ -63,9 +64,9 @@ public class GameController extends BaseServiceController {
 		return ResponseEntity.ok(service.createSession(request));
 	}
 	
-	@GetMapping("/preview/{map}")
-	public ResponseEntity<MapPreview> preview(@PathVariable("map") String map) {
-		return ResponseEntity.ok(service.preview(map));
+	@GetMapping("/preview/{map}/{mode}")
+	public ResponseEntity<MapPreview> preview(@PathVariable("map") String map, @PathVariable("mode") FactionMode mode) {
+		return ResponseEntity.ok(service.preview(mode, map));
 	}
 
 }

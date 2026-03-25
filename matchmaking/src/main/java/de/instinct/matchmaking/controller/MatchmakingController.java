@@ -15,6 +15,7 @@ import de.instinct.api.core.API;
 import de.instinct.api.core.model.GeneralRequestResponse;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
+import de.instinct.api.matchmaking.dto.GroupLobbyCreationRequest;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -51,6 +52,11 @@ public class MatchmakingController extends BaseServiceController {
 	@PostMapping("/create")
 	public ResponseEntity<LobbyCreationResponse> create(@RequestHeader("token") String authToken) {
 		return ResponseEntity.ok(matchmakingService.createLobby(authToken));
+	}
+	
+	@PostMapping("/creategrouplobby")
+	public ResponseEntity<LobbyCreationResponse> creategrouplobby(@RequestBody GroupLobbyCreationRequest request) {
+		return ResponseEntity.ok(matchmakingService.creategrouplobby(request));
 	}
 	
 	@PostMapping("/leave")

@@ -63,7 +63,7 @@ public class GameStateInitializer {
 		state.pauseData.teamPausesCount.put(2, initialization.getPauseCountLimit());
 		
 		state.staticData = new StaticData();
-		state.staticData.ancientPlanetResourceDegradationFactor = initialization.getAncientPlanetResourceDegradationFactor();
+		state.staticData.ancientPlanetResourceDegradationFactor = initialization.getMap().getAncientPlanetResourceDegradationFactor();
 		state.staticData.zoomFactor = initialization.getMap().getZoomFactor();
 		state.staticData.maxGameTimeMS = initialization.getGameTimeLimitMS();
 		state.staticData.atpToWin = initialization.getAtpToWin();

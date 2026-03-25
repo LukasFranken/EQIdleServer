@@ -1,20 +1,26 @@
 package de.instinct.api.starmap.service;
 
-import de.instinct.api.core.service.BaseServiceInterface;
+import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.CompletionResponse;
 import de.instinct.api.starmap.dto.PlayerStarmapData;
 import de.instinct.api.starmap.dto.SectorData;
 import de.instinct.api.starmap.dto.StarmapInitializationResponseCode;
+import de.instinct.api.starmap.dto.StartConquestRequest;
+import de.instinct.api.starmap.dto.StartConquestResponse;
 
-public interface StarmapInterface extends BaseServiceInterface {
+public interface StarmapInterface {
 	
 	StarmapInitializationResponseCode init(String token);
 	
-	PlayerStarmapData data();
+	String load();
+
+	PlayerStarmapData data(String token);
 	
-	SectorData sector();
-	
+	SectorData sector(FactionMode mode);
+
 	CompletionResponse complete(CompletionRequest request);
+
+	StartConquestResponse start(StartConquestRequest request);
 
 }

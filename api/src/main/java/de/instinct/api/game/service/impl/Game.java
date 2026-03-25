@@ -7,6 +7,7 @@ import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.MapPreview;
 import de.instinct.api.game.service.GameInterface;
+import de.instinct.api.matchmaking.model.FactionMode;
 
 public class Game extends BaseService implements GameInterface {
 
@@ -49,12 +50,12 @@ public class Game extends BaseService implements GameInterface {
 	}
 	
 	@Override
-	public MapPreview preview(String map) {
+	public MapPreview preview(FactionMode mode, String map) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
 				.type(SupportedRequestType.GET)
 				.endpoint("preview")
-				.pathVariable(map)
+				.pathVariable(map + "/" + mode.toString())
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, MapPreview.class);
 	}

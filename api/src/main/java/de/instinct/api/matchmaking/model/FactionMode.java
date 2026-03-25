@@ -11,5 +11,18 @@ public enum FactionMode {
 	private FactionMode(int teamPlayerCount) {
 		this.teamPlayerCount = teamPlayerCount;
 	}
+	
+	public int getTeamPlayerCount() {
+		return teamPlayerCount;
+	}
+	
+	public static FactionMode fromTeamPlayerCount(int teamPlayerCount) {
+		for (FactionMode mode : values()) {
+			if (mode.teamPlayerCount == teamPlayerCount) {
+				return mode;
+			}
+		}
+		throw new IllegalArgumentException("Invalid player count for faction mode: " + teamPlayerCount);
+	}
 
 }

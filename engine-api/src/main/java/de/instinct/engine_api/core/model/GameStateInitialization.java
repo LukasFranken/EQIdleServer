@@ -13,7 +13,6 @@ public class GameStateInitialization {
 	private String gameUUID;
 	private GameMap map;
 	private List<Player> players;
-	private float ancientPlanetResourceDegradationFactor;
 	private int gameTimeLimitMS;
 	private int atpToWin;
 	private long pauseTimeLimitMS;

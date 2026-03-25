@@ -22,7 +22,6 @@ import de.instinct.api.shop.service.ShopInterface;
 import de.instinct.api.shop.service.impl.Shop;
 import de.instinct.api.social.service.SocialInterface;
 import de.instinct.api.social.service.impl.Social;
-import de.instinct.api.starmap.service.StarmapInterface;
 import de.instinct.api.starmap.service.impl.Starmap;
 
 public class API {
@@ -125,7 +124,7 @@ public class API {
 		return shop;
 	}
 	
-	public static StarmapInterface starmap() {
+	public static Starmap starmap() {
 		if (!apiReady()) return null;
 		return starmap;
 	}

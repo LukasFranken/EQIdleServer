@@ -1,15 +1,14 @@
 package de.instinct.api.starmap.dto;
 
 import de.instinct.api.core.annotation.Dto;
-import de.instinct.api.matchmaking.model.FactionMode;
 import lombok.Data;
 
 @Dto
 @Data
-public class CompletionRequest {
+public class StartConquestRequest {
 	
-	private String userUUID;
-	private FactionMode mode;
+	private String groupToken;
+	private String userToken;
 	private int galaxyId;
 	private int systemId;
 

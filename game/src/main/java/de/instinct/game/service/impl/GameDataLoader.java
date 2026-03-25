@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.model.AiPlayer;
@@ -33,7 +34,6 @@ public class GameDataLoader {
 		GameStateInitialization initialGameState = loadInitialMap(session);
 		initialGameState.setGameUUID(session.getUuid());
 		initialGameState.setPlayers(loadPlayers(session));
-		initialGameState.setAncientPlanetResourceDegradationFactor(0.5f);;
 		initialGameState.setGameTimeLimitMS((int)session.getGameType().getDuration());
 		initialGameState.setAtpToWin(session.getGameType().getApRequired());
 		initialGameState.setPauseTimeLimitMS(20_000);
@@ -52,8 +52,8 @@ public class GameDataLoader {
 		return initialGameState;
 	}
 	
-	public GameMap preview(String map) {
-		String mapFile = FileManager.loadFile(MAP_FILE_SUBFOLDER + "/conquest/one_vs_one/" + map + MAP_FILE_POSTFIX);
+	public GameMap preview(FactionMode mode, String map) {
+		String mapFile = FileManager.loadFile(MAP_FILE_SUBFOLDER + "/conquest/" + mode.toString().toLowerCase() + "/" + map + MAP_FILE_POSTFIX);
 		if (mapFile == null || mapFile.isEmpty()) return null;
 		return ObjectJSONMapper.mapJSON(mapFile, GameMap.class);
 	}

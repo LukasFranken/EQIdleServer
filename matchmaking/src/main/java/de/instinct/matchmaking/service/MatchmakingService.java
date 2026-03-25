@@ -2,6 +2,7 @@ package de.instinct.matchmaking.service;
 
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
+import de.instinct.api.matchmaking.dto.GroupLobbyCreationRequest;
 import de.instinct.api.matchmaking.dto.InviteResponse;
 import de.instinct.api.matchmaking.dto.InvitesStatusResponse;
 import de.instinct.api.matchmaking.dto.LobbyCreationResponse;
@@ -17,6 +18,8 @@ import de.instinct.api.matchmaking.model.GameType;
 public interface MatchmakingService {
 
 	LobbyCreationResponse createLobby(String authToken);
+	
+	LobbyCreationResponse creategrouplobby(GroupLobbyCreationRequest request);
 	
 	LobbyLeaveResponse leaveLobby(String authToken);
 	
