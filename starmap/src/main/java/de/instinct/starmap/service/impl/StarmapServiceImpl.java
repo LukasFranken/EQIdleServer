@@ -2,6 +2,7 @@ package de.instinct.starmap.service.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import de.instinct.api.starmap.dto.CompletionResponse;
 import de.instinct.api.starmap.dto.GalaxyData;
 import de.instinct.api.starmap.dto.PlayerStarmapData;
 import de.instinct.api.starmap.dto.SectorData;
+import de.instinct.api.starmap.dto.SectorDataRequest;
 import de.instinct.api.starmap.dto.StarmapInitializationResponseCode;
 import de.instinct.api.starmap.dto.StarsystemData;
 import de.instinct.api.starmap.dto.StartConquestRequest;
@@ -77,9 +79,102 @@ public class StarmapServiceImpl implements StarmapInterface {
 	}
 	
 	@Override
-	public SectorData sector(FactionMode mode) {
+	public SectorData sector(SectorDataRequest request) {
 		if (baseSectorData == null) load();
-		return baseSectorData.get(mode);
+		switch (request.getType()) {
+		case FULL:
+			if (request.getMode() != null) return baseSectorData.get(request.getMode());
+			break;
+		case GROUP:
+			if (request.getGroupToken() != null) {
+				Group group = API.social().getGroup(request.getGroupToken());
+				if (group != null) {
+					List<String> playerUUIDs = new ArrayList<>();
+					for (String memberName : group.getMembers()) {
+						playerUUIDs.add(API.meta().token(memberName));
+					}
+					return calculateSectorData(playerUUIDs);
+				}
+			}
+			break;
+		case SOLO:
+			if (request.getToken() != null) return calculateSectorData(List.of(request.getToken()));
+			break;
+		}
+		return null;
+	}
+
+	private SectorData calculateSectorData(List<String> playerUUIDs) {
+		int globallyFurthestGalaxyId = 0;
+		int globallyFurthestSystemId = -1;
+		for (String playerUUID : playerUUIDs) {
+			PlayerStarmapData starmapData = starmaps.get(playerUUID);
+			if (starmapData != null) {
+				List<SystemCompletionData> systemCompletionData = starmapData.getCompletedSystems().get(FactionMode.fromTeamPlayerCount(playerUUIDs.size()));
+				if (systemCompletionData != null) {
+					if (systemCompletionData.size() == 0) {
+						globallyFurthestGalaxyId = 0;
+						globallyFurthestSystemId = -1;
+						break;
+					}
+					SystemCompletionData lastSystemCompletionData = systemCompletionData.get(systemCompletionData.size() - 1);
+					if (globallyFurthestSystemId == -1) {
+						globallyFurthestGalaxyId = lastSystemCompletionData.getGalaxyId();
+						globallyFurthestSystemId = lastSystemCompletionData.getSystemId();
+						continue;
+					}
+					if (lastSystemCompletionData.getGalaxyId() < globallyFurthestGalaxyId) {
+						globallyFurthestGalaxyId = lastSystemCompletionData.getGalaxyId();
+						globallyFurthestSystemId = lastSystemCompletionData.getSystemId();
+					}
+					if (lastSystemCompletionData.getGalaxyId() == globallyFurthestGalaxyId && lastSystemCompletionData.getSystemId() < globallyFurthestSystemId) {
+						globallyFurthestSystemId = lastSystemCompletionData.getSystemId();
+					}
+				}
+			}
+		}
+		
+		SectorData sectorData = new SectorData();
+		sectorData.setGalaxies(new ArrayList<>());
+		boolean wonLastInGalaxy = true;
+		for (GalaxyData galaxyData : baseSectorData.get(FactionMode.fromTeamPlayerCount(playerUUIDs.size())).getGalaxies()) {
+			if (galaxyData.getId() < globallyFurthestGalaxyId) {
+				sectorData.getGalaxies().add(galaxyData);
+				continue;
+			}
+			if (galaxyData.getId() == globallyFurthestGalaxyId) {
+				GalaxyData newGalaxyData = new GalaxyData();
+				newGalaxyData.setId(galaxyData.getId());
+				newGalaxyData.setName(galaxyData.getName());
+				newGalaxyData.setMapPosX(galaxyData.getMapPosX());
+				newGalaxyData.setMapPosY(galaxyData.getMapPosY());
+				newGalaxyData.setStarsystems(new ArrayList<>());
+				for (StarsystemData systemData : galaxyData.getStarsystems()) {
+					if (systemData.getId() <= globallyFurthestSystemId) {
+						newGalaxyData.getStarsystems().add(systemData);
+					} else {
+						if (systemData.getId() <= globallyFurthestSystemId + 1) {
+							newGalaxyData.getStarsystems().add(systemData);
+						}
+						wonLastInGalaxy = false;
+						break;
+					}
+				}
+				sectorData.getGalaxies().add(newGalaxyData);
+			}
+			if (galaxyData.getId() > globallyFurthestGalaxyId && wonLastInGalaxy) {
+				GalaxyData newGalaxyData = new GalaxyData();
+				newGalaxyData.setId(galaxyData.getId());
+				newGalaxyData.setName(galaxyData.getName());
+				newGalaxyData.setMapPosX(galaxyData.getMapPosX());
+				newGalaxyData.setMapPosY(galaxyData.getMapPosY());
+				newGalaxyData.setStarsystems(new ArrayList<>());
+				newGalaxyData.getStarsystems().add(galaxyData.getStarsystems().get(0));
+				sectorData.getGalaxies().add(newGalaxyData);
+				wonLastInGalaxy = false;
+			}
+		}
+		return sectorData;
 	}
 
 	@Override

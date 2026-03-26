@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.instinct.api.core.API;
-import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.CompletionResponse;
 import de.instinct.api.starmap.dto.PlayerStarmapData;
 import de.instinct.api.starmap.dto.SectorData;
+import de.instinct.api.starmap.dto.SectorDataRequest;
 import de.instinct.api.starmap.dto.StarmapInitializationResponseCode;
 import de.instinct.api.starmap.dto.StartConquestRequest;
 import de.instinct.api.starmap.dto.StartConquestResponse;
@@ -56,9 +56,9 @@ public class StarmapController extends BaseServiceController {
 		return ResponseEntity.ok(service.data(token));
 	}
 	
-	@GetMapping("/sector/{mode}")
-	public ResponseEntity<SectorData> sector(@PathVariable FactionMode mode) {
-		return ResponseEntity.ok(service.sector(mode));
+	@PostMapping("/sector")
+	public ResponseEntity<SectorData> sector(@RequestBody SectorDataRequest request) {
+		return ResponseEntity.ok(service.sector(request));
 	}
 	
 	@PostMapping("/start")

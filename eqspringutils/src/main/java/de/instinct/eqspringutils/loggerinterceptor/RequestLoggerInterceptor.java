@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import ch.qos.logback.classic.Logger;
+import de.instinct.eqspringutils.StringUtils;
 import de.instinct.eqspringutils.loggerinterceptor.wrapper.CachedBodyHttpServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,13 +25,9 @@ public class RequestLoggerInterceptor implements HandlerInterceptor {
 		String requestLog = "[preHandle][" + cachedRequest.getMethod() + "]" + cachedRequest.getRequestURI()
 							+ getParameters(cachedRequest) + " - Body: " + IOUtils.toString(cachedRequest.getReader());
 		if (!cachedRequest.getRequestURI().contains("save")) {
-			LOGGER.info(limitWithAppendix(requestLog));
+			LOGGER.info(StringUtils.limitWithAppendix(requestLog, MESSAGE_MAX_LENGTH));
 		}
 		return true;
-	}
-	
-	private String limitWithAppendix(String message) {
-		return message.length() > MESSAGE_MAX_LENGTH ? message.substring(0, MESSAGE_MAX_LENGTH) + "... (cut string length: " + (message.length() - MESSAGE_MAX_LENGTH) + ")" : message;
 	}
 
 	private String getParameters(final HttpServletRequest request) {

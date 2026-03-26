@@ -5,11 +5,11 @@ import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
-import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.CompletionResponse;
 import de.instinct.api.starmap.dto.PlayerStarmapData;
 import de.instinct.api.starmap.dto.SectorData;
+import de.instinct.api.starmap.dto.SectorDataRequest;
 import de.instinct.api.starmap.dto.StarmapInitializationResponseCode;
 import de.instinct.api.starmap.dto.StartConquestRequest;
 import de.instinct.api.starmap.dto.StartConquestResponse;
@@ -60,12 +60,12 @@ public class Starmap extends BaseService implements StarmapInterface, BaseServic
 	}
 
 	@Override
-	public SectorData sector(FactionMode mode) {
+	public SectorData sector(SectorDataRequest request) {
 		if (!isConnected()) return null;
 		String response = super.sendRequest(RESTRequest.builder()
-				.type(SupportedRequestType.GET)
+				.type(SupportedRequestType.POST)
 				.endpoint("sector")
-				.pathVariable(mode.toString())
+				.payload(request)
 				.build());
 		return response.contentEquals("") ? null : ObjectJSONMapper.mapJSON(response, SectorData.class);
 	}

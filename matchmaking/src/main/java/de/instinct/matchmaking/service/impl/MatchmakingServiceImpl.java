@@ -41,6 +41,8 @@ import de.instinct.api.meta.dto.ResourceData;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.GalaxyData;
 import de.instinct.api.starmap.dto.SectorData;
+import de.instinct.api.starmap.dto.SectorDataRequest;
+import de.instinct.api.starmap.dto.SectorDataRequestType;
 import de.instinct.api.starmap.dto.StarsystemData;
 import de.instinct.matchmaking.service.MatchmakingMapper;
 import de.instinct.matchmaking.service.MatchmakingService;
@@ -112,7 +114,10 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 		Lobby lobby = getLobby(lobbyUUID);
 		if (lobby == null) return LobbyTypeSetResponse.LOBBY_DOESNT_EXIST;
 		if (selectedGameType.getGameMode() == GameMode.CONQUEST) {
-			SectorData sectorData = API.starmap().sector(selectedGameType.getFactionMode());
+			SectorDataRequest sectorDataRequest = new SectorDataRequest();
+			sectorDataRequest.setType(SectorDataRequestType.FULL);
+			sectorDataRequest.setMode(selectedGameType.getFactionMode());
+			SectorData sectorData = API.starmap().sector(sectorDataRequest);
 			for (GalaxyData galaxy : sectorData.getGalaxies()) {
 				for (StarsystemData system : galaxy.getStarsystems()) {
 					if (galaxy.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[0]) && system.getId() == Integer.parseInt(selectedGameType.getMap().split("_")[1])) {
@@ -379,7 +384,10 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				if (lobby.getType().getGameMode() == GameMode.CONQUEST) {
 					int galaxyId = Integer.parseInt(lobby.getType().getMap().split("_")[0]);
 					int systemId = Integer.parseInt(lobby.getType().getMap().split("_")[1]);
-					SectorData sectorData = API.starmap().sector(lobby.getType().getFactionMode());
+					SectorDataRequest sectorDataRequest = new SectorDataRequest();
+					sectorDataRequest.setType(SectorDataRequestType.FULL);
+					sectorDataRequest.setMode(lobby.getType().getFactionMode());
+					SectorData sectorData = API.starmap().sector(sectorDataRequest);
 					StarsystemData currentSystem = null;
 					for (GalaxyData galaxy : sectorData.getGalaxies()) {
 						if (galaxy.getId() == galaxyId) {
@@ -393,6 +401,7 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 					if (currentSystem == null) break;
 					for (String userUUID : lobby.getUserUUIDs()) {
 						CompletionRequest completionRequest = new CompletionRequest();
+						completionRequest.setMode(lobby.getType().getFactionMode());
 						completionRequest.setUserUUID(userUUID);
 						completionRequest.setGalaxyId(galaxyId);
 						completionRequest.setSystemId(systemId);
@@ -412,11 +421,11 @@ public class MatchmakingServiceImpl implements MatchmakingService {
 				}
 			}
 		}
-		System.out.println("finalized game: " + gameSessionToken);
 		GameResult postGameResult = new GameResult();
 		postGameResult.setPlayedMS(finishGameData.getPlayedMS());
 		postGameResult.setRewards(rewards);
 		postGameResults.put(gameSessionToken, postGameResult);
+		System.out.println("finalized game: " + gameSessionToken + " - result: " + postGameResult);
 	}
 	
 	private PlayerReward processConquestReward(CompletionRequest completionRequest, StarsystemData currentSystem, FinishGameData finishGameData) {

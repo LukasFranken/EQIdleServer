@@ -1,10 +1,10 @@
 package de.instinct.api.starmap.service;
 
-import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.starmap.dto.CompletionRequest;
 import de.instinct.api.starmap.dto.CompletionResponse;
 import de.instinct.api.starmap.dto.PlayerStarmapData;
 import de.instinct.api.starmap.dto.SectorData;
+import de.instinct.api.starmap.dto.SectorDataRequest;
 import de.instinct.api.starmap.dto.StarmapInitializationResponseCode;
 import de.instinct.api.starmap.dto.StartConquestRequest;
 import de.instinct.api.starmap.dto.StartConquestResponse;
@@ -17,7 +17,7 @@ public interface StarmapInterface {
 
 	PlayerStarmapData data(String token);
 	
-	SectorData sector(FactionMode mode);
+	SectorData sector(SectorDataRequest request);
 
 	CompletionResponse complete(CompletionRequest request);
 
