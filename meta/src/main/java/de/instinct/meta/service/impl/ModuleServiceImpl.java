@@ -29,13 +29,11 @@ public class ModuleServiceImpl implements ModuleService {
 		unlockRanks = new LinkedHashMap<>();
 		unlockRanks.put(MenuModule.STARMAP, PlayerRank.RECRUIT1);
 		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.RECRUIT1);
-		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT2);
+		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT1);
 		unlockRanks.put(MenuModule.PROFILE, PlayerRank.PRIVATE1);
 		unlockRanks.put(MenuModule.SOCIAL, PlayerRank.PRIVATE2);
 		unlockRanks.put(MenuModule.SHOP, PlayerRank.PRIVATE3);
-		//unlockRanks.put(MenuModule.PLANET, PlayerRank.SPECIALIST1);
-		unlockRanks.put(MenuModule.PLAY, PlayerRank.CORPORAL1);
-		//unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.CORPORAL3);
+		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.SPECIALIST1);
 		//unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
 	}
 	

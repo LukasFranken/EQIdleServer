@@ -7,7 +7,6 @@ public enum MenuModule {
 	PROFILE,
 	SHIPYARD,
 	SHOP,
-	PLANET,
 	SOCIAL,
 	PLAY,
 	CONSTRUCTION,

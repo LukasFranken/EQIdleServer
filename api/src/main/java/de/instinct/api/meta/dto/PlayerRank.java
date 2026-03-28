@@ -117,4 +117,12 @@ public enum PlayerRank {
 		return values[ordinal];
 	}
 	
+	public boolean isHigherThan(PlayerRank other) {
+		return this.ordinal() > other.ordinal();
+	}
+	
+	public boolean isLowerThan(PlayerRank other) {
+		return this.ordinal() < other.ordinal();
+	}
+	
 }
