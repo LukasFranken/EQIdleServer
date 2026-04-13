@@ -1,8 +1,8 @@
 package de.instinct.engine_api.ai.service;
 
-import de.instinct.engine.ai.difficulty.AiBehaviorParameters;
-import de.instinct.engine.ai.difficulty.AiDifficulty;
-import de.instinct.engine.model.AiPlayer;
+import de.instinct.engine.fleet.ai.configuration.AiBehaviorParameters;
+import de.instinct.engine.fleet.ai.configuration.AiDifficulty;
+import de.instinct.engine.fleet.ai.data.AiPlayer;
 
 public class DifficultyBehaviorLoader {
 

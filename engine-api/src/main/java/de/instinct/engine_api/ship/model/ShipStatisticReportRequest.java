@@ -3,7 +3,7 @@ package de.instinct.engine_api.ship.model;
 import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
-import de.instinct.engine.stats.model.unit.ShipStatistic;
+import de.instinct.engine.fleet.stats.model.unit.ShipStatistic;
 import lombok.Data;
 
 @Dto

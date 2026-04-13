@@ -1,9 +1,9 @@
 package de.instinct.engine_api.ai.model;
 
-import de.instinct.engine.model.ship.components.ShieldData;
-import de.instinct.engine.model.ship.components.WeaponData;
-import de.instinct.engine.model.ship.components.types.ShieldType;
-import de.instinct.engine.model.ship.components.types.WeaponType;
+import de.instinct.engine.fleet.entity.unit.component.data.ShieldData;
+import de.instinct.engine.fleet.entity.unit.component.data.WeaponData;
+import de.instinct.engine.fleet.entity.unit.component.data.types.ShieldType;
+import de.instinct.engine.fleet.entity.unit.component.data.types.WeaponType;
 
 public class AiStatManager {
 	

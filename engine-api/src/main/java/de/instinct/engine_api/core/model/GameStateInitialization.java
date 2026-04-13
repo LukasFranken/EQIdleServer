@@ -3,7 +3,7 @@ package de.instinct.engine_api.core.model;
 import java.util.List;
 
 import de.instinct.api.core.annotation.Dto;
-import de.instinct.engine.model.Player;
+import de.instinct.engine.core.player.Player;
 import lombok.Data;
 
 @Dto

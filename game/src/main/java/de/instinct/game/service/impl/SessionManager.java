@@ -18,33 +18,33 @@ import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.matchmaking.model.VersusMode;
-import de.instinct.engine.ai.AiEngine;
-import de.instinct.engine.model.AiPlayer;
-import de.instinct.engine.model.GameState;
-import de.instinct.engine.model.Player;
-import de.instinct.engine.model.PlayerConnectionStatus;
-import de.instinct.engine.net.message.types.BuildTurretMessage;
-import de.instinct.engine.net.message.types.FleetMovementMessage;
-import de.instinct.engine.net.message.types.GameFinishUpdate;
-import de.instinct.engine.net.message.types.GameOrderUpdate;
-import de.instinct.engine.net.message.types.GamePauseMessage;
-import de.instinct.engine.net.message.types.GameStartUpdate;
-import de.instinct.engine.net.message.types.JoinMessage;
-import de.instinct.engine.net.message.types.LoadedMessage;
-import de.instinct.engine.net.message.types.PlayerAssigned;
-import de.instinct.engine.net.message.types.SurrenderMessage;
-import de.instinct.engine.order.GameOrder;
-import de.instinct.engine.order.types.BuildTurretOrder;
-import de.instinct.engine.order.types.GamePauseOrder;
-import de.instinct.engine.order.types.ShipMovementOrder;
-import de.instinct.engine.order.types.SurrenderOrder;
-import de.instinct.engine.stats.model.GameStatistic;
-import de.instinct.engine.stats.model.PlayerStatistic;
-import de.instinct.engine.util.EngineUtility;
+import de.instinct.engine.core.order.GameOrder;
+import de.instinct.engine.core.order.types.GamePauseOrder;
+import de.instinct.engine.core.player.Player;
+import de.instinct.engine.fleet.ai.AiEngine;
+import de.instinct.engine.fleet.ai.data.AiPlayer;
+import de.instinct.engine.fleet.data.FleetGameState;
+import de.instinct.engine.fleet.net.data.PlayerConnectionStatus;
+import de.instinct.engine.fleet.net.messages.BuildTurretMessage;
+import de.instinct.engine.fleet.net.messages.FleetMovementMessage;
+import de.instinct.engine.fleet.net.messages.GameFinishUpdate;
+import de.instinct.engine.fleet.net.messages.GameOrderUpdate;
+import de.instinct.engine.fleet.net.messages.GamePauseMessage;
+import de.instinct.engine.fleet.net.messages.GameStartUpdate;
+import de.instinct.engine.fleet.net.messages.JoinMessage;
+import de.instinct.engine.fleet.net.messages.LoadedMessage;
+import de.instinct.engine.fleet.net.messages.PlayerAssigned;
+import de.instinct.engine.fleet.net.messages.SurrenderMessage;
+import de.instinct.engine.fleet.order.types.BuildTurretOrder;
+import de.instinct.engine.fleet.order.types.ShipMovementOrder;
+import de.instinct.engine.fleet.order.types.SurrenderOrder;
+import de.instinct.engine.fleet.stats.model.GameStatistic;
+import de.instinct.engine.fleet.stats.model.PlayerStatistic;
 import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.engine_api.core.model.GameMap;
 import de.instinct.engine_api.core.model.GameStateInitialization;
 import de.instinct.engine_api.core.model.PlanetInitialization;
+import de.instinct.engine_api.core.service.EngineDataInterface;
 import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
@@ -96,7 +96,7 @@ public class SessionManager {
 	
 	private static void updateAi(GameSession session) {
 		if (session.getGameType().getVersusMode() == VersusMode.AI) {
-			for (Player player : session.getGameState().staticData.playerData.players) {
+			for (Player player : session.getGameState().playerData.players) {
 				if (player instanceof AiPlayer) {
 					List<GameOrder> aiOrders = aiEngine.act((AiPlayer)player, session.getGameState());
 					engineInterface.queueAll(session.getGameState(), aiOrders);
@@ -277,11 +277,11 @@ public class SessionManager {
 		EngineAPI.matchmaking().callback(session.getUuid(), CallbackCode.READY);
 	}
 
-	private static void readyUpAI(GameState state) {
-		for (Player player : state.staticData.playerData.players) {
+	private static void readyUpAI(FleetGameState state) {
+		for (Player player : state.playerData.players) {
 			if (player instanceof AiPlayer) {
 				AiPlayer aiPlayer = (AiPlayer) player;
-				for (PlayerConnectionStatus status : state.staticData.playerData.connectionStati) {
+				for (PlayerConnectionStatus status : state.playerData.connectionStati) {
 					if (status.playerId == aiPlayer.id) {
 						status.connected = true;
 						status.loaded = true;
@@ -310,7 +310,7 @@ public class SessionManager {
 			for (User user : session.getUsers()) {
 				if (user.getUuid().contentEquals(joinMessage.playerUUID)) {
 					user.setConnection(connection);
-					EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId()).connected = true;
+					EngineDataInterface.getPlayerConnectionStatus(session.getGameState().playerData.connectionStati, user.getPlayerId()).connected = true;
 					PlayerAssigned playerAssigned = new PlayerAssigned();
 					playerAssigned.playerId = user.getPlayerId();
 					user.getConnection().sendTCP("test");
@@ -351,7 +351,7 @@ public class SessionManager {
 		for (GameSession session : activeSessions) {
 			for (User user : session.getUsers()) {
 				if (user.getUuid().contentEquals(loadedMessage.playerUUID)) {
-					EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId()).loaded = true;
+					EngineDataInterface.getPlayerConnectionStatus(session.getGameState().playerData.connectionStati, user.getPlayerId()).loaded = true;
 					System.out.println("game loaded: id " + user.getPlayerId() + " - " + user.getName());
 					checkGameStart(session);
 					return;
@@ -363,8 +363,8 @@ public class SessionManager {
 	private static void checkGameStart(GameSession session) {
 		boolean canStart = true;
 		for (User user : session.getUsers()) {
-			Player player = EngineUtility.getPlayer(session.getGameState().staticData.playerData.players, user.getPlayerId());
-			PlayerConnectionStatus status = EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId());
+			Player player = EngineDataInterface.getPlayer(session.getGameState().playerData.players, user.getPlayerId());
+			PlayerConnectionStatus status = EngineDataInterface.getPlayerConnectionStatus(session.getGameState().playerData.connectionStati, user.getPlayerId());
 			if (!status.loaded && player.teamId != 0) canStart = false;
 		}
 		if (canStart) {
@@ -377,7 +377,7 @@ public class SessionManager {
 		for (GameSession session : inCreationSessions) {
 			for (User user : session.getUsers()) {
 				if (user.getConnection() == c) {
-					EngineUtility.getPlayerConnectionStatus(session.getGameState().staticData.playerData.connectionStati, user.getPlayerId()).connected = false;
+					EngineDataInterface.getPlayerConnectionStatus(session.getGameState().playerData.connectionStati, user.getPlayerId()).connected = false;
 					System.out.println("disconnected: id " + user.getPlayerId() + " - " + user.getName());
 					//updateClients(session);
 					//update disconnect message to all clients

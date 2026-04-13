@@ -10,7 +10,7 @@ import com.esotericsoftware.kryonet.Server;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.MapPreview;
 import de.instinct.api.matchmaking.model.FactionMode;
-import de.instinct.engine.net.KryoRegistrator;
+import de.instinct.engine.fleet.net.FleetKryoRegistrator;
 import de.instinct.game.config.GameserverConfig;
 import de.instinct.game.service.GameserverManagerService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,7 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 	
 	private Server server;
 	private ServerConnectionListener connectionListener;
+	private FleetKryoRegistrator kryoRegistrator;
 	
 	private final GameserverConfig gameserverConfig;
 
@@ -30,7 +31,8 @@ public class GameserverManagerServiceImpl implements GameserverManagerService {
 		connectionListener = new ServerConnectionListener();
 		server = new Server(65536, 65536);
 		Kryo kryo = server.getKryo();
-        KryoRegistrator.registerAll(kryo);
+		kryoRegistrator = new FleetKryoRegistrator();
+		kryoRegistrator.registerClasses(kryo);
 		server.addListener(connectionListener);
 		server.start();
 		try {

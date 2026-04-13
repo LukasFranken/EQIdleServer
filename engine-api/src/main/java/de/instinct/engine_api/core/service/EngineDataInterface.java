@@ -3,6 +3,8 @@ package de.instinct.engine_api.core.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
+
 import de.instinct.api.construction.dto.Infrastructure;
 import de.instinct.api.construction.dto.PlanetTurretBlueprint;
 import de.instinct.api.construction.dto.PlayerInfrastructure;
@@ -35,30 +37,57 @@ import de.instinct.api.shipyard.dto.ship.component.types.engine.EngineAttributeT
 import de.instinct.api.shipyard.dto.ship.component.types.hull.HullAttributeType;
 import de.instinct.api.shipyard.dto.ship.component.types.shield.ShieldAttributeType;
 import de.instinct.api.shipyard.dto.ship.component.types.weapon.WeaponAttributeType;
-import de.instinct.engine.model.Player;
-import de.instinct.engine.model.planet.PlanetData;
-import de.instinct.engine.model.ship.ShipData;
-import de.instinct.engine.model.ship.components.ShieldData;
-import de.instinct.engine.model.ship.components.WeaponData;
-import de.instinct.engine.model.ship.components.types.CoreType;
-import de.instinct.engine.model.ship.components.types.EngineType;
-import de.instinct.engine.model.ship.components.types.HullType;
-import de.instinct.engine.model.ship.components.types.ShieldType;
-import de.instinct.engine.model.ship.components.types.WeaponType;
-import de.instinct.engine.model.turret.PlatformData;
-import de.instinct.engine.model.turret.TurretData;
+import de.instinct.engine.core.meta.MetaProcessor;
+import de.instinct.engine.core.order.GameOrder;
+import de.instinct.engine.core.player.Player;
+import de.instinct.engine.fleet.FleetEngine;
+import de.instinct.engine.fleet.data.FleetGameState;
+import de.instinct.engine.fleet.entity.planet.Planet;
+import de.instinct.engine.fleet.entity.planet.PlanetProcessor;
+import de.instinct.engine.fleet.entity.planet.data.PlanetData;
+import de.instinct.engine.fleet.entity.unit.component.data.ShieldData;
+import de.instinct.engine.fleet.entity.unit.component.data.WeaponData;
+import de.instinct.engine.fleet.entity.unit.component.data.types.HullType;
+import de.instinct.engine.fleet.entity.unit.component.data.types.ShieldType;
+import de.instinct.engine.fleet.entity.unit.component.data.types.WeaponType;
+import de.instinct.engine.fleet.entity.unit.ship.component.types.CoreType;
+import de.instinct.engine.fleet.entity.unit.ship.component.types.EngineType;
+import de.instinct.engine.fleet.entity.unit.ship.data.ShipData;
+import de.instinct.engine.fleet.entity.unit.turret.Turret;
+import de.instinct.engine.fleet.entity.unit.turret.TurretProcessor;
+import de.instinct.engine.fleet.entity.unit.turret.data.TurretData;
+import de.instinct.engine.fleet.net.data.PlayerConnectionStatus;
+import de.instinct.engine.fleet.player.FleetPlayer;
+import de.instinct.engine.fleet.player.FleetPlayerProcessor;
 
 public class EngineDataInterface {
+	
+	public static final Vector2 MAP_BOUNDS = new Vector2(1000, 2000);
+	public static final float PLANET_RADIUS = 50f;
+	
+	private static FleetEngine fleetEngine = new FleetEngine();
+	private static FleetPlayerProcessor playerProcessor = new FleetPlayerProcessor();
+	private static PlanetProcessor planetProcessor = new PlanetProcessor();
+	private static TurretProcessor turretProcessor = new TurretProcessor();
+	private static MetaProcessor metaProcessor = new MetaProcessor();
 	
 	private static Infrastructure infrastructure;
 	private static ShipyardData shipyardData;
 	
-	public static Player getPlayer(LoadoutData loadout) {
+	public static FleetPlayer getPlayer(List<Player> players, int playerId) {
+		return playerProcessor.getFleetPlayer(players, playerId);
+	}
+
+	public static void queue(FleetGameState activeGameState, GameOrder order) {
+		fleetEngine.queue(activeGameState, order);
+	}
+	
+	public static FleetPlayer getPlayer(LoadoutData loadout) {
 		if (!API.construction().isConnected()) API.construction().connect();
 		if (!API.shipyard().isConnected()) API.shipyard().connect();
 		infrastructure = API.construction().construction();
 		shipyardData = API.shipyard().shipyard();
-		Player newPlayer = new Player();
+		FleetPlayer newPlayer = new FleetPlayer();
 		newPlayer.resourceGenerationSpeed = loadout.getCommander().getResourceGenerationSpeed();
 		newPlayer.startResources = loadout.getCommander().getStartResources();
 		newPlayer.maxResources = loadout.getCommander().getMaxResources();
@@ -86,9 +115,6 @@ public class EngineDataInterface {
 					TurretData turretData = new TurretData();
 					turretData.model = planetTurretBlueprint.getName();
 					turretData.resourceCost = planetTurretBlueprint.getCost();
-					
-					PlatformData platform = new PlatformData();
-					turretData.platform = platform;
 					
 					turretData.hullType = HullType.ALLOY;
 					turretData.hullStrength = planetTurretBlueprint.getPlanetDefense().getArmor();
@@ -256,6 +282,30 @@ public class EngineDataInterface {
 	        }
 	    }
 	    return null;
+	}
+
+	public static Planet createPlanet(FleetGameState state, Player planetOwner, Vector2 position, boolean ancient) {
+		return planetProcessor.createPlanet(state, planetOwner, position, ancient);
+	}
+	
+	public static Planet getPlanet(List<Planet> planets, int planetId) {
+		return planetProcessor.getPlanet(planets, planetId);
+	}
+	
+	public static Turret getPlanetTurret(List<Turret> turrets, int planetId) {
+		return turretProcessor.getPlanetTurret(turrets, planetId);
+	}
+	
+	public static boolean mapHasAncient(FleetGameState state) {
+		return planetProcessor.mapHasAncient(state.entityData.planets);
+	}
+	
+	public static void update(FleetGameState state, long progressionMS) {
+		fleetEngine.update(state, progressionMS);
+	}
+
+	public static PlayerConnectionStatus getPlayerConnectionStatus(List<PlayerConnectionStatus> connectionStati, int playerId) {
+		return metaProcessor.getPlayerConnectionStatus(connectionStati, playerId);
 	}
 
 }

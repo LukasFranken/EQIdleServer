@@ -3,7 +3,7 @@ package de.instinct.game.service.model;
 import java.util.List;
 
 import de.instinct.api.matchmaking.model.GameType;
-import de.instinct.engine.model.GameState;
+import de.instinct.engine.fleet.data.FleetGameState;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class GameSession {
 	private String uuid;
 	private GameType gameType;
 	private List<User> users;
-	private GameState gameState;
+	private FleetGameState gameState;
 	private long lastUpdateTimeMS;
 	private long lastClientUpdateTimeMS;
 	private boolean active;

@@ -7,8 +7,9 @@ import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.matchmaking.model.FactionMode;
 import de.instinct.api.matchmaking.model.VersusMode;
 import de.instinct.base.file.FileManager;
-import de.instinct.engine.model.AiPlayer;
-import de.instinct.engine.model.Player;
+import de.instinct.engine.core.player.Player;
+import de.instinct.engine.fleet.ai.data.AiPlayer;
+import de.instinct.engine.fleet.player.FleetPlayer;
 import de.instinct.engine_api.ai.service.AIPlayerLoader;
 import de.instinct.engine_api.ai.service.NeutralPlayerLoader;
 import de.instinct.engine_api.core.model.GameMap;
@@ -61,7 +62,7 @@ public class GameDataLoader {
 	public List<Player> loadPlayers(GameSession session) {
 		List<Player> players = new ArrayList<>();
 		
-		Player neutralPlayer = neutralPlayerLoader.createNeutralPlayer(session.getGameType().getThreatLevel());
+		FleetPlayer neutralPlayer = neutralPlayerLoader.createNeutralPlayer(session.getGameType().getThreatLevel());
 		neutralPlayer.id = 0;
 		neutralPlayer.teamId = 0;
 		neutralPlayer.name = "Neutral Player";

@@ -2,21 +2,19 @@ package de.instinct.engine_api.ai.service;
 
 import java.util.ArrayList;
 
-import de.instinct.engine.model.Player;
-import de.instinct.engine.model.planet.PlanetData;
-import de.instinct.engine.model.ship.components.ShieldData;
-import de.instinct.engine.model.ship.components.WeaponData;
-import de.instinct.engine.model.ship.components.types.HullType;
-import de.instinct.engine.model.ship.components.types.ShieldType;
-import de.instinct.engine.model.ship.components.types.WeaponType;
-import de.instinct.engine.model.turret.PlatformData;
-import de.instinct.engine.model.turret.PlatformType;
-import de.instinct.engine.model.turret.TurretData;
+import de.instinct.engine.fleet.entity.planet.data.PlanetData;
+import de.instinct.engine.fleet.entity.unit.component.data.ShieldData;
+import de.instinct.engine.fleet.entity.unit.component.data.WeaponData;
+import de.instinct.engine.fleet.entity.unit.component.data.types.HullType;
+import de.instinct.engine.fleet.entity.unit.component.data.types.ShieldType;
+import de.instinct.engine.fleet.entity.unit.component.data.types.WeaponType;
+import de.instinct.engine.fleet.entity.unit.turret.data.TurretData;
+import de.instinct.engine.fleet.player.FleetPlayer;
 
 public class NeutralPlayerLoader {
 	
-	public Player createNeutralPlayer(int threatLevel) {
-	Player neutralPlayer = new Player();
+	public FleetPlayer createNeutralPlayer(int threatLevel) {
+		FleetPlayer neutralPlayer = new FleetPlayer();
 	
 	PlanetData neutralPlanetData = new PlanetData();
 	neutralPlayer.planetData = neutralPlanetData;
@@ -26,10 +24,6 @@ public class NeutralPlayerLoader {
 	TurretData neutralTurret = new TurretData();
 	neutralTurret.model = "projectile";
 	neutralTurret.resourceCost = 0;
-	
-	PlatformData neutralTurretPlatform = new PlatformData();
-	neutralTurretPlatform.type = PlatformType.SERVO;
-	neutralTurret.platform = neutralTurretPlatform;
 	
 	neutralTurret.hullType = HullType.ALLOY;
 	neutralTurret.hullStrength = 5 + threatLevel;

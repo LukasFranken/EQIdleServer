@@ -2,15 +2,13 @@ package de.instinct.engine_api.ai.service;
 
 import java.util.ArrayList;
 
-import de.instinct.engine.model.AiPlayer;
-import de.instinct.engine.model.planet.PlanetData;
-import de.instinct.engine.model.ship.ShipData;
-import de.instinct.engine.model.ship.components.types.CoreType;
-import de.instinct.engine.model.ship.components.types.EngineType;
-import de.instinct.engine.model.ship.components.types.HullType;
-import de.instinct.engine.model.turret.PlatformData;
-import de.instinct.engine.model.turret.PlatformType;
-import de.instinct.engine.model.turret.TurretData;
+import de.instinct.engine.fleet.ai.data.AiPlayer;
+import de.instinct.engine.fleet.entity.planet.data.PlanetData;
+import de.instinct.engine.fleet.entity.unit.component.data.types.HullType;
+import de.instinct.engine.fleet.entity.unit.ship.component.types.CoreType;
+import de.instinct.engine.fleet.entity.unit.ship.component.types.EngineType;
+import de.instinct.engine.fleet.entity.unit.ship.data.ShipData;
+import de.instinct.engine.fleet.entity.unit.turret.data.TurretData;
 import de.instinct.engine_api.ai.model.AiStatManager;
 
 public class AIPlayerLoader {
@@ -71,10 +69,6 @@ public class AIPlayerLoader {
 		TurretData aiTurret = new TurretData();
 		aiTurret.resourceCost = 10;
 		aiTurret.model = "projectile";
-		
-		PlatformData aiTurretPlatform = new PlatformData();
-		aiTurretPlatform.type = PlatformType.SERVO;
-		aiTurret.platform = aiTurretPlatform;
 		
 		aiTurret.weapons = new ArrayList<>();
 		if (threatLevel >= 20) {

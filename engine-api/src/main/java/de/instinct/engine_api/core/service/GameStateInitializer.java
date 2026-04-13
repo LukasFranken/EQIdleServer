@@ -5,28 +5,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import de.instinct.engine.FleetEngine;
-import de.instinct.engine.model.GameState;
-import de.instinct.engine.model.Player;
-import de.instinct.engine.model.PlayerConnectionStatus;
-import de.instinct.engine.model.data.EntityData;
-import de.instinct.engine.model.data.OrderData;
-import de.instinct.engine.model.data.PauseData;
-import de.instinct.engine.model.data.PlayerData;
-import de.instinct.engine.model.data.ResultData;
-import de.instinct.engine.model.data.StaticData;
-import de.instinct.engine.model.planet.Planet;
-import de.instinct.engine.planet.PlanetProcessor;
-import de.instinct.engine.stats.StatCollector;
-import de.instinct.engine.util.EngineUtility;
+import de.instinct.engine.core.meta.data.MetaData;
+import de.instinct.engine.core.meta.data.PauseData;
+import de.instinct.engine.core.player.Player;
+import de.instinct.engine.core.player.data.PlayerData;
+import de.instinct.engine.fleet.FleetEngine;
+import de.instinct.engine.fleet.data.FleetGameState;
+import de.instinct.engine.fleet.data.ResultData;
+import de.instinct.engine.fleet.data.StaticData;
+import de.instinct.engine.fleet.entity.data.EntityData;
+import de.instinct.engine.fleet.entity.planet.Planet;
+import de.instinct.engine.fleet.net.data.PlayerConnectionStatus;
+import de.instinct.engine.fleet.order.data.OrderData;
+import de.instinct.engine.fleet.stats.StatCollector;
 import de.instinct.engine_api.core.model.GameStateInitialization;
 import de.instinct.engine_api.core.model.PlanetInitialization;
 
 public class GameStateInitializer {
 	
-	public GameState initialize(GameStateInitialization initialization) {
+	private FleetEngine fleetEngine;
+	
+	public GameStateInitializer() {
+		fleetEngine = new FleetEngine();
+	}
+	
+	public FleetGameState initialize(GameStateInitialization initialization) {
 		StatCollector.initialize(initialization.getGameUUID(), initialization.getPlayers());
-		GameState state = new GameState();
+		FleetGameState state = new FleetGameState();
 		state.gameUUID = initialization.getGameUUID();
 		state.gameTimeMS = 0;
 		state.started = false;
@@ -51,28 +56,29 @@ public class GameStateInitializer {
 		state.orderData.unprocessedOrders = new ConcurrentLinkedQueue<>();
 		state.orderData.processedOrders = new ArrayList<>();
 		
-		state.pauseData = new PauseData();
-		state.pauseData.resumeCountdownMS = 3000L;
-		state.pauseData.teamPausesMS = new HashMap<>();
-		state.pauseData.teamPausesMS.put(0, 0L);
-		state.pauseData.teamPausesMS.put(1, 0L);
-		state.pauseData.teamPausesMS.put(2, 0L);
-		state.pauseData.teamPausesCount = new HashMap<>();
-		state.pauseData.teamPausesCount.put(0, 0);
-		state.pauseData.teamPausesCount.put(1, initialization.getPauseCountLimit());
-		state.pauseData.teamPausesCount.put(2, initialization.getPauseCountLimit());
+		state.metaData = new MetaData();
+		state.metaData.pauseData = new PauseData();
+		state.metaData.pauseData.resumeCountdownMS = 3000L;
+		state.metaData.pauseData.teamPausesMS = new HashMap<>();
+		state.metaData.pauseData.teamPausesMS.put(0, 0L);
+		state.metaData.pauseData.teamPausesMS.put(1, 0L);
+		state.metaData.pauseData.teamPausesMS.put(2, 0L);
+		state.metaData.pauseData.teamPausesCount = new HashMap<>();
+		state.metaData.pauseData.teamPausesCount.put(0, 0);
+		state.metaData.pauseData.teamPausesCount.put(1, initialization.getPauseCountLimit());
+		state.metaData.pauseData.teamPausesCount.put(2, initialization.getPauseCountLimit());
+		state.metaData.pauseData.maxPauseMS = initialization.getPauseTimeLimitMS();
 		
 		state.staticData = new StaticData();
 		state.staticData.ancientPlanetResourceDegradationFactor = initialization.getMap().getAncientPlanetResourceDegradationFactor();
 		state.staticData.zoomFactor = initialization.getMap().getZoomFactor();
 		state.staticData.maxGameTimeMS = initialization.getGameTimeLimitMS();
 		state.staticData.atpToWin = initialization.getAtpToWin();
-		state.staticData.playerData = new PlayerData();
-		state.staticData.playerData.players = initialization.getPlayers();
-		state.staticData.playerData.connectionStati = generateConnectionStati(initialization.getPlayers());
-		state.staticData.maxPauseMS = initialization.getPauseTimeLimitMS();
+		state.playerData = new PlayerData();
+		state.playerData.players = initialization.getPlayers();
+		state.playerData.connectionStati = generateConnectionStati(initialization.getPlayers());
 		
-		FleetEngine.initialize(state);
+		fleetEngine.initialize(state);
 		return state;
 	}
 
@@ -86,11 +92,11 @@ public class GameStateInitializer {
 		return connectionStati;
 	}
 
-	private List<Planet> generateInitialPlanets(GameStateInitialization initialization, GameState state) {
+	private List<Planet> generateInitialPlanets(GameStateInitialization initialization, FleetGameState state) {
 		List<Planet> initialPlanets = new ArrayList<>();
 		for (PlanetInitialization init : initialization.getMap().getPlanets()) {
-			Player planetOwner = EngineUtility.getPlayer(initialization.getPlayers(), init.getOwnerId());
-			Planet initialPlanet = PlanetProcessor.createPlanet(state, planetOwner, init.getPosition(), init.isAncient());
+			Player planetOwner = EngineDataInterface.getPlayer(initialization.getPlayers(), init.getOwnerId());
+			Planet initialPlanet = EngineDataInterface.createPlanet(state, planetOwner, init.getPosition(), init.isAncient());
 			initialPlanets.add(initialPlanet);
 		}
 		return initialPlanets;

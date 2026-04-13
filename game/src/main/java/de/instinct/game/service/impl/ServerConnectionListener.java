@@ -6,12 +6,12 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 
-import de.instinct.engine.net.message.types.BuildTurretMessage;
-import de.instinct.engine.net.message.types.FleetMovementMessage;
-import de.instinct.engine.net.message.types.GamePauseMessage;
-import de.instinct.engine.net.message.types.JoinMessage;
-import de.instinct.engine.net.message.types.LoadedMessage;
-import de.instinct.engine.net.message.types.SurrenderMessage;
+import de.instinct.engine.fleet.net.messages.BuildTurretMessage;
+import de.instinct.engine.fleet.net.messages.FleetMovementMessage;
+import de.instinct.engine.fleet.net.messages.GamePauseMessage;
+import de.instinct.engine.fleet.net.messages.JoinMessage;
+import de.instinct.engine.fleet.net.messages.LoadedMessage;
+import de.instinct.engine.fleet.net.messages.SurrenderMessage;
 
 public class ServerConnectionListener extends Listener {
 	
