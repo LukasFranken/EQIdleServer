@@ -13,7 +13,7 @@ import de.instinct.engine.fleet.FleetEngine;
 import de.instinct.engine.fleet.data.FleetGameState;
 import de.instinct.engine.fleet.data.ResultData;
 import de.instinct.engine.fleet.data.StaticData;
-import de.instinct.engine.fleet.entity.data.EntityData;
+import de.instinct.engine.fleet.entity.data.FleetEntityData;
 import de.instinct.engine.fleet.entity.planet.Planet;
 import de.instinct.engine.fleet.net.data.PlayerConnectionStatus;
 import de.instinct.engine.fleet.order.data.OrderData;
@@ -45,8 +45,7 @@ public class GameStateInitializer {
 		state.resultData.surrendered = 0;
 		state.resultData.wiped = false;
 		
-		state.entityData = new EntityData();
-		state.entityData.entityCounter = 0;
+		state.entityData = new FleetEntityData();
 		state.entityData.planets = generateInitialPlanets(initialization, state);
 		state.entityData.ships = new ArrayList<>();
 		state.entityData.turrets = new ArrayList<>();
