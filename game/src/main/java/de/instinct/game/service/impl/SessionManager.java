@@ -42,9 +42,9 @@ import de.instinct.engine.fleet.stats.model.GameStatistic;
 import de.instinct.engine.fleet.stats.model.PlayerStatistic;
 import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.engine_api.core.model.GameMap;
-import de.instinct.engine_api.core.model.GameStateInitialization;
 import de.instinct.engine_api.core.model.PlanetInitialization;
 import de.instinct.engine_api.core.service.EngineDataInterface;
+import de.instinct.engine_api.fleet.model.FleetGameStateInitialization;
 import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
@@ -269,7 +269,7 @@ public class SessionManager {
 				.users(loadUsers(request))
 				.build();
 		
-		GameStateInitialization initialization = gameDataLoader.generateGameStateInitialization(session);
+		FleetGameStateInitialization initialization = gameDataLoader.generateGameStateInitialization(session);
 		session.setGameState(engineInterface.initializeGameState(initialization));
 		readyUpAI(session.getGameState());
 		inCreationSessions.add(session);

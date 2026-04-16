@@ -7,18 +7,18 @@ import de.instinct.engine.fleet.FleetEngine;
 import de.instinct.engine.fleet.data.FleetGameState;
 import de.instinct.engine.fleet.stats.StatCollector;
 import de.instinct.engine.fleet.stats.model.GameStatistic;
-import de.instinct.engine_api.core.model.GameStateInitialization;
-import de.instinct.engine_api.core.service.GameStateInitializer;
+import de.instinct.engine_api.fleet.FleetGameStateInitializer;
+import de.instinct.engine_api.fleet.model.FleetGameStateInitialization;
 import de.instinct.game.service.model.GameSession;
 
 public class GameEngineInterface {
 	
 	private FleetEngine fleetEngine;
-	private GameStateInitializer gameStateInitializer;
+	private FleetGameStateInitializer gameStateInitializer;
 	
 	public GameEngineInterface() {
 		fleetEngine = new FleetEngine();
-		gameStateInitializer = new GameStateInitializer();
+		gameStateInitializer = new FleetGameStateInitializer();
 	}
 
 	public void updateGameState(GameSession session) {
@@ -27,9 +27,9 @@ public class GameEngineInterface {
 		session.setLastUpdateTimeMS(currentTime);
 	}
 	
-	public FleetGameState initializeGameState(GameStateInitialization gameStateInitialization) {
+	public FleetGameState initializeGameState(FleetGameStateInitialization gameStateInitialization) {
 		System.out.println("Initializing game state with: " + gameStateInitialization);
-		return gameStateInitializer.initialize(gameStateInitialization);
+		return gameStateInitializer.initializeFleet(gameStateInitialization);
 	}
 
 	public void queue(FleetGameState gameState, GameOrder gameOrder) {

@@ -13,8 +13,8 @@ import de.instinct.engine.fleet.player.FleetPlayer;
 import de.instinct.engine_api.ai.service.AIPlayerLoader;
 import de.instinct.engine_api.ai.service.NeutralPlayerLoader;
 import de.instinct.engine_api.core.model.GameMap;
-import de.instinct.engine_api.core.model.GameStateInitialization;
 import de.instinct.engine_api.core.service.EngineDataInterface;
+import de.instinct.engine_api.fleet.model.FleetGameStateInitialization;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
 
@@ -31,8 +31,8 @@ public class GameDataLoader {
 		neutralPlayerLoader = new NeutralPlayerLoader();
 	}
 	
-	public GameStateInitialization generateGameStateInitialization(GameSession session) {
-		GameStateInitialization initialGameState = loadInitialMap(session);
+	public FleetGameStateInitialization generateGameStateInitialization(GameSession session) {
+		FleetGameStateInitialization initialGameState = loadInitialMap(session);
 		initialGameState.setGameUUID(session.getUuid());
 		initialGameState.setPlayers(loadPlayers(session));
 		initialGameState.setGameTimeLimitMS((int)session.getGameType().getDuration());
@@ -42,8 +42,8 @@ public class GameDataLoader {
 		return initialGameState;
 	}
 
-	private GameStateInitialization loadInitialMap(GameSession session) {
-		GameStateInitialization initialGameState = new GameStateInitialization();
+	private FleetGameStateInitialization loadInitialMap(GameSession session) {
+		FleetGameStateInitialization initialGameState = new FleetGameStateInitialization();
 		initialGameState.setMap(ObjectJSONMapper.mapJSON(FileManager.loadFile(
 				MAP_FILE_SUBFOLDER 
 				+ "/" + session.getGameType().getGameMode().toString().toLowerCase() 

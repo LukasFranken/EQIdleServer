@@ -42,7 +42,7 @@ public class AiStatManager {
 		return aiShipShield;
 	}
 	
-	public static double getShipHullStrength(int threatLevel) {
+	public static float getShipHullStrength(int threatLevel) {
 		return 3 + 8 * (threatLevel / descaleFactor);
 	}
 
@@ -73,7 +73,7 @@ public class AiStatManager {
 		return aiTurretShield;
 	}
 	
-	public static double getTurretHullStrength(int threatLevel) {
+	public static float getTurretHullStrength(int threatLevel) {
 		return 5 + 20 * (threatLevel / descaleFactor);
 	}
 
@@ -92,7 +92,7 @@ public class AiStatManager {
 		return scaleWithThreatLevelByPowerOfTen(threatLevel, maxResourceCapacityPerPowOfTen);
 	}
 	
-	public static double getStartResources(int threatLevel) {
+	public static float getStartResources(int threatLevel) {
 		float startCommandPointsPerPowOfTen = 3f;
 		return scaleWithThreatLevelByPowerOfTen(threatLevel, startCommandPointsPerPowOfTen);
 	}
