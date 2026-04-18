@@ -1,6 +1,5 @@
 package de.instinct.api.shipyard.service;
 
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.shipyard.dto.PlayerShipyardData;
 import de.instinct.api.shipyard.dto.ShipAddResponse;
 import de.instinct.api.shipyard.dto.ShipBuildResponse;
@@ -38,7 +37,7 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 
-public interface ShipyardInterface extends BaseServiceInterface {
+public interface ShipyardInterface {
 	
 	ShipyardInitializationResponseCode init(String token);
 	

@@ -1,6 +1,5 @@
 package de.instinct.api.social.service;
 
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.social.dto.FriendDeleteResponse;
 import de.instinct.api.social.dto.FriendRequestRespondResponse;
 import de.instinct.api.social.dto.FriendRequestSendResponse;
@@ -13,7 +12,7 @@ import de.instinct.api.social.dto.PlayerSocialData;
 import de.instinct.api.social.dto.SocialPushData;
 import de.instinct.api.social.dto.UserCreationResponse;
 
-public interface SocialInterface extends BaseServiceInterface {
+public interface SocialInterface {
 	
 	UserCreationResponse init(String token);
 	

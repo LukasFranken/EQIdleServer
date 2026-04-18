@@ -1,7 +1,6 @@
 package de.instinct.api.meta.service;
 
 import de.instinct.api.core.modules.MenuModule;
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.meta.dto.ExperienceUpdateResponseCode;
 import de.instinct.api.meta.dto.LoadoutData;
 import de.instinct.api.meta.dto.NameRegisterResponseCode;
@@ -15,7 +14,7 @@ import de.instinct.api.meta.dto.modules.ModuleInfoRequest;
 import de.instinct.api.meta.dto.modules.ModuleInfoResponse;
 import de.instinct.api.meta.dto.modules.ModuleRegistrationResponseCode;
 
-public interface MetaInterface extends BaseServiceInterface {
+public interface MetaInterface {
 
 	NameRegisterResponseCode registerName(String username);
 	

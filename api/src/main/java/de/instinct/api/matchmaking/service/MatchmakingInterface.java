@@ -1,7 +1,6 @@
 package de.instinct.api.matchmaking.service;
 
 import de.instinct.api.core.model.GeneralRequestResponse;
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.matchmaking.dto.CallbackCode;
 import de.instinct.api.matchmaking.dto.FinishGameData;
 import de.instinct.api.matchmaking.dto.GroupLobbyCreationRequest;
@@ -17,7 +16,7 @@ import de.instinct.api.matchmaking.dto.MatchmakingStopResponseCode;
 import de.instinct.api.matchmaking.dto.PlayerReward;
 import de.instinct.api.matchmaking.model.GameType;
 
-public interface MatchmakingInterface extends BaseServiceInterface {
+public interface MatchmakingInterface {
 	
 	LobbyCreationResponse create();
 	

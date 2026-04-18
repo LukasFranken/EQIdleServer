@@ -2,7 +2,6 @@ package de.instinct.engine_api.core;
 
 import de.instinct.api.core.API;
 import de.instinct.api.core.config.APIConfiguration;
-import de.instinct.engine_api.ship.service.ShipyardEngineInterface;
 import de.instinct.engine_api.ship.service.impl.ShipyardEngine;
 
 public class EngineAPI extends API {
@@ -16,7 +15,7 @@ public class EngineAPI extends API {
 		}
 	}
 	
-	public static ShipyardEngineInterface shipyard() {
+	public static ShipyardEngine shipyard() {
 		if (!API.apiReady()) return null;
 		return shipyard;
 	}

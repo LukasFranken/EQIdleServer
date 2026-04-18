@@ -1,11 +1,14 @@
 PORTMAP UDP 9011 - 9020
 
 9011 - Gameserver UDP
+9012 - Mining UDP
 
 PORTMAP TCP 6000, 8080 - 9010
 
 6000 - Discovery
 
+8998 - Mining Gameserver
+8999 - Mining
 9000 - Social
 9001 - Commander
 9002 - Starmap

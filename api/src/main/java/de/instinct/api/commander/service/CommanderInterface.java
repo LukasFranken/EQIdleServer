@@ -4,10 +4,9 @@ import de.instinct.api.commander.dto.CommanderData;
 import de.instinct.api.commander.dto.CommanderInitializationResponseCode;
 import de.instinct.api.commander.dto.CommanderRankUpResponseCode;
 import de.instinct.api.commander.dto.RankUpCommanderUpgrade;
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.meta.dto.PlayerRank;
 
-public interface CommanderInterface extends BaseServiceInterface {
+public interface CommanderInterface {
 	
 	CommanderInitializationResponseCode init(String token);
 	

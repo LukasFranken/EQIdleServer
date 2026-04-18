@@ -1,11 +1,10 @@
 package de.instinct.api.discovery.service;
 
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.discovery.dto.RegistrationResponseCode;
 import de.instinct.api.discovery.dto.ServiceInfoDTO;
 import de.instinct.api.discovery.dto.ServiceRegistrationDTO;
 
-public interface DiscoveryInterface extends BaseServiceInterface {
+public interface DiscoveryInterface {
 	
 	RegistrationResponseCode register(ServiceRegistrationDTO serviceRegistrationDTO);
 

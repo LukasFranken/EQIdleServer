@@ -1,11 +1,10 @@
 package de.instinct.api.game.service;
 
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.game.dto.GameSessionInitializationRequest;
 import de.instinct.api.game.dto.MapPreview;
 import de.instinct.api.matchmaking.model.FactionMode;
 
-public interface GameInterface extends BaseServiceInterface {
+public interface GameInterface {
 	
 	void start();
 	

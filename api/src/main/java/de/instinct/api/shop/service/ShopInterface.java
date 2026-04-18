@@ -1,13 +1,12 @@
 package de.instinct.api.shop.service;
 
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.shop.dto.BuyResponse;
 import de.instinct.api.shop.dto.PlayerShopData;
 import de.instinct.api.shop.dto.ShopData;
 import de.instinct.api.shop.dto.ShopInitializationResponseCode;
 import de.instinct.api.shop.dto.ShopSaveResponseCode;
 
-public interface ShopInterface extends BaseServiceInterface {
+public interface ShopInterface {
 	
 	ShopInitializationResponseCode init(String token);
 

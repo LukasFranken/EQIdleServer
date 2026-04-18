@@ -2,7 +2,6 @@ package de.instinct.api.starmap.service.impl;
 
 import de.instinct.api.core.model.RESTRequest;
 import de.instinct.api.core.model.SupportedRequestType;
-import de.instinct.api.core.service.BaseServiceInterface;
 import de.instinct.api.core.service.impl.BaseService;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.starmap.dto.CompletionRequest;
@@ -15,7 +14,7 @@ import de.instinct.api.starmap.dto.StartConquestRequest;
 import de.instinct.api.starmap.dto.StartConquestResponse;
 import de.instinct.api.starmap.service.StarmapInterface;
 
-public class Starmap extends BaseService implements StarmapInterface, BaseServiceInterface {
+public class Starmap extends BaseService implements StarmapInterface {
 
 	public Starmap() {
 		super("starmap");
