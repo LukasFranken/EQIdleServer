@@ -30,7 +30,16 @@ public class SessionController {
 	public void processMessage(Connection c, Object o) {
 		if (o instanceof ConnectMessage) {
 			ConnectMessage message = (ConnectMessage) o;
-			
+			for (Session session : sessions) {
+				for (MiningClient client : session.getClients()) {
+					if (client.getUuid().contentEquals(message.playerUUID)) {
+						//send gamestate and playerid
+						//c.sendTCP();
+					}
+				}
+			}
+			//send connect failed message
+			//c.sendTCP();
 		}
 	}
 
