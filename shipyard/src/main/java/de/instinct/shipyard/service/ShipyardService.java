@@ -37,7 +37,7 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeDeleteResponse;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
-import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.fleet.ship.model.ShipStatisticReportRequest;
 
 public interface ShipyardService {
 

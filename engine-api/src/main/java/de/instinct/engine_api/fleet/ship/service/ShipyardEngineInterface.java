@@ -1,8 +1,8 @@
-package de.instinct.engine_api.ship.service;
+package de.instinct.engine_api.fleet.ship.service;
 
 import de.instinct.api.matchmaking.dto.PlayerShipResult;
 import de.instinct.api.shipyard.service.ShipyardInterface;
-import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.fleet.ship.model.ShipStatisticReportRequest;
 
 public interface ShipyardEngineInterface extends ShipyardInterface {
 	

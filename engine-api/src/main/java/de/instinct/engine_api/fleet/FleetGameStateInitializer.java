@@ -12,10 +12,11 @@ import de.instinct.engine.fleet.data.StaticData;
 import de.instinct.engine.fleet.entity.data.FleetEntityData;
 import de.instinct.engine.fleet.entity.planet.Planet;
 import de.instinct.engine.fleet.stats.StatCollector;
-import de.instinct.engine_api.core.model.PlanetInitialization;
 import de.instinct.engine_api.core.service.EngineDataInterface;
 import de.instinct.engine_api.core.service.GameStateInitializer;
+import de.instinct.engine_api.fleet.model.FleetGameMap;
 import de.instinct.engine_api.fleet.model.FleetGameStateInitialization;
+import de.instinct.engine_api.fleet.model.PlanetInitialization;
 
 public class FleetGameStateInitializer extends GameStateInitializer {
 	
@@ -39,17 +40,15 @@ public class FleetGameStateInitializer extends GameStateInitializer {
 		state.resultData.surrendered = 0;
 		state.resultData.wiped = false;
 		
+		state.staticData = new StaticData();
+		state.staticData.maxGameTimeMS = initialization.getGameTimeLimitMS();
+		state.staticData.atpToWin = initialization.getAtpToWin();
+		
 		state.entityData = new FleetEntityData();
 		state.entityData.planets = generateInitialPlanets(state, initialization);
 		state.entityData.ships = new ArrayList<>();
 		state.entityData.turrets = new ArrayList<>();
 		state.entityData.projectiles = new ArrayList<>();
-		
-		state.staticData = new StaticData();
-		state.staticData.ancientPlanetResourceDegradationFactor = initialization.getMap().getAncientPlanetResourceDegradationFactor();
-		state.staticData.zoomFactor = initialization.getMap().getZoomFactor();
-		state.staticData.maxGameTimeMS = initialization.getGameTimeLimitMS();
-		state.staticData.atpToWin = initialization.getAtpToWin();
 		
 		fleetEngine.initialize(state);
 		return state;
@@ -57,7 +56,10 @@ public class FleetGameStateInitializer extends GameStateInitializer {
 	
 	private List<Planet> generateInitialPlanets(FleetGameState state, FleetGameStateInitialization initialization) {
 		List<Planet> initialPlanets = new ArrayList<>();
-		for (PlanetInitialization init : initialization.getMap().getPlanets()) {
+		FleetGameMap map = (FleetGameMap) initialization.getMap();
+		state.staticData.ancientPlanetResourceDegradationFactor = map.getAncientPlanetResourceDegradationFactor();
+		state.staticData.zoomFactor = map.getZoomFactor();
+		for (PlanetInitialization init : map.getPlanets()) {
 			Player planetOwner = EngineDataInterface.getPlayer(initialization.getPlayers(), init.getOwnerId());
 			Planet initialPlanet = EngineDataInterface.createPlanet(state, planetOwner, init.getPosition(), init.isAncient());
 			initialPlanets.add(initialPlanet);

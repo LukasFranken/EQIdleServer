@@ -1,4 +1,4 @@
-package de.instinct.engine_api.core.model;
+package de.instinct.engine_api.fleet.model;
 
 import com.badlogic.gdx.math.Vector2;
 

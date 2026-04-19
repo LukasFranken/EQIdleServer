@@ -7,7 +7,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MiningGameStateInitialization extends GameStateInitialization {
-	
-	private MiningMap map;
 
 }

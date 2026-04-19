@@ -2,7 +2,7 @@ package de.instinct.engine_api.core;
 
 import de.instinct.api.core.API;
 import de.instinct.api.core.config.APIConfiguration;
-import de.instinct.engine_api.ship.service.impl.ShipyardEngine;
+import de.instinct.engine_api.fleet.ship.service.impl.ShipyardEngine;
 
 public class EngineAPI extends API {
 	

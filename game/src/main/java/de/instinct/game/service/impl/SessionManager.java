@@ -41,11 +41,11 @@ import de.instinct.engine.fleet.order.types.SurrenderOrder;
 import de.instinct.engine.fleet.stats.model.GameStatistic;
 import de.instinct.engine.fleet.stats.model.PlayerStatistic;
 import de.instinct.engine_api.core.EngineAPI;
-import de.instinct.engine_api.core.model.GameMap;
-import de.instinct.engine_api.core.model.PlanetInitialization;
 import de.instinct.engine_api.core.service.EngineDataInterface;
+import de.instinct.engine_api.fleet.model.FleetGameMap;
 import de.instinct.engine_api.fleet.model.FleetGameStateInitialization;
-import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.fleet.model.PlanetInitialization;
+import de.instinct.engine_api.fleet.ship.model.ShipStatisticReportRequest;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
 
@@ -389,7 +389,7 @@ public class SessionManager {
 	}
 
 	public static MapPreview preview(FactionMode mode, String map) {
-		GameMap gameMap = gameDataLoader.preview(mode, map);
+		FleetGameMap gameMap = gameDataLoader.preview(mode, map);
 		MapPreview mapPreview = new MapPreview();
 		mapPreview.setPlanets(new ArrayList<>());
 		if (gameMap == null) return mapPreview;

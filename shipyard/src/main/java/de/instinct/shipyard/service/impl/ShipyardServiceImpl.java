@@ -84,7 +84,7 @@ import de.instinct.engine.fleet.stats.model.unit.component.types.HullStatistic;
 import de.instinct.engine.fleet.stats.model.unit.component.types.ShieldStatistic;
 import de.instinct.engine.fleet.stats.model.unit.component.types.WeaponStatistic;
 import de.instinct.engine_api.core.EngineAPI;
-import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.fleet.ship.model.ShipStatisticReportRequest;
 import de.instinct.shipyard.service.ShipyardService;
 
 @Service

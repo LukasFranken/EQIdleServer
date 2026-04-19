@@ -10,10 +10,10 @@ import de.instinct.base.file.FileManager;
 import de.instinct.engine.core.player.Player;
 import de.instinct.engine.fleet.ai.data.AiPlayer;
 import de.instinct.engine.fleet.player.FleetPlayer;
-import de.instinct.engine_api.ai.service.AIPlayerLoader;
-import de.instinct.engine_api.ai.service.NeutralPlayerLoader;
-import de.instinct.engine_api.core.model.GameMap;
 import de.instinct.engine_api.core.service.EngineDataInterface;
+import de.instinct.engine_api.fleet.ai.service.AIPlayerLoader;
+import de.instinct.engine_api.fleet.ai.service.NeutralPlayerLoader;
+import de.instinct.engine_api.fleet.model.FleetGameMap;
 import de.instinct.engine_api.fleet.model.FleetGameStateInitialization;
 import de.instinct.game.service.model.GameSession;
 import de.instinct.game.service.model.User;
@@ -48,15 +48,15 @@ public class GameDataLoader {
 				MAP_FILE_SUBFOLDER 
 				+ "/" + session.getGameType().getGameMode().toString().toLowerCase() 
 				+ "/" + session.getGameType().getFactionMode().toString().toLowerCase() 
-				+ "/" + session.getGameType().getMap() + MAP_FILE_POSTFIX), GameMap.class));
+				+ "/" + session.getGameType().getMap() + MAP_FILE_POSTFIX), FleetGameMap.class));
 		System.out.println("Map: " + initialGameState.getMap() + " for game mode: " + session.getGameType());
 		return initialGameState;
 	}
 	
-	public GameMap preview(FactionMode mode, String map) {
+	public FleetGameMap preview(FactionMode mode, String map) {
 		String mapFile = FileManager.loadFile(MAP_FILE_SUBFOLDER + "/conquest/" + mode.toString().toLowerCase() + "/" + map + MAP_FILE_POSTFIX);
 		if (mapFile == null || mapFile.isEmpty()) return null;
-		return ObjectJSONMapper.mapJSON(mapFile, GameMap.class);
+		return ObjectJSONMapper.mapJSON(mapFile, FleetGameMap.class);
 	}
 
 	public List<Player> loadPlayers(GameSession session) {

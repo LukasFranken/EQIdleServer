@@ -1,4 +1,4 @@
-package de.instinct.engine_api.ai.service;
+package de.instinct.engine_api.fleet.ai.service;
 
 import de.instinct.engine.fleet.ai.configuration.AiBehaviorParameters;
 import de.instinct.engine.fleet.ai.configuration.AiDifficulty;

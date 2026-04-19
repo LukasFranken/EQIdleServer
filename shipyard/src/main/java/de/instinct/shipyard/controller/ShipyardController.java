@@ -49,7 +49,7 @@ import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateRequest;
 import de.instinct.api.shipyard.dto.admin.component.LevelAttributeUpdateResponse;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.engine_api.core.EngineAPI;
-import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.fleet.ship.model.ShipStatisticReportRequest;
 import de.instinct.shipyard.service.ShipyardService;
 import de.instinct.shipyard.service.impl.ShipyardServiceImpl;
 

@@ -1,12 +1,12 @@
-package de.instinct.engine_api.ship.service.impl;
+package de.instinct.engine_api.fleet.ship.service.impl;
 
 import de.instinct.api.core.model.RESTRequest;
 import de.instinct.api.core.model.SupportedRequestType;
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
 import de.instinct.api.matchmaking.dto.PlayerShipResult;
 import de.instinct.api.shipyard.service.impl.Shipyard;
-import de.instinct.engine_api.ship.model.ShipStatisticReportRequest;
-import de.instinct.engine_api.ship.service.ShipyardEngineInterface;
+import de.instinct.engine_api.fleet.ship.model.ShipStatisticReportRequest;
+import de.instinct.engine_api.fleet.ship.service.ShipyardEngineInterface;
 
 public class ShipyardEngine extends Shipyard implements ShipyardEngineInterface {
 

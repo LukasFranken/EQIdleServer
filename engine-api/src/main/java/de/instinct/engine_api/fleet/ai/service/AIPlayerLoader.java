@@ -1,4 +1,4 @@
-package de.instinct.engine_api.ai.service;
+package de.instinct.engine_api.fleet.ai.service;
 
 import java.util.ArrayList;
 
@@ -9,7 +9,7 @@ import de.instinct.engine.fleet.entity.unit.ship.component.types.CoreType;
 import de.instinct.engine.fleet.entity.unit.ship.component.types.EngineType;
 import de.instinct.engine.fleet.entity.unit.ship.data.ShipData;
 import de.instinct.engine.fleet.entity.unit.turret.data.TurretData;
-import de.instinct.engine_api.ai.model.AiStatManager;
+import de.instinct.engine_api.fleet.ai.model.AiStatManager;
 
 public class AIPlayerLoader {
 	

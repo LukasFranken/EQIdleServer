@@ -1,4 +1,4 @@
-package de.instinct.engine_api.ai.model;
+package de.instinct.engine_api.fleet.ai.model;
 
 import de.instinct.engine.fleet.entity.unit.component.data.ShieldData;
 import de.instinct.engine.fleet.entity.unit.component.data.WeaponData;

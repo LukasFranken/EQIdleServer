@@ -1,4 +1,4 @@
-package de.instinct.engine_api.ship.model;
+package de.instinct.engine_api.fleet.ship.model;
 
 import java.util.List;
 

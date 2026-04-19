@@ -14,5 +14,6 @@ public class GameStateInitialization {
 	private List<Player> players;
 	private long pauseTimeLimitMS;
 	private int pauseCountLimit;
+	private GameMap map;
 
 }
