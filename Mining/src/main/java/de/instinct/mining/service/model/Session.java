@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class Session {
 	
-	private String sessionUUID;
 	private MiningGameState state;
 	private List<MiningClient> clients;
 

@@ -31,7 +31,7 @@ public class MiningService implements MiningInterface {
 	public void start() {
 		sessionController = new SessionController();
 		connectionListener = new ServerConnectionListener(sessionController);
-		server = new Server(65536, 65536);
+		server = new Server(8096, 8096);
 		Kryo kryo = server.getKryo();
 		kryoRegistrator = new MiningKryoRegistrator();
 		kryoRegistrator.registerClasses(kryo);
