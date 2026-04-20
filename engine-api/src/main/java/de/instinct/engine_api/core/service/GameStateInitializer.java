@@ -17,15 +17,13 @@ import de.instinct.engine_api.core.model.GameStateInitialization;
 public abstract class GameStateInitializer {
 	
 	public void initialize(GameState state, GameStateInitialization initialization) {
-		state.gameUUID = initialization.getGameUUID();
-		state.gameTimeMS = 0;
-		state.started = false;
-		
 		state.orderData = new OrderData();
 		state.orderData.unprocessedOrders = new ConcurrentLinkedQueue<>();
 		state.orderData.processedOrders = new ArrayList<>();
 		
 		state.metaData = new MetaData();
+		state.metaData.gameUUID = initialization.getGameUUID();
+		state.metaData.gameTimeMS = 0;
 		state.metaData.pauseData = new PauseData();
 		state.metaData.pauseData.resumeCountdownMS = 3000L;
 		state.metaData.pauseData.teamPausesMS = new HashMap<>();

@@ -113,12 +113,12 @@ public class SessionManager {
 			activeSessions.remove(session);
 			
 			FinishGameData finishData = new FinishGameData();
-			finishData.setPlayedMS(session.getGameState().gameTimeMS);
+			finishData.setPlayedMS(session.getGameState().metaData.gameTimeMS);
 			finishData.setWinnerTeamId(session.getGameState().resultData.winner);
 			finishData.setWiped(session.getGameState().resultData.wiped);
 			finishData.setSurrendered(engineInterface.checkSurrendered(session.getGameState()));
 			finishData.setPlayerShipResults(new ArrayList<>());
-			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().gameUUID);
+			GameStatistic statistic = engineInterface.grabGameStatistic(session.getGameState().metaData.gameUUID);
 			if (statistic != null) {
 				for (User user : session.getUsers()) {
 					for (PlayerStatistic playerStatistic : statistic.getPlayerStatistics()) {
@@ -131,7 +131,7 @@ public class SessionManager {
 					}
 				}
 			} else {
-				System.err.println("Could not grab statistics for game uuid: " + session.getGameState().gameUUID);
+				System.err.println("Could not grab statistics for game uuid: " + session.getGameState().metaData.gameUUID);
 			}
 			
 			EngineAPI.matchmaking().finish(session.getUuid(), finishData);
@@ -185,7 +185,7 @@ public class SessionManager {
 
 	public static void process(FleetMovementMessage fleetMovement) {
 		for (GameSession currentSession : activeSessions) {
-			if (currentSession.getGameState().gameUUID.contentEquals(fleetMovement.gameUUID)) {
+			if (currentSession.getGameState().metaData.gameUUID.contentEquals(fleetMovement.gameUUID)) {
 				ShipMovementOrder shipMovementOrder = new ShipMovementOrder();
 				shipMovementOrder.playerId = getPlayerId(currentSession, fleetMovement.userUUID);
 				shipMovementOrder.fromPlanetId = fleetMovement.fromPlanetId;
@@ -200,7 +200,7 @@ public class SessionManager {
 	
 	public static void process(BuildTurretMessage buildTurret) {
 		for (GameSession currentSession : activeSessions) {
-			if (currentSession.getGameState().gameUUID.contentEquals(buildTurret.gameUUID)) {
+			if (currentSession.getGameState().metaData.gameUUID.contentEquals(buildTurret.gameUUID)) {
 				BuildTurretOrder buildTurretOrder = new BuildTurretOrder();
 				buildTurretOrder.playerId = getPlayerId(currentSession, buildTurret.userUUID);
 				buildTurretOrder.planetId = buildTurret.planetId;
@@ -213,23 +213,26 @@ public class SessionManager {
 	
 	public static void process(GamePauseMessage gamePause) {
 		for (GameSession currentSession : activeSessions) {
-			if (currentSession.getGameState().gameUUID.contentEquals(gamePause.gameUUID)) {
+			if (currentSession.getGameState().metaData.gameUUID.contentEquals(gamePause.gameUUID)) {
 				GamePauseOrder order = new GamePauseOrder();
 				order.playerId = getPlayerId(currentSession, gamePause.userUUID);
 				order.pause = gamePause.pause;
 				order.reason = gamePause.reason;
 				engineInterface.queue(currentSession.getGameState(), order);
 				updateSession(currentSession);
+				break;
 			}
 		}
 	}
 	
 	public static void process(SurrenderMessage surrender) {
 		for (GameSession currentSession : activeSessions) {
-			if (currentSession.getGameState().gameUUID.contentEquals(surrender.gameUUID)) {
+			if (currentSession.getGameState().metaData.gameUUID.contentEquals(surrender.gameUUID)) {
 				SurrenderOrder order = new SurrenderOrder();
 				order.playerId = getPlayerId(currentSession, surrender.userUUID);
 				engineInterface.queue(currentSession.getGameState(), order);
+				updateSession(currentSession);	
+				break;
 			}
 		}
 	}
@@ -368,7 +371,7 @@ public class SessionManager {
 			if (!status.loaded && player.teamId != 0) canStart = false;
 		}
 		if (canStart) {
-			session.getGameState().started = true;
+			session.getGameState().metaData.started = true;
 		}
 		updateClientsStart(session);
 	}

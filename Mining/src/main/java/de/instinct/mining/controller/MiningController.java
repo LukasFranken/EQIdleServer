@@ -24,7 +24,7 @@ public class MiningController extends BaseServiceController {
 	
 	@Autowired
 	public MiningController(ApplicationConfiguration config) {
-	    super("social", config.getPort(), config.getVersion());
+	    super("mining", config.getPort(), config.getVersion());
 	    this.service = new MiningService(config);
 	}
 	

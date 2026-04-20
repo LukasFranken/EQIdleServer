@@ -10,5 +10,7 @@ public class Session {
 	
 	private MiningGameState state;
 	private List<MiningClient> clients;
+	private long lastProcessedOrderTimeStamp;
+	private long lastUpdateTimeMS;
 
 }
