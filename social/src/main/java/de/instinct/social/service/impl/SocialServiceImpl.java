@@ -52,6 +52,7 @@ public class SocialServiceImpl implements SocialService {
 	@Override
 	public SocialPushData getPushData(String token) {
 		PlayerSocialData playerSocialData = getPlayerSocialData(token);
+		if (playerSocialData == null) return null;
 		playerSocialData.setLastRefreshTimestamp(System.currentTimeMillis());
 		playerSocialData.setStatus(PlayerStatus.ONLINE);
 		return null;

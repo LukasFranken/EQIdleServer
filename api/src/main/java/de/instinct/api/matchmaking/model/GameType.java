@@ -1,10 +1,12 @@
 package de.instinct.api.matchmaking.model;
 
+import de.instinct.api.core.annotation.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Dto
 @Data
 @Builder
 @NoArgsConstructor

@@ -11,7 +11,7 @@ public class URLBuilder {
 		if (API.configuration == APIConfiguration.CLIENT) {
 			url += serviceInfo.getServiceProtocol() + "://" + serviceInfo.getServiceAddress() + ":";
 		} else {
-			url += "http://localhost:";
+			url += "http://" + serviceInfo.getServiceEndpoint() + ":";
 		}
 		url += serviceInfo.getServicePort() + "/" + serviceInfo.getServiceEndpoint();
 		return url;
