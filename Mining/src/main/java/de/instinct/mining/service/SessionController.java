@@ -1,8 +1,9 @@
 package de.instinct.mining.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 import com.esotericsoftware.kryonet.Connection;
 
@@ -10,26 +11,56 @@ import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.mining.dto.CreateSessionRequest;
 import de.instinct.api.mining.dto.CreateSessionResponse;
+import de.instinct.api.mining.dto.player.MiningPlayerData;
+import de.instinct.api.mining.dto.player.MiningPlayerFeatureData;
 import de.instinct.engine.core.net.GameOrderMessage;
 import de.instinct.engine.core.order.GameOrder;
-import de.instinct.engine.mining.data.MiningGameState;
+import de.instinct.engine.mining.entity.ship.MiningPlayerShip;
+import de.instinct.engine.mining.entity.ship.cargo.CargoItem;
 import de.instinct.engine.mining.net.message.ConnectMessage;
 import de.instinct.engine.mining.net.message.OnboardMessage;
 import de.instinct.engine.mining.net.message.StartMessage;
-import de.instinct.engine.mining.player.MiningPlayer;
-import de.instinct.engine_api.mining.MiningEngineInterface;
-import de.instinct.engine_api.mining.model.MiningGameStateInitialization;
+import de.instinct.engine_api.mining.MiningStateManager;
+import de.instinct.engine_api.mining.model.MiningPlayerInventoryData;
 import de.instinct.mining.service.model.MiningClient;
 import de.instinct.mining.service.model.Session;
 
 public class SessionController {
 	
+	private Map<String, MiningPlayerData> playerDatas;
+	private Map<String, MiningPlayerInventoryData> playerInventories;
 	private List<Session> sessions;
-	private MiningEngineInterface engineInterface;
+	private MiningStateManager stateManager;
+	private MiningDataLoader dataLoader;
 	
 	public SessionController() {
 		this.sessions = new ArrayList<>();
-		engineInterface = new MiningEngineInterface();
+		stateManager = new MiningStateManager();
+		playerDatas = new HashMap<>();
+		playerInventories = new HashMap<>();
+		dataLoader = new MiningDataLoader();
+	}
+	
+	public MiningPlayerData getPlayerData(String playerUUID) {
+		MiningPlayerData data = playerDatas.get(playerUUID);
+		if (data == null) {
+			data = initializePlayerData(playerUUID);
+		}
+		return data;
+	}
+
+	private MiningPlayerData initializePlayerData(String playerUUID) {
+		MiningPlayerData data = MiningPlayerData.builder()
+				.uuid(playerUUID)
+				.shipData(dataLoader.loadBaseShipData())
+				.featureData(MiningPlayerFeatureData.builder()
+						.build())
+				.build();
+		playerDatas.put(playerUUID, data);
+		MiningPlayerInventoryData inventoryData = new MiningPlayerInventoryData();
+		inventoryData.setResources(new HashMap<>());
+		playerInventories.put(playerUUID, inventoryData);
+		return data;
 	}
 
 	public void processMessage(Connection c, Object o) {
@@ -65,17 +96,18 @@ public class SessionController {
 			GameOrderMessage message = (GameOrderMessage) o;
 			for (Session session : sessions) {
 				if (session.getState().metaData.gameUUID.contentEquals(message.gameUUID)) {
-					engineInterface.integrateOrder(session.getState(), message.order);
-					engineInterface.updateGameState(session.getState(), System.currentTimeMillis() - session.getLastUpdateTimeMS());
+					stateManager.integrateOrder(session.getState(), message.order);
+					stateManager.updateGameState(session.getState(), System.currentTimeMillis() - session.getLastUpdateTimeMS());
 					session.setLastUpdateTimeMS(System.currentTimeMillis());
 					updateClients(session);
 				}
 			}
 		}
+		sessions.removeIf(Session::isFinished);
 	}
 
 	private void updateClients(Session session) {
-		GameOrder lastOrder = engineInterface.getLastOrder(session.getState());
+		GameOrder lastOrder = stateManager.getLastOrder(session.getState());
 		if (lastOrder != null) {
 			if (lastOrder.processGameTimeStamp > session.getLastProcessedOrderTimeStamp()) {
 				session.setLastProcessedOrderTimeStamp(lastOrder.processGameTimeStamp);
@@ -88,14 +120,29 @@ public class SessionController {
 				}
 			}
 		}
-		if (engineInterface.checkRecalled(session.getState())) {
-			System.out.println("Successfully recalled, ending session.");
-			return;
+		if (stateManager.checkFinished(session.getState())) {
+			System.out.println("Ending session: " + session.getState().metaData.gameUUID);
+			end(session);
 		}
-		if (engineInterface.checkFailed(session.getState())) {
-			System.out.println("Extraction failed, ending session.");
-			return;
+	}
+
+	private void end(Session session) {
+		for (MiningClient client : session.getClients()) {
+			MiningPlayerInventoryData inventoryData = playerInventories.get(client.getUuid());
+			for (MiningPlayerShip ship : session.getState().entityData.playerShips) {
+				if (ship.recalled) {
+					for (CargoItem resource : ship.cargo.items) {
+						if (inventoryData.getResources().containsKey(resource.resourceType)) {
+							float currentAmount = inventoryData.getResources().get(resource.resourceType);
+							inventoryData.getResources().put(resource.resourceType, currentAmount + resource.amount);
+						} else {
+							inventoryData.getResources().put(resource.resourceType, resource.amount);
+						}
+					}
+				}
+			}
 		}
+		session.setFinished(true);
 	}
 
 	public void disconnect(Connection c) {
@@ -107,6 +154,16 @@ public class SessionController {
 	}
 
 	public CreateSessionResponse createSession(CreateSessionRequest request) {
+		for (Session session : sessions) {
+			for (String playerUUID : request.getPlayerUUIDs()) {
+				for (MiningClient client : session.getClients()) {
+					if (client.getUuid().contentEquals(playerUUID)) {
+						return CreateSessionResponse.ALREADY_IN_SESSION;
+					}
+				}
+			}
+		}
+		
 		Session session = new Session();
 		session.setClients(new ArrayList<>());
 		int playerId = 1;
@@ -116,25 +173,17 @@ public class SessionController {
 			client.setUuid(playerUUID);
 			ProfileData profileData = API.meta().profile(playerUUID);
 			if (profileData != null) client.setName(profileData.getUsername());
+			client.setPlayerData(getPlayerData(playerUUID));
 			session.getClients().add(client);
 			playerId++;
 		}
-		
-		MiningGameStateInitialization initialization = new MiningGameStateInitialization();
-		initialization.setGameUUID(UUID.randomUUID().toString());
-		initialization.setPlayers(new ArrayList<>());
-		for (MiningClient client : session.getClients()) {
-			MiningPlayer player = engineInterface.getTestPlayer();
-			player.id = client.getPlayerId();
-			initialization.getPlayers().add(player);
-		}
-		initialization.setMap(null); //impl
-		initialization.setPauseCountLimit(3);
-		initialization.setPauseTimeLimitMS(60_000);
-		MiningGameState state = engineInterface.initializeMining(initialization);
-		session.setState(state);
+		session.setState(dataLoader.loadState(request.getMap(), session.getClients()));
 		sessions.add(session);
 		return CreateSessionResponse.SUCCESS;
+	}
+
+	public MiningPlayerInventoryData getPlayerInventory(String token) {
+		return playerInventories.get(token);
 	}
 
 }

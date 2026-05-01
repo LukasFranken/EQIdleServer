@@ -12,5 +12,6 @@ public class Session {
 	private List<MiningClient> clients;
 	private long lastProcessedOrderTimeStamp;
 	private long lastUpdateTimeMS;
+	private boolean finished;
 
 }

@@ -2,21 +2,23 @@ package de.instinct.engine_api.mining;
 
 import java.util.ArrayList;
 
+import de.instinct.api.mining.dto.player.MiningPlayerData;
 import de.instinct.engine.core.order.GameOrder;
 import de.instinct.engine.mining.MiningEngine;
 import de.instinct.engine.mining.data.MiningGameState;
 import de.instinct.engine.mining.entity.data.MiningEntityData;
 import de.instinct.engine.mining.entity.ship.MiningPlayerShip;
+import de.instinct.engine.mining.entity.ship.MiningPlayerShipProcessor;
 import de.instinct.engine.mining.entity.ship.data.MiningShipData;
 import de.instinct.engine.mining.player.MiningPlayer;
 import de.instinct.engine_api.core.service.GameStateInitializer;
 import de.instinct.engine_api.mining.model.MiningGameStateInitialization;
 
-public class MiningEngineInterface extends GameStateInitializer {
+public class MiningStateManager extends GameStateInitializer {
 	
 	private MiningEngine engine;
 
-	public MiningEngineInterface() {
+	public MiningStateManager() {
 		this.engine = new MiningEngine();
 	}
 	
@@ -29,32 +31,34 @@ public class MiningEngineInterface extends GameStateInitializer {
 		state.entityData.projectiles = new ArrayList<>();
 		state.entityData.playerShips = new ArrayList<>();
 		state.entityData.asteroids = new ArrayList<>();
+		state.map = initialization.getMap();
 		
 		engine.initialize(state);
 		return state;
 	}
 	
-	public MiningPlayer getTestPlayer() {
+	public MiningPlayer getPlayer(MiningPlayerData data) {
 		MiningPlayer player = new MiningPlayer();
 		player.shipData = new MiningShipData();
-		player.shipData.coreCharge = 20f;
+		player.shipData.radius = 10f + (2f * data.getShipData().getStage());
+		player.shipData.coreCharge = data.getShipData().getCoreCharge();
 		
-		player.shipData.cargoCapacity = 20f;
+		player.shipData.cargoCapacity = data.getShipData().getCargoCapacity();
 		
-		player.shipData.acceleration = 20f;
-		player.shipData.deceleration = 10f;
-		player.shipData.maxSpeed = 200f;
-		player.shipData.maxSpeedReverse = -50f;
-		player.shipData.rotationAcceleration = 10f;
-		player.shipData.maxRotationSpeed = 40f;
-		player.shipData.chargePerSecond = 0.2f;
-		player.shipData.inertiaDampening = 50f;
+		player.shipData.acceleration = data.getShipData().getAcceleration();
+		player.shipData.deceleration = data.getShipData().getDeceleration();
+		player.shipData.maxSpeed = data.getShipData().getMaxSpeed();
+		player.shipData.maxSpeedReverse = data.getShipData().getMaxReverseSpeed();
+		player.shipData.rotationAcceleration = data.getShipData().getRotationAcceleration();
+		player.shipData.maxRotationSpeed = data.getShipData().getMaxRotationSpeed();
+		player.shipData.chargePerSecond = data.getShipData().getChargePerSecond();
+		player.shipData.inertiaDampening = data.getShipData().getInertiaDampening();
 		
-		player.shipData.cooldownMS = 500;
-		player.shipData.lifetimeMS = 2000;
-		player.shipData.damage = 5f;
-		player.shipData.projectileSpeed = 10f;
-		player.shipData.chargePerShot = 0.5f;
+		player.shipData.cooldownMS = data.getShipData().getCooldownMS();
+		player.shipData.lifetimeMS = data.getShipData().getLifetimeMS();
+		player.shipData.damage = data.getShipData().getDamage();
+		player.shipData.projectileSpeed = data.getShipData().getProjectileSpeed();
+		player.shipData.chargePerShot = data.getShipData().getChargePerShot();
 		return player;
 	}
 	
@@ -71,18 +75,25 @@ public class MiningEngineInterface extends GameStateInitializer {
 		return state.orderData.processedOrders.get(state.orderData.processedOrders.size() - 1);
 	}
 	
-	public boolean checkRecalled(MiningGameState state) {
+	public boolean checkFinished(MiningGameState state) {
 		for (MiningPlayerShip ship : state.entityData.playerShips) {
 			if (!ship.recalled) {
-				return false;
+				if (ship.core.currentCharge > 0f) {
+					return false;
+				} else {
+					if (shipIsRecallable(state, ship)) {
+						return false;
+					}
+				}
 			}
 		}
 		return true;
 	}
-
-	public boolean checkFailed(MiningGameState state) {
-		//check if all ships are destroyed or out of fuel
-		return false;
+	
+	public boolean shipIsRecallable(MiningGameState state, MiningPlayerShip ship) {
+		return MiningPlayerShipProcessor.shipIsInRecallArea(state, ship) 
+				&& ship.speed <= 0.1f && ship.speed >= -0.1f 
+				&& state.metaData.pauseData.resumeCountdownMS <= 0;
 	}
 
 	public void updateGameState(MiningGameState state, long deltaTimeMS) {

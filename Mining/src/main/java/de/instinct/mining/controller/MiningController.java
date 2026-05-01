@@ -3,6 +3,7 @@ package de.instinct.mining.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import de.instinct.api.mining.dto.CreateSessionRequest;
 import de.instinct.api.mining.dto.CreateSessionResponse;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.engine_api.core.EngineAPI;
+import de.instinct.engine_api.mining.model.MiningPlayerInventoryData;
 import de.instinct.mining.config.ApplicationConfiguration;
 import de.instinct.mining.service.MiningService;
 
@@ -45,6 +47,11 @@ public class MiningController extends BaseServiceController {
 	@PostMapping("/create")
 	public ResponseEntity<CreateSessionResponse> createSession(@RequestBody CreateSessionRequest request) {
 		return ResponseEntity.ok(service.createSession(request));
+	}
+	
+	@GetMapping("/inventory/{token}")
+	public ResponseEntity<MiningPlayerInventoryData> getPlayerInventory(@PathVariable String token) {
+		return ResponseEntity.ok(service.getPlayerInventory(token));
 	}
 	
 }

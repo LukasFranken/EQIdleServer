@@ -10,5 +10,6 @@ public class FleetGameStateInitialization extends GameStateInitialization {
 	
 	private int atpToWin;
 	private int gameTimeLimitMS;
+	private FleetGameMap map;
 
 }

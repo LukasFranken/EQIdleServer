@@ -33,6 +33,7 @@ public class FileManager {
             Files.createDirectories(filePath.getParent());
             Files.write(filePath, content.getBytes(StandardCharsets.UTF_8), 
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            System.out.println("File saved successfully: " + filePath);
         } catch (IOException e) {
             e.printStackTrace();
         }

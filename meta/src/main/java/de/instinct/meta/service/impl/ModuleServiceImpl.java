@@ -27,14 +27,16 @@ public class ModuleServiceImpl implements ModuleService {
 		//TODO load from file
 		moduleDatas = new LinkedHashMap<>();
 		unlockRanks = new LinkedHashMap<>();
+		unlockRanks.put(MenuModule.MINING, PlayerRank.RECRUIT1);
 		unlockRanks.put(MenuModule.STARMAP, PlayerRank.RECRUIT1);
 		unlockRanks.put(MenuModule.SHIPYARD, PlayerRank.RECRUIT1);
 		unlockRanks.put(MenuModule.SETTINGS, PlayerRank.RECRUIT1);
+		unlockRanks.put(MenuModule.FORGE, PlayerRank.PRIVATE1);
 		unlockRanks.put(MenuModule.PROFILE, PlayerRank.PRIVATE1);
 		unlockRanks.put(MenuModule.SOCIAL, PlayerRank.PRIVATE2);
 		unlockRanks.put(MenuModule.SHOP, PlayerRank.PRIVATE3);
 		unlockRanks.put(MenuModule.CONSTRUCTION, PlayerRank.SPECIALIST1);
-		//unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
+		unlockRanks.put(MenuModule.MARKET, PlayerRank.CAPTAIN1);
 	}
 	
 	@Override

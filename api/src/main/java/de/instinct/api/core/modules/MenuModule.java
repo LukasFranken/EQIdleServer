@@ -10,6 +10,8 @@ public enum MenuModule {
 	SOCIAL,
 	PLAY,
 	CONSTRUCTION,
-	MARKET
+	MARKET,
+	MINING,
+	FORGE
 
 }

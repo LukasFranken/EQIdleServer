@@ -9,12 +9,13 @@ import com.esotericsoftware.kryonet.Server;
 
 import de.instinct.api.mining.dto.CreateSessionRequest;
 import de.instinct.api.mining.dto.CreateSessionResponse;
-import de.instinct.api.mining.service.MiningInterface;
 import de.instinct.engine.mining.net.MiningKryoRegistrator;
+import de.instinct.engine_api.mining.model.MiningPlayerInventoryData;
+import de.instinct.engine_api.mining.service.MiningEngineInterface;
 import de.instinct.mining.config.ApplicationConfiguration;
 
 @Service
-public class MiningService implements MiningInterface {
+public class MiningService implements MiningEngineInterface {
 	
 	private Server server;
 	private ServerConnectionListener connectionListener;
@@ -48,6 +49,11 @@ public class MiningService implements MiningInterface {
 	@Override
 	public CreateSessionResponse createSession(CreateSessionRequest request) {
 		return sessionController.createSession(request);
+	}
+
+	@Override
+	public MiningPlayerInventoryData getPlayerInventory(String token) {
+		return sessionController.getPlayerInventory(token);
 	}
 
 }

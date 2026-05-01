@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class CreateSessionRequest {
 	
+	private String map;
 	private List<String> playerUUIDs;
 
 }
