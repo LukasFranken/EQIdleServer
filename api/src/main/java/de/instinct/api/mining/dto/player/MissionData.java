@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MiningPlayerData {
+public class MissionData {
 	
-	private String uuid;
-	private MiningPlayerFeatureData featureData;
-	private MiningPlayerShipData shipData;
-	private MiningPlayerMissionData missionData;
+	private String name;
+	private int minedAsteroids;
+	private boolean completed;
 
 }

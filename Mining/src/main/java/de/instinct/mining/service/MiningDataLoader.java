@@ -5,15 +5,18 @@ import java.util.List;
 import java.util.UUID;
 
 import de.instinct.api.core.service.impl.ObjectJSONMapper;
+import de.instinct.api.mining.dto.Maps;
 import de.instinct.api.mining.dto.player.MiningPlayerShipData;
 import de.instinct.base.file.FileManager;
 import de.instinct.engine.mining.data.MiningGameState;
 import de.instinct.engine.mining.data.map.MiningMap;
 import de.instinct.engine.mining.data.map.node.types.AsteroidMapNode;
 import de.instinct.engine.mining.data.map.node.types.RecallAreaNode;
+import de.instinct.engine.mining.entity.asteroid.ResourceType;
 import de.instinct.engine.mining.player.MiningPlayer;
 import de.instinct.engine_api.mining.MiningStateManager;
 import de.instinct.engine_api.mining.model.MiningGameStateInitialization;
+import de.instinct.engine_api.mining.service.model.MiningMissionOverview;
 import de.instinct.mining.service.model.AsteroidMapData;
 import de.instinct.mining.service.model.MiningClient;
 import de.instinct.mining.service.model.MiningMapData;
@@ -45,7 +48,7 @@ public class MiningDataLoader {
 	}
 	
 	private MiningMap loadMap(String mapName) {
-		MiningMapData mapData = ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/" + mapName + MAP_FILE_POSTFIX), MiningMapData.class);
+		MiningMapData mapData = loadMapData(mapName);
 		MiningMap map = new MiningMap();
 		map.nodes = new ArrayList<>();
 		RecallAreaNode recallAreaNode = new RecallAreaNode();
@@ -64,8 +67,32 @@ public class MiningDataLoader {
 		return map;
 	}
 	
+	private MiningMapData loadMapData(String mapName) {
+		return ObjectJSONMapper.mapJSON(FileManager.loadFile(MAP_FILE_SUBFOLDER + "/" + mapName + MAP_FILE_POSTFIX), MiningMapData.class);
+	}
+
 	public MiningPlayerShipData loadBaseShipData() {
 		return ObjectJSONMapper.mapJSON(FileManager.loadFile("ship.data"), MiningPlayerShipData.class);
+	}
+	
+	public Maps loadMaps() {
+		return ObjectJSONMapper.mapJSON(FileManager.loadFile("map.data"), Maps.class);
+	}
+
+	public MiningMissionOverview loadMissionOverview(String missionName) {
+		MiningMapData mapData = loadMapData(missionName);
+		if (mapData == null) return null;
+		MiningMissionOverview overview = new MiningMissionOverview();
+		overview.setName(missionName);
+		List<ResourceType> resourceTypes = new ArrayList<>();
+		for (AsteroidMapData asteroidData : mapData.getAsteroids()) {
+			overview.setAsteroids(overview.getAsteroids() + 1);
+			if (!resourceTypes.contains(asteroidData.getResourceType())) {
+				resourceTypes.add(asteroidData.getResourceType());
+			}
+		}
+		overview.setAvailableResources(resourceTypes);
+		return overview;
 	}
 
 }

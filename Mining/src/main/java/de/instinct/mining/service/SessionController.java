@@ -11,8 +11,11 @@ import de.instinct.api.core.API;
 import de.instinct.api.meta.dto.ProfileData;
 import de.instinct.api.mining.dto.CreateSessionRequest;
 import de.instinct.api.mining.dto.CreateSessionResponse;
+import de.instinct.api.mining.dto.Maps;
 import de.instinct.api.mining.dto.player.MiningPlayerData;
 import de.instinct.api.mining.dto.player.MiningPlayerFeatureData;
+import de.instinct.api.mining.dto.player.MiningPlayerMissionData;
+import de.instinct.api.mining.dto.player.MissionData;
 import de.instinct.engine.core.net.GameOrderMessage;
 import de.instinct.engine.core.order.GameOrder;
 import de.instinct.engine.mining.entity.ship.MiningPlayerShip;
@@ -22,6 +25,7 @@ import de.instinct.engine.mining.net.message.OnboardMessage;
 import de.instinct.engine.mining.net.message.StartMessage;
 import de.instinct.engine_api.mining.MiningStateManager;
 import de.instinct.engine_api.mining.model.MiningPlayerInventoryData;
+import de.instinct.engine_api.mining.service.model.MiningMissionOverview;
 import de.instinct.mining.service.model.MiningClient;
 import de.instinct.mining.service.model.Session;
 
@@ -41,7 +45,7 @@ public class SessionController {
 		dataLoader = new MiningDataLoader();
 	}
 	
-	public MiningPlayerData getPlayerData(String playerUUID) {
+	private MiningPlayerData getPlayerData(String playerUUID) {
 		MiningPlayerData data = playerDatas.get(playerUUID);
 		if (data == null) {
 			data = initializePlayerData(playerUUID);
@@ -54,6 +58,9 @@ public class SessionController {
 				.uuid(playerUUID)
 				.shipData(dataLoader.loadBaseShipData())
 				.featureData(MiningPlayerFeatureData.builder()
+						.build())
+				.missionData(MiningPlayerMissionData.builder()
+						.missions(new ArrayList<>())
 						.build())
 				.build();
 		playerDatas.put(playerUUID, data);
@@ -127,6 +134,7 @@ public class SessionController {
 	}
 
 	private void end(Session session) {
+		MiningMissionOverview overview = dataLoader.loadMissionOverview(session.getMapName());
 		for (MiningClient client : session.getClients()) {
 			MiningPlayerInventoryData inventoryData = playerInventories.get(client.getUuid());
 			for (MiningPlayerShip ship : session.getState().entityData.playerShips) {
@@ -139,6 +147,24 @@ public class SessionController {
 							inventoryData.getResources().put(resource.resourceType, resource.amount);
 						}
 					}
+					MissionData currentMissionData = null;
+					for (MissionData missionData : client.getPlayerData().getMissionData().getMissions()) {
+						if (missionData.getName().contentEquals(session.getMapName())) {
+							currentMissionData = missionData;
+						}
+					}
+					int minedAsteroids = session.getState().minedAsteroids;
+					if (currentMissionData == null) {
+						currentMissionData = new MissionData();
+						currentMissionData.setName(session.getMapName());
+						currentMissionData.setMinedAsteroids(minedAsteroids);
+						client.getPlayerData().getMissionData().getMissions().add(currentMissionData);
+					} else {
+						if (currentMissionData.getMinedAsteroids() < minedAsteroids) {
+							currentMissionData.setMinedAsteroids(minedAsteroids);
+						}
+					}
+					currentMissionData.setCompleted(currentMissionData.getMinedAsteroids() >= overview.getAsteroids());
 				}
 			}
 		}
@@ -165,6 +191,7 @@ public class SessionController {
 		}
 		
 		Session session = new Session();
+		session.setMapName(request.getMap());
 		session.setClients(new ArrayList<>());
 		int playerId = 1;
 		for (String playerUUID : request.getPlayerUUIDs()) {
@@ -184,6 +211,19 @@ public class SessionController {
 
 	public MiningPlayerInventoryData getPlayerInventory(String token) {
 		return playerInventories.get(token);
+	}
+
+	public MiningPlayerMissionData getPlayerMissionData(String token) {
+		MiningPlayerData playerData = getPlayerData(token);
+		return playerData.getMissionData();
+	}
+
+	public MiningMissionOverview getMissionOverview(String missionName) {
+		return dataLoader.loadMissionOverview(missionName);
+	}
+
+	public Maps getMaps() {
+		return dataLoader.loadMaps();
 	}
 
 }

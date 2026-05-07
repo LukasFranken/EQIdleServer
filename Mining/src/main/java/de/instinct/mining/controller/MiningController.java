@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import de.instinct.api.core.config.APIConfiguration;
 import de.instinct.api.mining.dto.CreateSessionRequest;
 import de.instinct.api.mining.dto.CreateSessionResponse;
+import de.instinct.api.mining.dto.Maps;
+import de.instinct.api.mining.dto.player.MiningPlayerMissionData;
 import de.instinct.base.controller.BaseServiceController;
 import de.instinct.engine_api.core.EngineAPI;
 import de.instinct.engine_api.mining.model.MiningPlayerInventoryData;
+import de.instinct.engine_api.mining.service.model.MiningMissionOverview;
 import de.instinct.mining.config.ApplicationConfiguration;
 import de.instinct.mining.service.MiningService;
 
@@ -50,8 +53,23 @@ public class MiningController extends BaseServiceController {
 	}
 	
 	@GetMapping("/inventory/{token}")
-	public ResponseEntity<MiningPlayerInventoryData> getPlayerInventory(@PathVariable String token) {
-		return ResponseEntity.ok(service.getPlayerInventory(token));
+	public ResponseEntity<MiningPlayerInventoryData> inventory(@PathVariable String token) {
+		return ResponseEntity.ok(service.inventory(token));
+	}
+	
+	@GetMapping("/missiondata/{token}")
+	public ResponseEntity<MiningPlayerMissionData> missiondata(@PathVariable String token) {
+		return ResponseEntity.ok(service.missiondata(token));
+	}
+	
+	@GetMapping("/mission/{missionName}")
+	public ResponseEntity<MiningMissionOverview> mission(@PathVariable String missionName) {
+		return ResponseEntity.ok(service.mission(missionName));
+	}
+	
+	@GetMapping("/maps")
+	public ResponseEntity<Maps> maps() {
+		return ResponseEntity.ok(service.maps());
 	}
 	
 }

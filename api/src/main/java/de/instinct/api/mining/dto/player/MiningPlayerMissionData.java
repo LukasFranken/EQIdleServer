@@ -1,5 +1,7 @@
 package de.instinct.api.mining.dto.player;
 
+import java.util.List;
+
 import de.instinct.api.core.annotation.Dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +13,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MiningPlayerData {
+public class MiningPlayerMissionData {
 	
-	private String uuid;
-	private MiningPlayerFeatureData featureData;
-	private MiningPlayerShipData shipData;
-	private MiningPlayerMissionData missionData;
+	private List<MissionData> missions;
 
 }

@@ -9,9 +9,12 @@ import com.esotericsoftware.kryonet.Server;
 
 import de.instinct.api.mining.dto.CreateSessionRequest;
 import de.instinct.api.mining.dto.CreateSessionResponse;
+import de.instinct.api.mining.dto.Maps;
+import de.instinct.api.mining.dto.player.MiningPlayerMissionData;
 import de.instinct.engine.mining.net.MiningKryoRegistrator;
 import de.instinct.engine_api.mining.model.MiningPlayerInventoryData;
 import de.instinct.engine_api.mining.service.MiningEngineInterface;
+import de.instinct.engine_api.mining.service.model.MiningMissionOverview;
 import de.instinct.mining.config.ApplicationConfiguration;
 
 @Service
@@ -52,8 +55,23 @@ public class MiningService implements MiningEngineInterface {
 	}
 
 	@Override
-	public MiningPlayerInventoryData getPlayerInventory(String token) {
+	public MiningPlayerInventoryData inventory(String token) {
 		return sessionController.getPlayerInventory(token);
+	}
+
+	@Override
+	public MiningPlayerMissionData missiondata(String token) {
+		return sessionController.getPlayerMissionData(token);
+	}
+
+	@Override
+	public MiningMissionOverview mission(String missionName) {
+		return sessionController.getMissionOverview(missionName);
+	}
+
+	@Override
+	public Maps maps() {
+		return sessionController.getMaps();
 	}
 
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class Session {
 	
+	private String mapName;
 	private MiningGameState state;
 	private List<MiningClient> clients;
 	private long lastProcessedOrderTimeStamp;
