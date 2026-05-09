@@ -2,16 +2,13 @@ package de.instinct.api.core.modules;
 
 public enum MenuModule {
 	
-	STARMAP,
+	MINING,
+	CONQUEST,
+	STORAGE,
+	FORGE,
+	MARKET,
 	SETTINGS,
 	PROFILE,
-	SHIPYARD,
-	SHOP,
-	SOCIAL,
-	PLAY,
-	CONSTRUCTION,
-	MARKET,
-	MINING,
-	FORGE
+	SOCIAL;
 
 }
